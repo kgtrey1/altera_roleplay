@@ -9,7 +9,7 @@ ARP = {}
 -- Callbacks (server side implementation)
 --
 
-ARP.ServerCallbacks = {} -- List of the callbacks
+ARP.ServerCallbacks = {}
 
 ARP.RegisterServerCallback = function(callbackName, functionPointer)
     print("registering callback")
