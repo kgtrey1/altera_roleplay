@@ -6,13 +6,12 @@
 ARP = {}
 
 --
--- Callbacks (server side implementation)
+-- Callbacks (server side implementation).
 --
 
 ARP.ServerCallbacks = {}
 
 ARP.RegisterServerCallback = function(callbackName, functionPointer)
-    print("registering callback")
     ARP.ServerCallbacks[callbackName] = functionPointer
 end
 
@@ -24,11 +23,10 @@ ARP.TriggerServerCallback = function(callbackName, requestId, source, functionPo
     end
 end
 
-RegisterServerEvent('arp:TriggerServerCallback')
+RegisterNetEvent('arp:TriggerServerCallback')
 AddEventHandler('arp:TriggerServerCallback', function(callbackName, requestId, ...)
     local _source = source
 
-    print("trigered")
     ARP.TriggerServerCallback(callbackName, requestId, _source, function(...)
         TriggerClientEvent('arp:ServerCallback', _source, requestId, ...)
     end, ...)
