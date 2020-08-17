@@ -7,5 +7,12 @@ description     'Altera Framework'
 version         '0.0.1'
 
 server_scripts {
-  'src/server/main.lua',
+    '@mysql-async/lib/MySQL.lua',
+    'config.lua',
+    'server/class.lua',
+    'server/main.lua'
+}
+
+client_scripts {
+    'src/class.lua'
 }
