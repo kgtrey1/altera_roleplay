@@ -1,8 +1,90 @@
 ARP = {}
+
+
+ARP.RegisterServerCallback = function()
+
+end
+
+
+
 ARP.Whitelist = {}
 ARP.Banlist = {}
+ARP.PlayerData = {}
 
 ServerIsLoaded = false
+
+-- Player date storage
+-- Loads the player at connection and save his data on disconnection.
+
+function GetSteamIdById(id)
+    local identifiers = GetPlayerIdentifiers(id)
+    local steamid = nil
+
+    for _, v in pairs(identifiers) do
+        if string.find(v, "steam") then
+            steamid = string.gsub(v, "steam:", "")
+            steamid = tostring(tonumber(steamid, 16))
+            return (steamid)
+        end
+    end
+end
+
+function SavePlayer(reason)
+    local _source = source
+    local position = {
+        x = ARP.PlayerData[_source].position.x,
+        y = ARP.PlayerData[_source].position.y,
+        z = ARP.PlayerData[_source].position.z
+    }
+
+    position = json.encode(position)
+    MySQL.Async.execute('UPDATE users SET `position` = @lastPosition WHERE steamid = @steamid', {
+        ['@lastPosition'] = position,
+        ['@steamid'] = ARP.PlayerData[_source].steamid
+    }, function(rowsChanged) end)
+    Citizen.Wait(1000)
+end
+
+function LoadPlayer()
+    local _source = source
+
+    ARP.PlayerData[_source] = {}
+    ARP.PlayerData[_source].id = _source
+    ARP.PlayerData[_source].steamid = GetSteamIdById(_source)
+    MySQL.Async.fetchAll("SELECT * FROM users WHERE steamid = @identifier", {
+		['@identifier'] = ARP.PlayerData[_source].steamid
+    }, function(result)
+        if (result[1].steamid == nil) then
+            print("user is not registered")
+        else
+            ARP.PlayerData[_source].position = json.decode(result[1].position)
+            print("User is registered: ID:" .. _source)
+        end
+	end)
+end
+
+function UpdatePlayerPosition(coords)
+    local _source = source
+
+    print(coords)
+    ARP.PlayerData[_source].position = coords
+end
+
+RegisterNetEvent('arp_framework:OnPlayerReady')
+AddEventHandler('arp_framework:OnPlayerReady', LoadPlayer)
+AddEventHandler('playerDropped', SavePlayer)
+
+
+RegisterNetEvent('arp_framework:WarpPlayerToLatestPosition')
+AddEventHandler('arp_framework:WarpPlayerToLatestPosition', function(ped)
+    local _source = source
+
+    print("ready")
+    SetEntityCoords(ped, ARP.PlayerData[_source].position.x, ARP.PlayerData[_source].position.y, ARP.PlayerData[_source].position.z, false, false, false, true)
+end)
+
+RegisterNetEvent('arp_framework:UpdatePlayerPosition')
+AddEventHandler('arp_framework:UpdatePlayerPosition', UpdatePlayerPosition)
 
 -- Verification on the User
 -- Used to prevent banned player to connect or enforce the whitelist
