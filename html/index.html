@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="bootstrap.min.css" type="text/css">
+        <link rel="stylesheet" href="index.css" type="text/css">
+        <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+        <script src="bootstrap.min.js" type="text/javascript"></script>
+    </head>
+    <body id="menu" style="background-color: transparent;">
+        <div class="container-fluid" style="margin-top: 49vh; transform: translateY(-50%);">
+            <div class="row">
+                <div class="container mt-5 login-block" style="background-color: gainsboro;">
+                    <div class="row">
+                        <div class="col-md-4 login-sec p-4">
+                            <form class="login-form needs-validation" novalidate>
+
+                                <div id="result">
+                                    <p class="alert alert-secondary" role="alert">
+                                        Merci de rentrer vos informations personnelles.
+                                    </p>
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <input id="firstname" type="text" class="form-control" placeholder="Prénom" required>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input id="lastname" type="text" class="form-control" placeholder="Nom de famille" required>
+                                </div>
+                                <hr>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <label class="input-group-text" for="gender">Sexe</label>
+                                    </div>
+                                    <select class="custom-select" id="gender">
+                                        <option selected>Choississez...</option>
+                                        <option value="1">Masculin</option>
+                                        <option value="2">Féminin</option>
+                                    </select>
+                                </div>
+                                <fieldset id="birthdate">
+                                    <div class="input-group-prepend" style="display: inline-block;">
+                                        <label class="input-group-text" for="day">Date de naissance</label>
+                                    </div>
+                                    <input type="text" id="day" placeholder="JJ" class="form-control" style="display: inline-block; width: 13%;" required>
+                                    <input type="text" id="month" placeholder="MM" class="form-control" style="display: inline-block; width: 17%;" required>
+                                    <input type="text" id="year" placeholder="AAAA" class="form-control" style="display: inline-block; width: 20%;" required>
+                                </fieldset>
+                                <hr>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="height">Taille (en centimètres)</label>
+                                    </div>
+                                    <input type="text" id="height" class="form-control" aria-label="Имя" aria-describedby="basic-addon4" required>
+                                </div>
+                                <hr>
+                                <div class="align-middle">
+                                    <input type="button" id="submit" class="btn btn-outline-success float-right">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-8 banner-sec rounded" style="background-color: gainsboro;">
+                            <div class="px-2 py-3 position-absolute rounded-left" style="background-color: rgba(255,255,255,0.5);bottom: 40px; width: 96%; height: 85%;">
+                                <br><br>
+                                <center><img src="logo.png" alt=""></center>
+                                <h2>Bienvenue sur Altera Roleplay!</h2>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item bg-transparent border-0 p-1"> Merci de nous avoir rejoint, nous espérons que vous passerez un bon moment parmis nous.</li>
+                                    <li class="list-group-item bg-transparent border-0 p-1"> En soumettant ce formulaire, vous vous engagez à respecter les régles du serveur.</li>
+                                    <li class="list-group-item bg-transparent border-0 p-1"> Vous pourrez trouver le réglement sur le serveur discord: discord.gg/4LT3R4</li>
+                                    <li class="list-group-item bg-transparent border-0 p-1"> Zadiite est puceau mais il le cache bien, impressionnant.</li>
+                                    <li class="list-group-item bg-transparent border-0 p-1"> Après avoir passé la douane, n'oubliez pas d'aller faire vos papiers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="./index.js" type="text/javascript"></script>
+    </body>
+</html>
+
