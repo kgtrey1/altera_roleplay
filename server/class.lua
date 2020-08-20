@@ -5,11 +5,19 @@
 
 ARP = {}
 
+ARP.test = 1
+
+--
+-- PlayerData
+--
+
+ARP.PlayerData = {}
+
 --
 -- Callbacks (server side implementation).
 --
 
-ARP.ServerCallbacks = {}
+ARP.ServerCallbacks = {} -- Contain all server callback.
 
 ARP.RegisterServerCallback = function(callbackName, functionPointer)
     ARP.ServerCallbacks[callbackName] = functionPointer
@@ -30,4 +38,27 @@ AddEventHandler('arp:TriggerServerCallback', function(callbackName, requestId, .
     ARP.TriggerServerCallback(callbackName, requestId, _source, function(...)
         TriggerClientEvent('arp:ServerCallback', _source, requestId, ...)
     end, ...)
+end)
+
+--
+-- Items.
+--
+
+ARP.Items       = {}
+ARP.Items.List  = {} -- Contains all items with their informations
+ARP.Items.Usage = {} -- Contains function that will be called uppon use of an item.
+
+ARP.Items.RegisterUsage = function(name, functionPointer)
+    ARP.Items.Usage[name] = functionPointer
+end
+
+RegisterNetEvent('arp_framework:UseItem')
+AddEventHandler('arp_framework:UseItem', function(itemName)
+    local _source = source
+
+    if (ARP.Items.Usage[name] ~= nil) then
+        ARP.Items.Usage[name](_source)
+    else
+        print(string.format("arp_framework: User with SteamID %s tried to use %s. (Invalid item)", ARP.PlayerData.steamid, itemName))
+    end
 end)

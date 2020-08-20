@@ -5,6 +5,8 @@
 
 ARP = {}
 
+ARP.PlayerData = {}
+
 --
 -- Callbacks (client side implementation).
 --

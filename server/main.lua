@@ -1,21 +1,3 @@
-ARP = {}
-
-
-ARP.RegisterServerCallback = function()
-
-end
-
-
-
-ARP.Whitelist = {}
-ARP.Banlist = {}
-ARP.PlayerData = {}
-
-ServerIsLoaded = false
-
--- Player date storage
--- Loads the player at connection and save his data on disconnection.
-
 function GetSteamIdById(id)
     local identifiers = GetPlayerIdentifiers(id)
     local steamid = nil
@@ -29,39 +11,19 @@ function GetSteamIdById(id)
     end
 end
 
-function SavePlayer(reason)
-    local _source = source
-    local position = {
-        x = ARP.PlayerData[_source].position.x,
-        y = ARP.PlayerData[_source].position.y,
-        z = ARP.PlayerData[_source].position.z
-    }
+function GetLicenseById(id)
+    local identifiers = GetPlayerIdentifiers(id)
 
-    position = json.encode(position)
-    MySQL.Async.execute('UPDATE users SET `position` = @lastPosition WHERE steamid = @steamid', {
-        ['@lastPosition'] = position,
-        ['@steamid'] = ARP.PlayerData[_source].steamid
-    }, function(rowsChanged) end)
-    Citizen.Wait(1000)
-end
-
-function LoadPlayer()
-    local _source = source
-
-    ARP.PlayerData[_source] = {}
-    ARP.PlayerData[_source].id = _source
-    ARP.PlayerData[_source].steamid = GetSteamIdById(_source)
-    MySQL.Async.fetchAll("SELECT * FROM users WHERE steamid = @identifier", {
-		['@identifier'] = ARP.PlayerData[_source].steamid
-    }, function(result)
-        if (result[1].steamid == nil) then
-            print("user is not registered")
-        else
-            ARP.PlayerData[_source].position = json.decode(result[1].position)
-            print("User is registered: ID:" .. _source)
+    for _, v in pairs(identifiers) do
+        if string.find(v, "license") then
+            return (string.gsub(v, "license:", ""))
         end
-	end)
+    end
 end
+
+
+
+-- Update player
 
 function UpdatePlayerPosition(coords)
     local _source = source
@@ -70,111 +32,120 @@ function UpdatePlayerPosition(coords)
     ARP.PlayerData[_source].position = coords
 end
 
-RegisterNetEvent('arp_framework:OnPlayerReady')
-AddEventHandler('arp_framework:OnPlayerReady', LoadPlayer)
-AddEventHandler('playerDropped', SavePlayer)
-
-
-RegisterNetEvent('arp_framework:WarpPlayerToLatestPosition')
-AddEventHandler('arp_framework:WarpPlayerToLatestPosition', function(ped)
-    local _source = source
-
-    print("ready")
-    SetEntityCoords(ped, ARP.PlayerData[_source].position.x, ARP.PlayerData[_source].position.y, ARP.PlayerData[_source].position.z, false, false, false, true)
-end)
-
 RegisterNetEvent('arp_framework:UpdatePlayerPosition')
 AddEventHandler('arp_framework:UpdatePlayerPosition', UpdatePlayerPosition)
 
--- Verification on the User
--- Used to prevent banned player to connect or enforce the whitelist
+-- Save player on disconnection and delete stored informations.
 
-function UserIsBanned(steamid, ip, license, deferrals)
-    for _, v in pairs(ARP.Banlist) do
-        if (steamid == v.steamid or ip == v.ip or license == v.license) then
-            v.date = tonumber(v.date)
-            if (v.date >= os.time()) then
-                deferrals.done(string.format("Vous avez été banni jusqu'au %s.\nRaison: %s", os.date('%d/%m/%Y à %H:%M:%S', v.date), v.reason))
-                return (true)
-            end
-            break
-        end
-    end
-    return (false)
-end
-
-function UserIsWhitelisted(steamid, deferrals)
-    for _, v in pairs(ARP.Whitelist) do
-        if (steamid == v.steamid) then
-            return (true)
-        end
-    end
-    deferrals.done("Vous devez être whitelisted pour vous connecter.")
-    return (false)
-end
-
-local function VerifyAuthorization(name, setKickReason, deferrals)
+function SavePlayer(reason)
     local _source = source
-    local identifiers = GetPlayerIdentifiers(_source)
-    local steamid = nil
-    local license = nil
-    local ip = nil
+    local position = json.encode({
+        x = ARP.PlayerData[_source].position.x,
+        y = ARP.PlayerData[_source].position.y,
+        z = ARP.PlayerData[_source].position.z
+    })
 
-    deferrals.defer()
-    Wait(0)
-    deferrals.update("Le serveur est en cours de chargement...")
-    while not ServerIsLoaded do
-        Wait(1000)
-    end
-    deferrals.update(string.format("Hello %s, nous vérifions que tout est en ordre.", name))
-    for _, v in pairs(identifiers) do
-        if string.find(v, "steam") then
-            steamid = string.gsub(v, "steam:", "")
-            steamid = tostring(tonumber(steamid, 16))
-        elseif string.find(v, "license") then
-            license = string.gsub(v, "license:", "")
-        elseif string.find(v, "ip") then
-            ip = string.gsub(v, "ip:", "")
-        end
-    end
-    if Config.UsingWhitelist == true and UserIsWhitelisted(steamid) and
-    not UserIsBanned(steamid, ip, license, deferrals) then
-        deferrals.done()
+    MySQL.Sync.execute('UPDATE users SET `position` = @lastPosition WHERE steamid = @steamid', {
+        ['@lastPosition'] = position,
+        ['@steamid'] = ARP.PlayerData[_source].steamid
+    })
+    ARP.PlayerData[_source] = nil
+end
+
+AddEventHandler('playerDropped', SavePlayer)
+
+-- Load player
+
+local function LoadPersonnalData(source, data)
+    ARP.PlayerData[source]              = {}
+    ARP.PlayerData[source].steamid      = GetSteamIdById(source)
+    ARP.PlayerData[source].license      = GetLicenseById(source)
+    ARP.PlayerData[source].firstname    = tostring(data.firstname)
+    ARP.PlayerData[source].lastname     = tostring(data.lastname)
+    ARP.PlayerData[source].birthdate    = tostring(data.birthdate)
+    ARP.PlayerData[source].gender       = tostring(data.gender)
+    ARP.PlayerData[source].height       = tostring(data.height)
+    ARP.PlayerData[source].position     = json.decode(data.position)
+end
+
+local function LoadDefaultData(source)
+    ARP.PlayerData[source]              = {}
+    ARP.PlayerData[source].steamid      = GetSteamIdById(source)
+    ARP.PlayerData[source].license      = GetLicenseById(source)
+    ARP.PlayerData[source].firstname    = "undefined"
+    ARP.PlayerData[source].lastname     = "undefined"
+    ARP.PlayerData[source].birthdate    = "undefined"
+    ARP.PlayerData[source].gender       = "undefined"
+    ARP.PlayerData[source].height       = "undefined"
+    ARP.PlayerData[source].position     = "undefined"
+end
+
+ARP.RegisterServerCallback('arp:LoadPlayer', function(source, cb)
+    local steamid = GetSteamIdById(source)
+    local result = MySQL.Sync.fetchAll("SELECT * FROM users WHERE steamid = @identifier", {
+		['@identifier'] = steamid
+    })
+
+    
+    if (result[1] ~= nil) then
+        LoadPersonnalData(source, result[1])
+        cb(true, ARP.PlayerData[source])
+    else
+        LoadDefaultData(source)
+        cb(false, ARP.PlayerData[source])
     end
     return
-end
-
-AddEventHandler("playerConnecting", VerifyAuthorization)
-
--- Refresh functions.
--- Used for synchronisation between web app and server.
-
-function RefreshWhitelist()
-    while true do
-        ARP.Whitelist = MySQL.Sync.fetchAll('SELECT * FROM whitelist')
-        print("arp_framework: Refreshing whitelist")
-        Citizen.Wait(Config.RefreshTime)
-    end
-end
-
-local function RefreshBanlist()
-    while true do
-        ARP.Banlist = MySQL.Sync.fetchAll('SELECT * FROM banlist')
-        print("arp_framework: Refreshing banlist")
-        Citizen.Wait(Config.RefreshTime)
-    end
-end
-
-MySQL.ready(function()
-    Citizen.CreateThread(RefreshWhitelist)
-    Citizen.CreateThread(RefreshBanlist)
 end)
 
--- Loading Timeout.
+-- Register player
 
-function LoadingClock()
-    Citizen.Wait(Config.LoadTime)
-    ServerIsLoaded = true
+local function AddPlayerToDb(source, data)
+    MySQL.Sync.execute('INSERT INTO users                                       \
+    (steamid, license, firstname, lastname, birthdate, gender, height, position) VALUES   \
+    (@steamid, @license, @firstname, @lastname, @birthdate, @gender, @height, @position)',
+	{
+		['@steamid']    = GetSteamIdById(source),
+		['@license']    = GetLicenseById(source),
+        ['@firstname']  = data.firstName,
+        ['@lastname']   = data.lastName,
+        ['@birthdate']  = data.birthdate,
+        ['@gender']     = data.gender,
+        ['@height']     = data.height,
+        ['@position']   = data.position
+	})
 end
 
-Citizen.CreateThread(LoadingClock)
+function Capitalize(str)
+    return (str:gsub("^%l", string.upper))
+end
+
+function RegisterPlayer(playerData)
+    local _source   = source
+    local newPlayer = {}
+
+    -- birth date format
+    if (string.len(playerData.day) == 1) then
+        playerData.day = "0" .. tostring(playerData.day)
+    end
+    if (string.len(playerData.month) == 1) then
+        playerData.month = "0" .. tostring(playerData.month)
+    end
+    newPlayer.birthdate = tostring(playerData.day .. '/' .. playerData.month .. '/' .. playerData.year)
+    -- Name format
+    newPlayer.firstName   = Capitalize(string.lower(playerData.firstname))
+    newPlayer.lastName    = Capitalize(string.lower(playerData.lastname))
+    -- Gender format
+    if (playerData.gender == "Masculin") then
+        newPlayer.gender = 'M'
+    else
+        newPlayer.gender = 'F'
+    end
+    newPlayer.height = playerData.height
+    newPlayer.position = json.encode({x = 0, y = 0, z = 0})
+    AddPlayerToDb(_source, newPlayer)
+    LoadPersonnalData(_source, newPlayer)
+    TriggerClientEvent('arp_framework:RefreshPlayerData', _source, ARP.PlayerData[_source])
+end
+
+RegisterNetEvent('arp_framework:RegisterPlayer')
+AddEventHandler('arp_framework:RegisterPlayer', RegisterPlayer)
