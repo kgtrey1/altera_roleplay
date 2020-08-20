@@ -9,7 +9,8 @@ version         '0.2'
 ui_page         'html/index.html'
 
 server_scripts {
-    '@mysql-async/lib/MySQL.lua'
+    '@mysql-async/lib/MySQL.lua',
+    'server/main.lua'
 }
 
 client_scripts {

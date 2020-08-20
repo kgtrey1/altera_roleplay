@@ -1,6 +1,11 @@
 local display = false
+ARP = nil
 
-AddEventHandler('arp_framework:RegisterPlayer', function()
+TriggerEvent('arp_framework:FetchObject', function(obj)
+    ARP = obj
+end)
+
+AddEventHandler('arp_register:OpenRegistrationForm', function()
     SetDisplay(not display)
 end)
 
@@ -20,5 +25,5 @@ function SetDisplay(bool)
 end
 
 function Submit(string)
-    print(string)
+    TriggerServerEvent('arp_framework:RegisterPlayer', string)
 end
