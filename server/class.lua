@@ -3,17 +3,29 @@
 -- server/class.lua
 -- Object that will be shared between scripts.
 
-ARP = {}
-
-ARP.test = 1
-
---
--- PlayerData
---
-
-ARP.PlayerData = {}
+ARP         = {}
+PlayerData  = {}
 
 --
+-- Player data
+--
+
+ARP.BuildClientObject = function(source)
+    local Alter = ARP.GetPlayerById(source)
+
+    return ({
+        source = Alter.GetSource(),
+        steamid = Alter.GetSteamid(),
+        license = Alter.GetLicense(),
+        identity = Alter.GetIdentity()
+    })
+end
+
+ARP.GetPlayerById = function(source)
+    return (PlayerData[source])
+end
+
+-- Section done
 -- Callbacks (server side implementation).
 --
 
@@ -40,25 +52,27 @@ AddEventHandler('arp:TriggerServerCallback', function(callbackName, requestId, .
     end, ...)
 end)
 
---
--- Items.
---
+-- Utils function
 
-ARP.Items       = {}
-ARP.Items.List  = {} -- Contains all items with their informations
-ARP.Items.Usage = {} -- Contains function that will be called uppon use of an item.
+ARP.GetSteamIdById = function(id)
+    local identifiers = GetPlayerIdentifiers(id)
+    local steamid = nil
 
-ARP.Items.RegisterUsage = function(name, functionPointer)
-    ARP.Items.Usage[name] = functionPointer
+    for _, v in pairs(identifiers) do
+        if string.find(v, "steam") then
+            steamid = string.gsub(v, "steam:", "")
+            steamid = tostring(tonumber(steamid, 16))
+            return (steamid)
+        end
+    end
 end
 
-RegisterNetEvent('arp_framework:UseItem')
-AddEventHandler('arp_framework:UseItem', function(itemName)
-    local _source = source
+ARP.GetLicenseById = function(id)
+    local identifiers = GetPlayerIdentifiers(id)
 
-    if (ARP.Items.Usage[name] ~= nil) then
-        ARP.Items.Usage[name](_source)
-    else
-        print(string.format("arp_framework: User with SteamID %s tried to use %s. (Invalid item)", ARP.PlayerData.steamid, itemName))
+    for _, v in pairs(identifiers) do
+        if string.find(v, "license") then
+            return (string.gsub(v, "license:", ""))
+        end
     end
-end)
+end

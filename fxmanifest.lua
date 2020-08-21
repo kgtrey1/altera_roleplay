@@ -9,6 +9,7 @@ version         '0.0.5'
 server_scripts {
     '@mysql-async/lib/MySQL.lua',
     'config.lua',
+    'server/alter.lua',
     'server/class.lua',
     'server/shared.lua',
     'server/main.lua'
