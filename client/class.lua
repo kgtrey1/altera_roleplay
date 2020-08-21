@@ -6,6 +6,52 @@
 ARP = {}
 ARP.PlayerData = {}
 
+ARP.RageUI = RageUI
+
+--
+-- Menus handling (RageUI)
+--
+
+ARP.Menu 				= {}
+ARP.Menu.List			= {}
+ARP.Menu.Sublist 		= {}
+
+ARP.Menu.CloseAll = function()
+	for _, v in pairs(ARP.Menu.List) do
+		RageUI.Visible(v, false)
+	end
+end
+
+ARP.Menu.Button = function(label, description, style, enabled, action, submenu)
+	if (submenu ~= nil) then
+		RageUI.Item.Button(label, description, style, enabled, action, ARP.Menu.Sublist[submenu])
+	else
+		RageUI.Item.Button(label, description, style, enabled, action, nil)
+	end
+	return
+end
+
+ARP.Menu.IsVisible = function(name, items, panels)
+	RageUI.IsVisible(ARP.Menu.List[name], items, panels)
+end
+
+ARP.Menu.Visible = function(name, submenu)
+	if (not submenu) then
+		RageUI.Visible(ARP.Menu.List[name], not RageUI.Visible(ARP.Menu.List[name]))
+		print("changing visibility")
+	else
+		RageUI.Visible(ARP.Menu.Sublist[name], not RageUI.Visible(ARP.Menu.Sublist[name]))
+	end
+end
+
+ARP.Menu.RegisterMenu = function(name, title, subtitle)
+	ARP.Menu.List[name] = RageUI.CreateMenu(title, subtitle)
+end
+
+ARP.Menu.RegisterSubmenu = function(name, parent, title, subtitle)
+	ARP.Menu.Sublist[name] = RageUI.CreateSubmenu(ARP.Menu.List[parent], title, subtitle)
+end
+
 --
 -- Callbacks (client side implementation).
 --

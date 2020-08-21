@@ -5,7 +5,6 @@ function CreateAlter(source, steamid, license, registered, identity)
     self.source     = source
     self.steamid    = steamid
     self.license    = license
-    self.registered = registered
 
     self.GetSource              = function()
         return (self.source)
@@ -19,17 +18,9 @@ function CreateAlter(source, steamid, license, registered, identity)
         return (self.license)
     end
 
-    self.GetIdentity            = function()
-        return ({
-            firstname   = self.identity.GetFirstname(),
-            lastname    = self.identity.GetLastname(),
-            height      = self.identity.GetHeight(),
-            gender      = self.identity.GetGender(),
-            birthdate   = self.identity.GetBirthdate()
-        })
-    end
-
     -- Registration
+
+    self.registered = registered
 
     self.SetRegistrationStatus  = function(status)
         self.registered = true
@@ -40,7 +31,21 @@ function CreateAlter(source, steamid, license, registered, identity)
         return (self.registered)
     end
 
+    -- Latest known position
+
+    self.position = identity.position
+
+    self.SetPosition    = function(pos)
+        self.position = pos
+        return
+    end
+
+    self.GetPosition    = function()
+        return (self.position)
+    end
+
     -- Identity related data.
+
     self.identity = identity
 
     self.identity.SetFirstname  = function(name)
@@ -86,5 +91,16 @@ function CreateAlter(source, steamid, license, registered, identity)
     self.identity.GetGender     = function()
         return (self.identity.gender)
     end
+
+    self.GetIdentity            = function()
+        return ({
+            firstname   = self.identity.GetFirstname(),
+            lastname    = self.identity.GetLastname(),
+            height      = self.identity.GetHeight(),
+            gender      = self.identity.GetGender(),
+            birthdate   = self.identity.GetBirthdate()
+        })
+    end
+
     return (self)
 end

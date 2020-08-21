@@ -1,6 +1,7 @@
 Config = {}
 
-Config.RefreshTime  = 1000 * 60 * 10 -- Time as MS
-Config.LoadTime     = 1 -- Time as MS
+Config.TimeAsSecond = function(ms)
+    return (ms * 1000)
+end
 
-Config.UsingWhitelist = true
+Config.PositionRefreshTimeout   = Config.TimeAsSecond(10)

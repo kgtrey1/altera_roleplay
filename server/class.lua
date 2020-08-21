@@ -14,10 +14,11 @@ ARP.BuildClientObject = function(source)
     local Alter = ARP.GetPlayerById(source)
 
     return ({
-        source = Alter.GetSource(),
-        steamid = Alter.GetSteamid(),
-        license = Alter.GetLicense(),
-        identity = Alter.GetIdentity()
+        source      = Alter.GetSource(),
+        steamid     = Alter.GetSteamid(),
+        license     = Alter.GetLicense(),
+        identity    = Alter.GetIdentity(),
+        position    = Alter.GetPosition()
     })
 end
 
