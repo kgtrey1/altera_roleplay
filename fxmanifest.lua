@@ -1,10 +1,31 @@
-client_script('client/client.lua')
+--
+-- ALTERA PROJECT, 2020
+-- ARP_banking (forked from NewWayRP/new_banking)
+-- File description:
+-- FX Manifest.
+--
 
+fx_version      'bodacious'
+game            'gta5'
+description     'Altera Framework'
+version         '0.0.5'
+
+client_script {
+    'config.lua',
+    'client/client.lua'
+}
+
+dependency {
+    'arp_framework'
+}
+
+--[[
 server_scripts {
     '@mysql-async/lib/MySQL.lua',
     'server.lua'
-}
+}]]
 
+--[[
 -- Uncomment the desired version 
 ui_page('client/html/UI-fr.html') -- French UI
 --ui_page('client/html/UI-en.html') -- English UI
@@ -28,3 +49,4 @@ files {
     'client/html/media/img/logo-big.png',
     'client/html/media/img/logo-top.png'
 }
+]]
