@@ -7,15 +7,15 @@ local function UpdatePlayerPosition()
     end
 end
 
-local function TeleportToLatestPosition()
-    if (ARP.Player.position.x ~= 0 and ARP.Player.position.y ~= 0 and ARP.Player.position.z ~= 0) then
-        SetEntityCoords(GetPlayerPed(-1), ARP.Player.position.x, ARP.Player.position.y, ARP.Player.position.z, false, false, false, true)
+local function TeleportToLatestPosition(position)
+    if (position.x ~= 0 and position.y ~= 0 and position.z ~= 0) then
+        SetEntityCoords(GetPlayerPed(-1), position.x, position.y, position.z, false, false, false, true)
     end
 end
 
 local function LoadPlayerSkin()
-    if (ARP.Player.identity.skin == "") then
-        if (ARP.Player.identity.gender == "M") then
+    if (ARP.Player.identity.GetSkin() == "") then
+        if (ARP.Player.identity.GetGender() == "M") then
             TriggerEvent('skinchanger:loadSkin', {sex = 0})
             TriggerEvent('arp_skin:OpenFaceSelection')
         else
@@ -23,19 +23,19 @@ local function LoadPlayerSkin()
             TriggerEvent('arp_skin:OpenFaceSelection')
         end
     else
-        TriggerEvent('skinchanger:loadSkin', ARP.Player.identity.skin)
+        TriggerEvent('skinchanger:loadSkin', ARP.Player.identity.GetSkin())
     end
 end
 
 -- Once data has been prepared.
 
 local function PlayerLoaded(data)
-    playerIsLoaded = true
-    ARP.Player.position = data.position
-    ARP.Player.identity = data.identity
-    TeleportToLatestPosition()
+    ARP.Player = CreatePlayerObject(data)
+
+    TeleportToLatestPosition(data.position)
     LoadPlayerSkin()
     Citizen.CreateThread(UpdatePlayerPosition)
+    playerIsLoaded = true
 end
 
 RegisterNetEvent('arp_framework:PlayerLoaded')

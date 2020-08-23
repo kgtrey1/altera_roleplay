@@ -80,3 +80,45 @@ AddEventHandler('arp:ServerCallback', function(requestId, ...)
 	ARP.ServerCallbacks[requestId](...)
 	ARP.ServerCallbacks[requestId] = nil
 end)
+
+-- Player values updates
+
+local function UpdateMoney()
+	ARP.TriggerServerCallback('arp_framework:UpdateMoney', function(money)
+		ARP.Player.money.cash		= money.cash
+		ARP.Player.money.bank		= money.bank
+		ARP.Player.money.dirty		= money.dirty
+		ARP.Player.money.bankname	= money.bankname
+		return
+	end)
+	return
+end
+
+RegisterNetEvent('arp_framework:UpdateMoney')
+AddEventHandler('arp_framework:UpdateMoney', UpdateMoney)
+
+local function UpdateSkin()
+	ARP.TriggerServerCallback('arp_framework:UpdateSkin', function(skin)
+		ARP.Player.identity.skin = skin
+		return
+	end)
+	return
+end
+
+RegisterNetEvent('arp_framework:UpdateIdentity')
+AddEventHandler('arp_framework:UpdateIdentity', UpdateSkin)
+
+local function UpdateIdentity()
+	ARP.TriggerServerCallback('arp_framework:UpdateIdentity', function(newIdentity)
+		ARP.Player.identity.firstname 	= newIdentity.firstname
+		ARP.Player.identity.lastname	= newIdentity.lastname
+		ARP.Player.identity.height		= newIdentity.height
+		ARP.Player.identity.birthdate	= newIdentity.birthdate
+		ARP.Player.identity.skin		= newIdentity.skin
+		return
+	end)
+	return
+end
+
+RegisterNetEvent('arp_framework:UpdateIdentity')
+AddEventHandler('arp_framework:UpdateIdentity', UpdateIdentity)
