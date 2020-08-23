@@ -92,13 +92,23 @@ function CreateAlter(source, steamid, license, registered, identity)
         return (self.identity.gender)
     end
 
+    self.identity.SetSkin       = function(skin)
+        self.identity.skin = skin
+        return
+    end
+
+    self.identity.GetSkin       = function()
+        return (self.identity.skin)
+    end
+
     self.GetIdentity            = function()
         return ({
             firstname   = self.identity.GetFirstname(),
             lastname    = self.identity.GetLastname(),
             height      = self.identity.GetHeight(),
             gender      = self.identity.GetGender(),
-            birthdate   = self.identity.GetBirthdate()
+            birthdate   = self.identity.GetBirthdate(),
+            skin        = self.identity.GetSkin()
         })
     end
 
