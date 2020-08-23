@@ -7,7 +7,7 @@
 
 fx_version      'bodacious'
 game            'gta5'
-description     'Altera Framework'
+description     'Altera banking system'
 version         '0.0.5'
 
 client_script {
