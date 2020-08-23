@@ -1,7 +1,7 @@
 --================================================================================================
 --==                                VARIABLES - DO NOT EDIT                                     ==
 --================================================================================================
-ESX				= nil
+ARP				= nil
 inMenu			= true
 local showblips	= true
 local atbank	= false
@@ -14,16 +14,10 @@ local bankMenu	= true
 --===============================================
 --==           Base ESX Threading              ==
 --===============================================
-Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		Citizen.Wait(0)
-	end
+
+TriggerEvent('arp_framework:FetchObject', function(object)
+	ARP = object
 end)
-
-
-
-
 
 --===============================================
 --==             Core Threading                ==
