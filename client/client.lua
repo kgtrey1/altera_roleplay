@@ -2,10 +2,14 @@
 --==                                VARIABLES - DO NOT EDIT                                     ==
 --================================================================================================
 ARP				= nil
-inMenu			= true
+local inMenu	= true
 local showblips	= true
 local atbank	= false
 local bankMenu	= true
+
+local closeATM 	= false
+
+local DrawDistance = 50
 
 --================================================================================================
 --==                                THREADING - DO NOT EDIT                                     ==
@@ -19,6 +23,72 @@ TriggerEvent('arp_framework:FetchObject', function(object)
 	ARP = object
 end)
 
+function GetATMCoords(c)
+	if (c.type == 'bank') then
+		return (vector3(Config.Banks[c.id].x, Config.Banks[c.id].y, Config.Banks[c.id].z))
+	end
+	return (vector3(Config.atms[c.id].x, Config.atms[c.id].y, Config.atms[c.id].z))
+end
+
+function handleClosestAtm(closest)
+	local ATMCoords 	= GetATMCoords(closest)
+	local playerCoords 	= nil
+	local distance 		= nil
+
+	while (closeATM == true) do
+		playerCoords = GetEntityCoords(PlayerPedId())
+		distance = GetDistanceBetweenCoords(playerCoords, ATMCoords)
+		if (distance > DrawDistance) then
+			closeATM = false
+			break
+		elseif (distance < 1.9) then
+			DisplayHelpText("Appuie sur ~INPUT_PICKUP~ pour accèder à tes comptes ~b~")
+		else
+			Citizen.Wait(500)
+		end
+		Citizen.Wait(10)
+	end
+	return
+end
+
+function GetClosestValidAtm()
+	local playerCoords 	= GetEntityCoords(PlayerPedId(-1))
+	local closest		= { type = 'bank', id = 1 }
+	local closestDist	= GetDistanceBetweenCoords(playerCoords, vector3(Config.Banks[1].x, Config.Banks[1].y, Config.Banks[1].z))
+	local currentDist	= nil
+
+	for i = 2, #Config.Banks, 1 do
+		currentDist = GetDistanceBetweenCoords(playerCoords, vector3(Config.Banks[i].x, Config.Banks[i].y, Config.Banks[i].z))
+		if (currentDist < closestDist) then
+			closestDist = currentDist
+			closest 	= { type = 'bank', id = i }
+		end
+	end
+	for i = 1, #Config.atms, 1 do
+		currentDist = GetDistanceBetweenCoords(playerCoords, vector3(Config.atms[i].x, Config.atms[i].y, Config.atms[i].z))
+		if (currentDist < closestDist) then
+			closestDist = currentDist
+			closest 	= { type = 'atm', id = i }
+		end
+	end
+	if (closestDist <= DrawDistance) then return (closest) end
+	return (nil)
+end
+
+Citizen.CreateThread(function()
+	local playerCoords 		= nil
+    local closestValidATM	= nil
+
+    while (true) do
+
+		closestValidATM = GetClosestValidAtm()
+		if (closestValidATM ~= nil and not closeATM) then
+			closeATM = true
+			handleClosestAtm(closestValidATM)
+		end
+		Citizen.Wait(5000)
+	end
+end)
 
 Citizen.CreateThread(function()
 	for k,v in ipairs(Config.Banks)do
