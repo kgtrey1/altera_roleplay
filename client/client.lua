@@ -19,6 +19,38 @@ TriggerEvent('arp_framework:FetchObject', function(object)
 	ARP = object
 end)
 
+
+Citizen.CreateThread(function()
+	for k,v in ipairs(Config.Banks)do
+		local blip = AddBlipForCoord(v.x, v.y, v.z)
+		SetBlipSprite(blip, v.id)
+		SetBlipScale(blip, 0.7)
+		SetBlipAsShortRange(blip, true)
+		if v.principal ~= nil and v.principal then
+			SetBlipColour(blip, 77)
+		end
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString(tostring(v.name))
+		EndTextCommandSetBlipName(blip)
+	end
+	for k,v in ipairs(Config.atms)do
+		local blip = AddBlipForCoord(v.x, v.y, v.z)
+		SetBlipSprite(blip, v.id)
+		SetBlipScale(blip, 0.7)
+		SetBlipAsShortRange(blip, true)
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString(tostring(v.name))
+		EndTextCommandSetBlipName(blip)
+	end
+end)
+
+function DisplayHelpText(str)
+	SetTextComponentFormat("STRING")
+	AddTextComponentString(str)
+	DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+end
+
+--[[
 --===============================================
 --==             Core Threading                ==
 --===============================================
@@ -51,22 +83,7 @@ end
 --===============================================
 --==             Map Blips	                   ==
 --===============================================
-Citizen.CreateThread(function()
-	if showblips then
-		for k,v in ipairs(banks)do
-		local blip = AddBlipForCoord(v.x, v.y, v.z)
-		SetBlipSprite(blip, v.id)
-		SetBlipScale(blip, 0.7)
-		SetBlipAsShortRange(blip, true)
-		if v.principal ~= nil and v.principal then
-			SetBlipColour(blip, 77)
-		end
-		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentString(tostring(v.name))
-		EndTextCommandSetBlipName(blip)
-		end
-	end
-end)
+
 
 
 
@@ -169,8 +186,6 @@ function nearATM()
 end
 
 
-function DisplayHelpText(str)
-	SetTextComponentFormat("STRING")
-	AddTextComponentString(str)
-	DisplayHelpTextFromStringLabel(0, 0, 1, -1)
-end
+
+
+]]
