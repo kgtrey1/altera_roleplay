@@ -1,4 +1,4 @@
-function CreateAlter(source, steamid, license, registered, identity)
+function CreateAlter(source, steamid, license, registered, identity, money)
     local self      = {}
 
     -- Game related data.
@@ -109,6 +109,55 @@ function CreateAlter(source, steamid, license, registered, identity)
             gender      = self.identity.GetGender(),
             birthdate   = self.identity.GetBirthdate(),
             skin        = self.identity.GetSkin()
+        })
+    end
+
+    -- Money
+
+    self.money                  = money
+
+    self.money.GetCash          = function()
+        return (self.money.cash)
+    end
+
+    self.money.SetCash          = function(ammount)
+        self.money.cash = ammount
+        return
+    end
+
+    self.money.GetBank          = function()
+        return (self.money.bank)
+    end
+
+    self.money.SetBank          = function(ammount)
+        self.money.bank = ammount
+        return
+    end
+
+    self.money.GetDirty         = function()
+        return (self.money.dirty)
+    end
+
+    self.money.SetDirty         = function(ammount)
+        self.money.dirty = ammount
+        return
+    end
+
+    self.money.GetBankname      = function()
+        return (self.money.bankname)
+    end
+
+    self.money.SetBankname      = function(bankname)
+        self.money.bankname = bankname
+        return
+    end
+
+    self.GetMoney               = function()
+        return ({
+            cash        = self.money.GetCash(),
+            bank        = self.money.GetBank(),
+            dirty       = self.money.GetDirty(),
+            bankname    = self.money.GetBankname()
         })
     end
 

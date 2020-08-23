@@ -49,6 +49,7 @@ client_scripts {
 
 client_scripts {
     'config.lua',
+    'client/alter.lua',
     'client/class.lua',
     'client/shared.lua',
     'client/main.lua'

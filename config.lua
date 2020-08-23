@@ -5,3 +5,4 @@ Config.TimeAsSecond = function(ms)
 end
 
 Config.PositionRefreshTimeout   = Config.TimeAsSecond(10)
+Config.StartingCash             = 1000

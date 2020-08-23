@@ -45,6 +45,18 @@ AddEventHandler('arp_framework:UpdatePlayerPosition', UpdatePlayerPosition)
 
 -- Saving player
 
+local function SavePlayerMoney(source)
+    MySQL.Sync.execute('UPDATE money \
+    SET `cash` = @cash, `bank` = @bank, `dirty` = @dirty, `bankname` = @bankname \
+    WHERE steamid = @steamid', {
+        ['@cash']       = PlayerData[source].money.GetCash(),
+        ['@bank']       = PlayerData[source].money.GetBank(),
+        ['@dirty']      = PlayerData[source].money.GetDirty(),
+        ['@bankname']   = PlayerData[source].money.GetBankName(),
+        ['@steamid']    = PlayerData[source].GetSteamid()
+    })
+end
+
 local function SavePlayerIdentity(source)
     local position = PlayerData[source].GetPosition()
 
@@ -67,6 +79,7 @@ local function SavePlayer(reason)
 
     if (PlayerData[_source].GetRegistrationStatus() == true) then
         SavePlayerIdentity(_source)
+        SavePlayerMoney(_source)
     end
     if (reason ~= 'global_save') then
         if (PlayerData[_source].GetRegistrationStatus() == true) then
@@ -81,6 +94,12 @@ AddEventHandler('playerDropped', SavePlayer)
 
 -- Loading player
 
+local function GetPlayerMoney(steamid)
+    return (MySQL.Sync.fetchAll("SELECT * FROM money WHERE steamid = @identifier", {
+		['@identifier'] = steamid
+    }))
+end
+
 local function LoadPlayer()
     local _source       = source
     local steamid       = ARP.GetSteamIdById(_source)
@@ -89,10 +108,15 @@ local function LoadPlayer()
     })
 
     if (result[1] ~= nil) then
-        PlayerData[_source] = CreateAlter(_source, steamid, ARP.GetLicenseById(_source), true, LoadPersonnalIdentity(result[1]))
+        PlayerData[_source] = CreateAlter(_source, steamid, ARP.GetLicenseById(_source), true, LoadPersonnalIdentity(result[1]), GetPlayerMoney(steamid))
         TriggerClientEvent('arp_framework:PlayerLoaded', _source, ARP.BuildClientObject(_source))
     else
-        PlayerData[_source] = CreateAlter(_source, steamid, ARP.GetLicenseById(_source), false, LoadDefaultIdentity())
+        PlayerData[_source] = CreateAlter(_source, steamid, ARP.GetLicenseById(_source), false, LoadDefaultIdentity(), {
+            cash = Config.StartingCash,
+            bank = 0,
+            dirty = 0,
+            bankname = 'none'
+        })
         TriggerClientEvent('arp_register:OpenRegistrationForm', _source)
     end
     return

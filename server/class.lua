@@ -18,7 +18,8 @@ ARP.BuildClientObject = function(source)
         steamid     = Alter.GetSteamid(),
         license     = Alter.GetLicense(),
         identity    = Alter.GetIdentity(),
-        position    = Alter.GetPosition()
+        position    = Alter.GetPosition(),
+        money       = Alter.GetMoney()
     })
 end
 
@@ -77,3 +78,28 @@ ARP.GetLicenseById = function(id)
         end
     end
 end
+
+-- Updates player
+
+ARP.RegisterServerCallback('arp_framework:UpdateMoney', function(source, cb)
+    cb(PlayerData[source].GetMoney())
+    return
+end)
+
+ARP.RegisterServerCallback('arp_framework:UpdateSkin', function(source, cb)
+    cb(PlayerData[source].identity.GetSkin())
+    return
+end)
+
+ARP.RegisterServerCallback('arp_framework:UpdateIdentity', function(source, cb)
+    local identity = PlayerData[source].GetIdentity()
+
+    cb({
+        firstname   = identity.firstname,
+        lastname    = identity.lastname,
+        birthdate   = identity.birthdate,
+        height      = identity.height,
+        skin        = identity.skin
+    })
+    return
+end)
