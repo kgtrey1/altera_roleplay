@@ -137,13 +137,30 @@ function SendBalanceToUI()
 	ARP.TriggerServerCallback('arp_framework:UpdateMoney', function(money)
 		SendNUIMessage({
 			type = "balanceHUD",
-			balance = tostring(money.bank),
+			balance = money.bank,
 			player = string.format("%s %s", ARP.Player.identity.GetFirstname(), ARP.Player.identity.GetLastname())
 		})
 		return
 	end)
 	return
 end
+
+RegisterNUICallback('deposit', function(data)
+	ARP.TriggerServerCallback('arp_bank:Deposit', function(balance)
+		SendNUIMessage({type = 'balanceReturn', bal = balance})
+	end, tonumber(data.amount))
+end)
+
+RegisterNUICallback('withdrawl', function(data)
+	ARP.TriggerServerCallback('arp_bank:Withdraw', function(balance)
+		SendNUIMessage({type = 'balanceReturn', bal = balance})
+	end, tonumber(data.amountw))
+end)
+
+RegisterNetEvent('bank:result')
+AddEventHandler('bank:result', function(type, message)
+	SendNUIMessage({type = 'result', m = message, t = type})
+end)
 
 RegisterNUICallback('NUIFocusOff', function()
 	inMenu = false
@@ -156,18 +173,12 @@ end)
 --===============================================
 --==           Deposit Event                   ==
 --===============================================
-RegisterNUICallback('deposit', function(data)
-	TriggerServerEvent('bank:deposit', tonumber(data.amount))
-	TriggerServerEvent('bank:balance')
-end)
+
 
 --===============================================
 --==          Withdraw Event                   ==
 --===============================================
-RegisterNUICallback('withdrawl', function(data)
-	TriggerServerEvent('bank:withdraw', tonumber(data.amountw))
-	TriggerServerEvent('bank:balance')
-end)
+
 
 --===============================================
 --==         Balance Event                     ==
@@ -193,10 +204,7 @@ end)
 --===============================================
 --==         Result   Event                    ==
 --===============================================
-RegisterNetEvent('bank:result')
-AddEventHandler('bank:result', function(type, message)
-	SendNUIMessage({type = 'result', m = message, t = type})
-end)
+
 
 --===============================================
 --==               NUIFocusoff                 ==

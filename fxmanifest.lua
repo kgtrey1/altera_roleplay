@@ -22,7 +22,8 @@ dependency {
 ui_page('client/html/UI-fr.html')
 
 files {
-	'client/html/UI-fr.html',
+    'client/html/UI-fr.html',
+    'client/html/ui.js',
     'client/html/style.css',
     'client/html/media/font/Bariol_Regular.otf',
     'client/html/media/font/Vision-Black.otf',

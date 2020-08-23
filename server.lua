@@ -1,48 +1,40 @@
---================================================================================================
---==                                VARIABLES - DO NOT EDIT                                     ==
---================================================================================================
-ESX = nil
 
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+ARP = nil
 
-RegisterServerEvent('bank:deposit')
-AddEventHandler('bank:deposit', function(amount)
-	local _source = source
-	
-	local xPlayer = ESX.GetPlayerFromId(_source)
-	if amount == nil or amount <= 0 or amount > xPlayer.getMoney() then
-		TriggerClientEvent('bank:result', _source, "error", "Montant invalide.")
+TriggerEvent('arp_framework:FetchObject', function(object)
+	ARP = object
+end)
+
+ARP.RegisterServerCallback('arp_bank:Deposit', function(source, cb, amount)
+	local Alter = ARP.GetPlayerById(source)
+
+	amount = tonumber(amount)
+	if (amount == nil or amount <= 0 or amount > Alter.money.GetCash()) then
+		TriggerClientEvent('arp_bank:Result', _source, "error", "Montant invalide.")
 	else
-		xPlayer.removeMoney(amount)
-		xPlayer.addAccountMoney('bank', tonumber(amount))
-		TriggerClientEvent('bank:result', _source, "success", "Dépot effectué.")
+		Alter.money.RemoveCash(amount)
+		Alter.money.AddBank(amount)
+		TriggerClientEvent('arp_bank:Result', _source, "success", "Dépot effectué.")
+		cb(Alter.money.GetBank())
 	end
 end)
 
+ARP.RegisterServerCallback('arp_bank:Withdraw', function(source, cb, amount)
+	local Alter = ARP.GetPlayerById(source)
 
-RegisterServerEvent('bank:withdraw')
-AddEventHandler('bank:withdraw', function(amount)
-	local _source = source
-	local xPlayer = ESX.GetPlayerFromId(_source)
-	local base = 0
 	amount = tonumber(amount)
-	base = xPlayer.getAccount('bank').money
-	if amount == nil or amount <= 0 or amount > base then
-		TriggerClientEvent('bank:result', _source, "error", "Montant invalide.")
+	if (amount == nil or amount <= 0 or amount > Alter.money.GetBank()) then
+		TriggerClientEvent('arp_bank:Result', _source, "error", "Montant invalide.")
 	else
-		xPlayer.removeAccountMoney('bank', amount)
-		xPlayer.addMoney(amount)
-		TriggerClientEvent('bank:result', _source, "success", "Retrait effectué.")
+		Alter.money.RemoveBank(amount)
+		Alter.money.AddCash(amount)
+		TriggerClientEvent('arp_bank:Result', _source, "success", "Retrait effectué.")
+		cb(Alter.money.GetBank())
 	end
 end)
 
 RegisterServerEvent('bank:balance')
-AddEventHandler('bank:balance', function()
-	local _source = source
-	local xPlayer = ESX.GetPlayerFromId(_source)
-	balance = xPlayer.getAccount('bank').money
-	TriggerClientEvent('currentbalance1', _source, balance)
-end)
+
 
 
 RegisterServerEvent('bank:transfer')
