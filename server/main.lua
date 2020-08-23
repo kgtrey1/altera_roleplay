@@ -1,12 +1,20 @@
 -- Load player
 
 local function LoadPersonnalIdentity(data)
+    local skin = nil
+
+    if (data.skin == "") then
+        skin = ''
+    else
+        skin = json.decode(data.skin)
+    end
     return ({
         firstname   = data.firstname,
         lastname    = data.lastname,
         birthdate   = data.birthdate,
         gender      = data.gender,
         height      = data.height,
+        skin        = skin,
         position    = json.decode(data.position)
     })
 end
@@ -18,6 +26,7 @@ local function LoadDefaultIdentity()
         birthdate   = "undefined",
         gender      = "undefined",
         height      = "undefined",
+        skin        = "",
         position    = { x = 0, y = 0, z = 0 }
     })
 end
@@ -41,9 +50,9 @@ local function SavePlayerIdentity(source)
 
     position = json.encode({x = position.x, y = position.y, z = position.z})
     MySQL.Sync.execute('UPDATE users \
-    SET `position` = @pos, `firstname` = @firstname, `lastname` = @lastname, `height` = @height, `birthdate` = @birthdate \
+    SET `position` = @position, `firstname` = @firstname, `lastname` = @lastname, `height` = @height, `birthdate` = @birthdate \
     WHERE steamid = @steamid', {
-        ['@pos']        = position,
+        ['@position']   = position,
         ['@firstname']  = PlayerData[source].identity.GetFirstname(),
         ['@lastname']   = PlayerData[source].identity.GetLastname(),
         ['@height']     = PlayerData[source].identity.GetHeight(),
@@ -91,14 +100,3 @@ end
 
 RegisterNetEvent('arp_framework:LoadPlayer')
 AddEventHandler('arp_framework:LoadPlayer', LoadPlayer)
-
--- Register player
-
-Citizen.CreateThread(function()
-    while true do
-        if PlayerData[1] ~= nil then
-            print(json.encode(PlayerData[1].GetIdentity()))
-        end
-        Citizen.Wait(5000)
-    end
-end)
