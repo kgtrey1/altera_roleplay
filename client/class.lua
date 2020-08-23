@@ -4,9 +4,7 @@
 -- Object that will be shared between scripts.
 
 ARP = {}
-ARP.PlayerData = {}
-
-ARP.RageUI = RageUI
+ARP.Player = {}
 
 --
 -- Menus handling (RageUI)
@@ -15,6 +13,11 @@ ARP.RageUI = RageUI
 ARP.Menu 				= {}
 ARP.Menu.List			= {}
 ARP.Menu.Sublist 		= {}
+ARP.Menu.Item			= {}
+
+ARP.Menu.Closable = function(name, value)
+	ARP.Menu.List[name].Closable = value
+end
 
 ARP.Menu.CloseAll = function()
 	for _, v in pairs(ARP.Menu.List) do
@@ -22,7 +25,11 @@ ARP.Menu.CloseAll = function()
 	end
 end
 
-ARP.Menu.Button = function(label, description, style, enabled, action, submenu)
+ARP.Menu.Item.List = function(Label, Items, StartedAtIndex, Description, Style, Enabled, Actions)
+	RageUI.Item.List(Label, Items, StartedAtIndex, Description, Style, Enabled, Actions, nil)
+end
+
+ARP.Menu.Item.Button = function(label, description, style, enabled, action, submenu)
 	if (submenu ~= nil) then
 		RageUI.Item.Button(label, description, style, enabled, action, ARP.Menu.Sublist[submenu])
 	else
@@ -38,7 +45,6 @@ end
 ARP.Menu.Visible = function(name, submenu)
 	if (not submenu) then
 		RageUI.Visible(ARP.Menu.List[name], not RageUI.Visible(ARP.Menu.List[name]))
-		print("changing visibility")
 	else
 		RageUI.Visible(ARP.Menu.Sublist[name], not RageUI.Visible(ARP.Menu.Sublist[name]))
 	end
