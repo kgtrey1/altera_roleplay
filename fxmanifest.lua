@@ -19,22 +19,10 @@ dependency {
     'arp_framework'
 }
 
---[[
-server_scripts {
-    '@mysql-async/lib/MySQL.lua',
-    'server.lua'
-}]]
-
---[[
--- Uncomment the desired version 
-ui_page('client/html/UI-fr.html') -- French UI
---ui_page('client/html/UI-en.html') -- English UI
---ui_page('client/html/UI-de.html') -- German UI
+ui_page('client/html/UI-fr.html')
 
 files {
-	'client/html/UI-fr.html', -- French UI
-	--'client/html/UI-en.html', -- English UI
-	--'client/html/UI-de.html', -- German UI
+	'client/html/UI-fr.html',
     'client/html/style.css',
     'client/html/media/font/Bariol_Regular.otf',
     'client/html/media/font/Vision-Black.otf',
@@ -49,4 +37,18 @@ files {
     'client/html/media/img/logo-big.png',
     'client/html/media/img/logo-top.png'
 }
+
+--[[
+server_scripts {
+    '@mysql-async/lib/MySQL.lua',
+    'server.lua'
+}]]
+
+--[[
+-- Uncomment the desired version 
+ -- French UI
+--ui_page('client/html/UI-en.html') -- English UI
+--ui_page('client/html/UI-de.html') -- German UI
+
+
 ]]

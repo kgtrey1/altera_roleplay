@@ -1,6 +1,4 @@
---================================================================================================
---==                                VARIABLES - DO NOT EDIT                                     ==
---================================================================================================
+
 ARP				= nil
 local inMenu	= true
 local showblips	= true
@@ -11,16 +9,14 @@ local closeATM 	= false
 
 local DrawDistance = 50
 
---================================================================================================
---==                                THREADING - DO NOT EDIT                                     ==
---================================================================================================
-
---===============================================
---==           Base ESX Threading              ==
---===============================================
 
 TriggerEvent('arp_framework:FetchObject', function(object)
 	ARP = object
+end)
+
+AddEventHandler('arp_framework:PlayerReady', function(playerData)
+	ARP.Player = playerData
+	StartMainThread()
 end)
 
 function GetATMCoords(c)
@@ -28,6 +24,20 @@ function GetATMCoords(c)
 		return (vector3(Config.Banks[c.id].x, Config.Banks[c.id].y, Config.Banks[c.id].z))
 	end
 	return (vector3(Config.atms[c.id].x, Config.atms[c.id].y, Config.atms[c.id].z))
+end
+
+function BankMenuListenners()
+	if IsControlJustPressed(1, 38) then
+		inMenu = true
+		SetNuiFocus(true, true)
+		SendNUIMessage({type = 'openGeneral'})
+		SendBalanceToUI()
+	end
+	if IsControlJustPressed(1, 322) then
+		inMenu = false
+		SetNuiFocus(false, false)
+		SendNUIMessage({type = 'close'})
+	end
 end
 
 function handleClosestAtm(closest)
@@ -43,6 +53,7 @@ function handleClosestAtm(closest)
 			break
 		elseif (distance < 1.9) then
 			DisplayHelpText("Appuie sur ~INPUT_PICKUP~ pour accèder à tes comptes ~b~")
+			BankMenuListenners()
 		else
 			Citizen.Wait(500)
 		end
@@ -75,20 +86,22 @@ function GetClosestValidAtm()
 	return (nil)
 end
 
-Citizen.CreateThread(function()
-	local playerCoords 		= nil
-    local closestValidATM	= nil
-
-    while (true) do
-
-		closestValidATM = GetClosestValidAtm()
-		if (closestValidATM ~= nil and not closeATM) then
-			closeATM = true
-			handleClosestAtm(closestValidATM)
+function StartMainThread()
+	Citizen.CreateThread(function()
+		local playerCoords 		= nil
+		local closestValidATM	= nil
+	
+		while (true) do
+	
+			closestValidATM = GetClosestValidAtm()
+			if (closestValidATM ~= nil and not closeATM) then
+				closeATM = true
+				handleClosestAtm(closestValidATM)
+			end
+			Citizen.Wait(5000)
 		end
-		Citizen.Wait(5000)
-	end
-end)
+	end)	
+end
 
 Citizen.CreateThread(function()
 	for k,v in ipairs(Config.Banks)do
@@ -120,57 +133,26 @@ function DisplayHelpText(str)
 	DisplayHelpTextFromStringLabel(0, 0, 1, -1)
 end
 
---[[
---===============================================
---==             Core Threading                ==
---===============================================
-if bankMenu then
-	Citizen.CreateThread(function()
-	while true do
-		Wait(0)
-	if nearBank() or nearATM() then
-			DisplayHelpText("Appuie sur ~INPUT_PICKUP~ pour accèder à tes comptes ~b~")
-	
-		if IsControlJustPressed(1, 38) then
-			inMenu = true
-			SetNuiFocus(true, true)
-			SendNUIMessage({type = 'openGeneral'})
-			TriggerServerEvent('bank:balance')
-			local ped = GetPlayerPed(-1)
-		end
-	end
-				
-		if IsControlJustPressed(1, 322) then
-		inMenu = false
-			SetNuiFocus(false, false)
-			SendNUIMessage({type = 'close'})
-		end
-	end
+function SendBalanceToUI()
+	ARP.TriggerServerCallback('arp_framework:UpdateMoney', function(money)
+		SendNUIMessage({
+			type = "balanceHUD",
+			balance = tostring(money.bank),
+			player = string.format("%s %s", ARP.Player.identity.GetFirstname(), ARP.Player.identity.GetLastname())
+		})
+		return
 	end)
+	return
 end
 
-
---===============================================
---==             Map Blips	                   ==
---===============================================
-
-
-
-
---===============================================
---==           Deposit Event                   ==
---===============================================
-RegisterNetEvent('currentbalance1')
-AddEventHandler('currentbalance1', function(balance)
-	local id = PlayerId()
-	local playerName = GetPlayerName(id)
-	
-	SendNUIMessage({
-		type = "balanceHUD",
-		balance = balance,
-		player = playerName
-		})
+RegisterNUICallback('NUIFocusOff', function()
+	inMenu = false
+	SetNuiFocus(false, false)
+	SendNUIMessage({type = 'closeAll'})
 end)
+
+--[[
+
 --===============================================
 --==           Deposit Event                   ==
 --===============================================
@@ -219,43 +201,5 @@ end)
 --===============================================
 --==               NUIFocusoff                 ==
 --===============================================
-RegisterNUICallback('NUIFocusOff', function()
-	inMenu = false
-	SetNuiFocus(false, false)
-	SendNUIMessage({type = 'closeAll'})
-end)
-
-
---===============================================
---==            Capture Bank Distance          ==
---===============================================
-function nearBank()
-	local player = GetPlayerPed(-1)
-	local playerloc = GetEntityCoords(player, 0)
-	
-	for _, search in pairs(banks) do
-		local distance = GetDistanceBetweenCoords(search.x, search.y, search.z, playerloc['x'], playerloc['y'], playerloc['z'], true)
-		
-		if distance <= 3 then
-			return true
-		end
-	end
-end
-
-function nearATM()
-	local player = GetPlayerPed(-1)
-	local playerloc = GetEntityCoords(player, 0)
-	
-	for _, search in pairs(atms) do
-		local distance = GetDistanceBetweenCoords(search.x, search.y, search.z, playerloc['x'], playerloc['y'], playerloc['z'], true)
-		
-		if distance <= 3 then
-			return true
-		end
-	end
-end
-
-
-
-
 ]]
+
