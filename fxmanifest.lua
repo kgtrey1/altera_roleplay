@@ -12,7 +12,7 @@ version         '0.0.5'
 
 server_scripts {
     '@mysql-async/lib/MySQL.lua',
-    'server.lua'
+    'server/server.lua'
 }
 
 client_script {
