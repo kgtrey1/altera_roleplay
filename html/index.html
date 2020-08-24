@@ -1,8 +1,15 @@
+<!--
+-- ALTERA PROJECT, 2020
+-- ARP_bank (forked from NewWayRP/new_banking)
+-- File description:
+-- UI Page.
+-->
+
 <html>
     <head>
     	<meta charset="utf-8">
     	<meta name="viewport" content="width=device-width">
-        <link href="style.css" rel="stylesheet" type="text/css" />
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
         <style>
 			 #depositUI, #withdrawUI, #transferUI, #general, #topbar, #waiting
@@ -12,7 +19,7 @@
     <body>
     	<div class="container">
     		<div id="result"></div>
-    		<div class="topbar" id="topbar">
+    		<div id="topbar">
     			<div class="cont-p-1">
     				<div class="parale-1 "></div>
     			</div>
@@ -23,14 +30,13 @@
     				<div class="parale-3"></div>
     			</div>
     			<nav>
-    				<div class="logo-topbar"></div>
-    				<button class="btn-sign-out">Souhaitez vous etre deconnecté ?<i class="fas fa-sign-out-alt"></i></button>
+    				<div id="logo-topbar"></div>
+    				<button class="btn-sign-out">Souhaitez-vous être deconnecté?<i class="fas fa-sign-out-alt"></i></button>
     			</nav> 
     		</div>
-<!-- ########### GENERAL ###########  -->
     		<div class="cont-content" id="general">
     			<div class="flex">
-    				<div class="balance box-shadow">
+    				<div id='balance' class="box-shadow balances">
 	    				<p>Bienvenue<br>
 	    					<span class="name"><span class="username1"></span></span><br>
 	    					Vous avez<br>
@@ -42,19 +48,19 @@
 		    				<i class="far fa-money-bill-alt"></i>
 		    				<span class="far fa-money-bill-alt icon"></span>
 		    				<p>Deposer<br>
-		    				<span>votre butin en lieu sur</span></p>
+		    				<span>Effectuer un dépôt.</span></p>
 		    			</button>
 			    		<button class="btn btn-violet" id="withdraw">
 			    			<i class="far fa-credit-card"></i>
 		    				<span class="far fa-credit-card icon"></span>
 		    				<p>Retirer<br>
-		    				<span>une partie de votre magot</span></p>
+		    				<span>Effectuer un retrait.</span></p>
 			    		</button>
 			    		<button class="btn btn-orange" id="transfer">
 			    			<i class="fas fa-exchange-alt"></i>
 		    				<span class="fas fa-exchange-alt icon"></span>
 		    				<p>Virement<br>
-		    				<span>a un proche</span></p>
+		    				<span>Effectuer un virement.</span></p>
 			    		</button>
 		    		</div>
     			</div>
@@ -62,12 +68,12 @@
     				<div class="pub box-shadow confiance">
     					<p>
     						<span>Vous nous faites confiance</span><br>
-    						Le nombre de création de compte a augmenté de 7 % depuis 2017
+    						Le nombre de création de compte a augmenté de 7 % depuis 2020
     					</p>
-    					<div class="circle-confiance"></div>
+    					<div id="circle-confiance"></div>
     				</div>
     				<div class="pub box-shadow social">
-    					<p>Vous etes nombreux</p>
+    					<p>Vous êtes nombreux</p>
     					<ul class="graph">
     						<li class="facebook"><i class="fab fa-facebook-f"></i></li>
     						<li class="google"><i class="fab fa-google-plus-g"></i></li>
@@ -78,12 +84,11 @@
     				</div>
     			</div>
 	    	</div>
-<!-- ########### DEPOSER ###########  -->
 	    	<div class="cont-content" id="depositUI">
     			<div class="flex">
     				<div class="btn btn-blue banniere">
-    					<p>Deposer votre argent<br>
-		    			<span>dans le lieu le plus sécurisé de toute la ville de Los Santos</span></p>
+    					<p>Deposer de l'argent<br>
+		    			<span>Effectuer un dépôt sur votre compte courant.</span></p>
     				</div>
     				<button class="btn btn-grey back">
     					<i class="fas fa-bars"></i>
@@ -94,23 +99,22 @@
     			</div>
     			<form id="deposit1">
     				<div class="input-cont box-shadow">
-    					<label>Combien souhaitez vous deposer ?</label>
+    					<label>Combien souhaitez-vous déposer?</label>
     					<input id="amount" type="number" placeholder="0 $">
     				</div>
     				<button class="btn btn-green" type="submit">
     					<i class="fas fa-check"></i>
 	    				<span class="fas fa-check icon"></span>
 	    				<p>Valider<br>
-	    				<span>Votre depot</span></p>
+	    				<span>Votre dépôt</span></p>
     				</button>
 				</form>
 	    	</div>
-<!-- ########### RETIRER ###########  -->
 	    	<div class="cont-content" id="withdrawUI">
     			<div class="flex">
     				<div class="btn btn-violet banniere">
     					<p>Retirer de l'argent<br>
-		    			<span>depuis votre enorme magot</span></p>
+		    			<span>Effectuer un retrait sur votre compte courant.</span></p>
     				</div>
     				<button class="btn btn-grey back">
     					<i class="fas fa-bars"></i>
@@ -121,7 +125,7 @@
     			</div>
     			<form id="withdraw1">
     				<div class="input-cont box-shadow">
-    					<label>Combien souhaitez vous retirer ?</label>
+    					<label>Combien souhaitez-vous retirer?</label>
     					<input id="amountw" type="number" placeholder="0 $">
     				</div>
     				<button class="btn btn-green" type="submit">
@@ -132,12 +136,11 @@
     				</button>
 				</form>
 	    	</div>
-<!-- ########### VIREMENT ###########  -->
 	    	<div class="cont-content" id="transferUI">
     			<div class="flex">
     				<div class="btn btn-orange banniere">
     					<p>Faire un virement<br>
-		    			<span>a une des personne de votre entourage</span></p>
+		    			<span>Effectuer un virement bancaire</span></p>
     				</div>
     				<button class="btn btn-grey back">
     					<i class="fas fa-bars"></i>
@@ -149,12 +152,12 @@
     			<form id="transfer1">
     				<div class="double-input">
     					<div class="input-cont box-shadow">
-	    					<label>Combien souhaitez vous donner ?</label>
+	    					<label>Quelle somme souhaitez-vous virer?</label>
 	    					<input id="amountt" type="number" placeholder="0 $">
 	    				</div>
 	    				<div class="input-cont box-shadow">
-	    					<label>A qui souhaitez vous faire le virement ?</label>
-	    					<input id="to" type="text" placeholder="nom & prenom">
+	    					<label>A qui souhaitez vous faire le virement?</label>
+	    					<input id="to" type="text" placeholder="RIB">
 	    				</div>
     				</div>
     				<button class="btn btn-green" type="submit">
@@ -165,19 +168,18 @@
     				</button>
 				</form>
 	    	</div>
-<!-- ########### WAITING ###########  -->
 	    	<div class="cont-waiting" id="waiting">
 	    		<div class="content-waiting">
-    				<div class="mainlogo"></div>
+    				<div id='waiting-logo'></div>
     				<p><span>Veuillez</span> vous connecter<br>
     				à l'aide <span>de</span> votre empreinte digitale</p>
     				<div id="fingerprint-content">
-    					<div class="fingerprint-default"></div>
+    					<div id="fingerprint-default"></div>
     					<div class="fingerprint-active"></div>
     					<div class="fingerprint-bar"></div>
     				</div>
     			</div>
-    			<div class="bg-waiting">
+    			<div id="bg-waiting">
     				<div class="cont-p-4">
     					<div class="parale-4"></div>
     				</div>
@@ -195,6 +197,6 @@
     	</div>
     	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     	<script src="nui://game/ui/jquery.js" type="text/javascript"></script>
-    	<script src="ui.js" type="text/javascript"> </script>
+    	<script src="js/index.js" type="text/javascript"> </script>
     </body>
   </html>

@@ -10,6 +10,11 @@ game            'gta5'
 description     'Altera banking system'
 version         '0.0.5'
 
+server_scripts {
+    '@mysql-async/lib/MySQL.lua',
+    'server.lua'
+}
+
 client_script {
     'config.lua',
     'client/client.lua'
@@ -19,37 +24,25 @@ dependency {
     'arp_framework'
 }
 
-ui_page('client/html/UI-fr.html')
+ui_page 'html/index.html'
 
 files {
-    'client/html/UI-fr.html',
-    'client/html/ui.js',
-    'client/html/style.css',
-    'client/html/media/font/Bariol_Regular.otf',
-    'client/html/media/font/Vision-Black.otf',
-    'client/html/media/font/Vision-Bold.otf',
-    'client/html/media/font/Vision-Heavy.otf',
-    'client/html/media/img/bg.png',
-    'client/html/media/img/circle.png',
-    'client/html/media/img/curve.png',
-    'client/html/media/img/fingerprint.png',
-    'client/html/media/img/fingerprint.jpg',
-    'client/html/media/img/graph.png',
-    'client/html/media/img/logo-big.png',
-    'client/html/media/img/logo-top.png'
+    'html/index.html',
+    'html/js/index.js',
+    'html/css/style.css',
+    'html/css/Bariol_Regular.otf',
+    'html/css/Vision-Black.otf',
+    'html/css/Vision-Bold.otf',
+    'html/css/Vision-Heavy.otf',
+    'html/img/graph.png',
+    'html/img/fleeca/circle-fleeca.png',
+    'html/img/fleeca/curve-fleeca.png',
+    'html/img/fleeca/fingerprint-fleeca.jpg',
+    'html/img/fleeca/logo-big-fleeca.png',
+    'html/img/fleeca/logo-top-fleeca.png',
+    'html/img/maze/circle-maze.png',
+    'html/img/maze/curve-maze.png',
+    'html/img/maze/fingerprint-maze.jpg',
+    'html/img/maze/logo-big-maze.png',
+    'html/img/maze/logo-top-maze.png'
 }
-
---[[
-server_scripts {
-    '@mysql-async/lib/MySQL.lua',
-    'server.lua'
-}]]
-
---[[
--- Uncomment the desired version 
- -- French UI
---ui_page('client/html/UI-en.html') -- English UI
---ui_page('client/html/UI-de.html') -- German UI
-
-
-]]

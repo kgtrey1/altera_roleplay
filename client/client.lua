@@ -30,7 +30,7 @@ function BankMenuListenners()
 	if IsControlJustPressed(1, 38) then
 		inMenu = true
 		SetNuiFocus(true, true)
-		SendNUIMessage({type = 'openGeneral'})
+		SendNUIMessage({type = 'openGeneral', bank = ARP.Player.money.GetBankname()})
 		SendBalanceToUI()
 	end
 	if IsControlJustPressed(1, 322) then
@@ -52,8 +52,12 @@ function handleClosestAtm(closest)
 			closeATM = false
 			break
 		elseif (distance < 1.9) then
-			DisplayHelpText("Appuie sur ~INPUT_PICKUP~ pour accèder à tes comptes ~b~")
-			BankMenuListenners()
+			if (ARP.Player.money.GetBankname() == 'none') then
+				DisplayHelpText("Vous n'avez pas de compte bancaire~b~")
+			else
+				DisplayHelpText("Appuie sur ~INPUT_PICKUP~ pour accèder à tes comptes ~b~")
+				BankMenuListenners()
+			end
 		else
 			Citizen.Wait(500)
 		end
@@ -134,55 +138,51 @@ function DisplayHelpText(str)
 end
 
 function SendBalanceToUI()
-	ARP.TriggerServerCallback('arp_framework:UpdateMoney', function(money)
+	ARP.TriggerServerCallback('arp_bank:Balance', function(money, bankname)
 		SendNUIMessage({
 			type = "balanceHUD",
-			balance = money.bank,
+			balance = money,
 			player = string.format("%s %s", ARP.Player.identity.GetFirstname(), ARP.Player.identity.GetLastname())
 		})
+		print(money)
+		print(bankname)
 		return
 	end)
 	return
 end
 
 RegisterNUICallback('deposit', function(data)
-	ARP.TriggerServerCallback('arp_bank:Deposit', function(balance)
-		SendNUIMessage({type = 'balanceReturn', bal = balance})
+	ARP.TriggerServerCallback('arp_bank:Deposit', function(newBalance)
+		SendNUIMessage({type = 'BalanceUpdate', balance = newBalance})
+		return
 	end, tonumber(data.amount))
+	return
 end)
 
-RegisterNUICallback('withdrawl', function(data)
-	ARP.TriggerServerCallback('arp_bank:Withdraw', function(balance)
-		SendNUIMessage({type = 'balanceReturn', bal = balance})
-	end, tonumber(data.amountw))
+RegisterNUICallback('withdraw', function(data)
+	ARP.TriggerServerCallback('arp_bank:Withdraw', function(newBalance)
+		SendNUIMessage({type = 'BalanceUpdate', balance = newBalance})
+		return
+	end, tonumber(data.amount))
+	return
 end)
 
-RegisterNetEvent('bank:result')
-AddEventHandler('bank:result', function(type, message)
+RegisterNetEvent('arp_bank:Result')
+AddEventHandler('arp_bank:Result', function(type, message)
 	SendNUIMessage({type = 'result', m = message, t = type})
+	return
 end)
 
 RegisterNUICallback('NUIFocusOff', function()
 	inMenu = false
 	SetNuiFocus(false, false)
 	SendNUIMessage({type = 'closeAll'})
+	return
 end)
 
 --[[
 
---===============================================
---==           Deposit Event                   ==
---===============================================
 
-
---===============================================
---==          Withdraw Event                   ==
---===============================================
-
-
---===============================================
---==         Balance Event                     ==
---===============================================
 RegisterNUICallback('balance', function()
 	TriggerServerEvent('bank:balance')
 end)
@@ -192,22 +192,10 @@ AddEventHandler('balance:back', function(balance)
 	SendNUIMessage({type = 'balanceReturn', bal = balance})
 end)
 
-
---===============================================
---==         Transfer Event                    ==
---===============================================
 RegisterNUICallback('transfer', function(data)
 	TriggerServerEvent('bank:transfer', data.to, data.amountt)
 	TriggerServerEvent('bank:balance')
 end)
 
---===============================================
---==         Result   Event                    ==
---===============================================
-
-
---===============================================
---==               NUIFocusoff                 ==
---===============================================
 ]]
 
