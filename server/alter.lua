@@ -1,6 +1,7 @@
-function CreateAlter(source, steamid, license, registered, identity, money)
+function CreateAlter(source, steamid, license, registered, identity, money, inventory)
     local self      = {}
 
+    print(json.encode(money))
     -- Game related data.
     self.source     = source
     self.steamid    = steamid
@@ -46,7 +47,14 @@ function CreateAlter(source, steamid, license, registered, identity, money)
 
     -- Identity related data.
 
-    self.identity = identity
+    self.identity = {}
+
+    self.identity.firstname = identity.firstname
+    self.identity.lastname  = identity.lastname
+    self.identity.height    = identity.height
+    self.identity.birthdate = identity.birthdate
+    self.identity.gender    = identity.gender
+    self.identity.skin      = identity.skin
 
     self.identity.SetFirstname  = function(name)
         self.identity.firstname = name
@@ -103,25 +111,42 @@ function CreateAlter(source, steamid, license, registered, identity, money)
 
     self.GetIdentity            = function()
         return ({
-            firstname   = self.identity.GetFirstname(),
-            lastname    = self.identity.GetLastname(),
-            height      = self.identity.GetHeight(),
-            gender      = self.identity.GetGender(),
-            birthdate   = self.identity.GetBirthdate(),
-            skin        = self.identity.GetSkin()
+            firstname   = self.identity.firstname,
+            lastname    = self.identity.lastname,
+            height      = self.identity.height,
+            gender      = self.identity.gender,
+            birthdate   = self.identity.birthdate,
+            skin        = self.identity.skin
         })
     end
 
     -- Money
 
-    self.money                  = money
+    self.money = {}
+
+    self.money.cash     = money.cash
+    self.money.bank     = money.bank
+    self.money.dirty    = money.dirty
+    self.money.bankname = money.bankname
+    self.money.iban     = money.iban
 
     self.money.GetCash          = function()
         return (self.money.cash)
     end
 
-    self.money.SetCash          = function(ammount)
-        self.money.cash = ammount
+    self.money.AddCash          = function(amount)
+        self.money.cash = self.money.cash + amount
+        self.money.OnCashChange()
+    end
+
+    self.money.RemoveCash       = function(amount)
+        self.money.cash = self.money.cash - amount
+        self.money.OnCashChange()
+        return
+    end
+
+    self.money.OnCashChange     = function()
+        TriggerClientEvent('arp_framework:OnCashChange', self.source, self.money.cash)
         return
     end
 
@@ -129,8 +154,20 @@ function CreateAlter(source, steamid, license, registered, identity, money)
         return (self.money.bank)
     end
 
-    self.money.SetBank          = function(ammount)
-        self.money.bank = ammount
+    self.money.AddBank          = function(amount)
+        self.money.bank = self.money.bank + amount
+        self.money.OnBankChange()
+        return
+    end
+
+    self.money.RemoveBank       = function(amount)
+        self.money.bank = self.money.bank - amount
+        self.money.OnBankChange()
+        return
+    end
+
+    self.money.OnBankChange     = function()
+        TriggerClientEvent('arp_framework:OnBankChange', self.source, self.money.bank)
         return
     end
 
@@ -138,8 +175,20 @@ function CreateAlter(source, steamid, license, registered, identity, money)
         return (self.money.dirty)
     end
 
-    self.money.SetDirty         = function(ammount)
-        self.money.dirty = ammount
+    self.money.AddDirty         = function(amount)
+        self.money.dirty = self.money.dirty + amount
+        self.money.OnDirtyChange()
+        return
+    end
+
+    self.money.RemoveDirty      = function(amount)
+        self.money.dirty = self.money.dirty - amount
+        self.money.OnDirtyChange()
+        return
+    end
+
+    self.money.OnDirtyChange    = function()
+        TriggerClientEvent('arp_framework:OnDirtyChange', self.source, self.money.dirty)
         return
     end
 
@@ -149,16 +198,76 @@ function CreateAlter(source, steamid, license, registered, identity, money)
 
     self.money.SetBankname      = function(bankname)
         self.money.bankname = bankname
+        TriggerClientEvent('arp_framework:OnBanknameChange', self.source, self.money.bankname)
+        return
+    end
+
+    self.money.GetIban          = function()
+        return (self.money.iban)
+    end
+
+    self.money.SetIban          = function(iban)
+        self.money.iban = iban
+        TriggerClientEvent('arp_framework:OnIbanChange', self.source, self.money.iban)
         return
     end
 
     self.GetMoney               = function()
         return ({
-            cash        = self.money.GetCash(),
-            bank        = self.money.GetBank(),
-            dirty       = self.money.GetDirty(),
-            bankname    = self.money.GetBankname()
+            cash        = self.money.cash,
+            bank        = self.money.bank,
+            dirty       = self.money.dirty,
+            bankname    = self.money.bankname,
+            iban        = self.money.iban
         })
+    end
+
+    -- Inventory
+
+    self.inventory = {}
+
+    self.inventory.list = inventory
+
+    self.inventory.AddItem = function(name, amount)
+        if (Items[name] == nil) then
+            print("Invalid item.")
+            return
+        end
+        if (self.inventory.list[name] ~= nil) then
+            self.inventory.list[name] = self.inventory.list[name] + amount
+        else
+            self.inventory.list[name] = amount
+        end
+        self.inventory.OnInventoryChange()
+        return
+    end
+
+    self.inventory.RemoveItem = function(name, amount)
+        if (Items[name] == nil) then
+            print("Invalid item.")
+            return
+        elseif (self.inventory.list[name] == nil) then
+            print("Not enough item.")
+            return
+        end
+        self.inventory.list[name] = self.inventory.list[name] - amount
+        self.inventory.OnInventoryChange()
+        return
+    end
+
+    self.GetInventory = function()
+        return (self.inventory.list)
+    end
+
+    self.inventory.GetItemAmount = function(item)
+        if (self.inventory.list[item] == nil) then
+            return (0)
+        end
+        return (self.inventory.list[item])
+    end
+
+    self.inventory.OnInventoryChange = function()
+        TriggerClientEvent('arp_framework:OnInventoryChange', self.source, self.inventory.list)
     end
 
     return (self)

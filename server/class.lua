@@ -5,6 +5,7 @@
 
 ARP         = {}
 PlayerData  = {}
+Items       = {}
 
 --
 -- Player data
@@ -12,19 +13,26 @@ PlayerData  = {}
 
 ARP.BuildClientObject = function(source)
     local Alter = ARP.GetPlayerById(source)
+    local obj   = {}
 
-    return ({
-        source      = Alter.GetSource(),
-        steamid     = Alter.GetSteamid(),
-        license     = Alter.GetLicense(),
-        identity    = Alter.GetIdentity(),
-        position    = Alter.GetPosition(),
-        money       = Alter.GetMoney()
-    })
+    obj.money       = Alter.GetMoney()
+    obj.position    = Alter.GetPosition()
+    obj.identity    = Alter.GetIdentity()
+    obj.inventory   = Alter.GetInventory()
+    return (obj)
 end
 
 ARP.GetPlayerById = function(source)
     return (PlayerData[source])
+end
+
+ARP.GetPlayerBySteamid  = function(steamid)
+    for i = 1, #PlayerData, 1 do
+        if (PlayerData[i].GetSteamid() == steamid) then
+            return (PlayerData[i])
+        end
+    end
+    return (nil)
 end
 
 -- Section done
@@ -80,26 +88,3 @@ ARP.GetLicenseById = function(id)
 end
 
 -- Updates player
-
-ARP.RegisterServerCallback('arp_framework:UpdateMoney', function(source, cb)
-    cb(PlayerData[source].GetMoney())
-    return
-end)
-
-ARP.RegisterServerCallback('arp_framework:UpdateSkin', function(source, cb)
-    cb(PlayerData[source].identity.GetSkin())
-    return
-end)
-
-ARP.RegisterServerCallback('arp_framework:UpdateIdentity', function(source, cb)
-    local identity = PlayerData[source].GetIdentity()
-
-    cb({
-        firstname   = identity.firstname,
-        lastname    = identity.lastname,
-        birthdate   = identity.birthdate,
-        height      = identity.height,
-        skin        = identity.skin
-    })
-    return
-end)

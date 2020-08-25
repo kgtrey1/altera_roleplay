@@ -1,38 +1,3 @@
--- Load player
-
-local function LoadPersonnalIdentity(data)
-    local skin = nil
-
-    if (data.skin == "") then
-        skin = ''
-    else
-        skin = json.decode(data.skin)
-    end
-    return ({
-        firstname   = data.firstname,
-        lastname    = data.lastname,
-        birthdate   = data.birthdate,
-        gender      = data.gender,
-        height      = data.height,
-        skin        = skin,
-        position    = json.decode(data.position)
-    })
-end
-
-local function LoadDefaultIdentity()
-    return ({
-        firstname   = "undefined",
-        lastname    = "undefined",
-        birthdate   = "undefined",
-        gender      = "undefined",
-        height      = "undefined",
-        skin        = "",
-        position    = { x = 0, y = 0, z = 0 }
-    })
-end
-
--- Updating position
-
 local function UpdatePlayerPosition(pos)
     local _source = source
 
@@ -43,84 +8,15 @@ end
 RegisterNetEvent('arp_framework:UpdatePlayerPosition')
 AddEventHandler('arp_framework:UpdatePlayerPosition', UpdatePlayerPosition)
 
--- Saving player
-
-local function SavePlayerMoney(source)
-    MySQL.Sync.execute('UPDATE money \
-    SET `cash` = @cash, `bank` = @bank, `dirty` = @dirty, `bankname` = @bankname \
-    WHERE steamid = @steamid', {
-        ['@cash']       = PlayerData[source].money.GetCash(),
-        ['@bank']       = PlayerData[source].money.GetBank(),
-        ['@dirty']      = PlayerData[source].money.GetDirty(),
-        ['@bankname']   = PlayerData[source].money.GetBankName(),
-        ['@steamid']    = PlayerData[source].GetSteamid()
-    })
-end
-
-local function SavePlayerIdentity(source)
-    local position = PlayerData[source].GetPosition()
-
-    position = json.encode({x = position.x, y = position.y, z = position.z})
-    MySQL.Sync.execute('UPDATE users \
-    SET `position` = @position, `firstname` = @firstname, `lastname` = @lastname, `height` = @height, `birthdate` = @birthdate \
-    WHERE steamid = @steamid', {
-        ['@position']   = position,
-        ['@firstname']  = PlayerData[source].identity.GetFirstname(),
-        ['@lastname']   = PlayerData[source].identity.GetLastname(),
-        ['@height']     = PlayerData[source].identity.GetHeight(),
-        ['@birthdate']  = PlayerData[source].identity.GetBirthdate(),
-        ['@steamid']    = PlayerData[source].GetSteamid()
-    })
-    return
-end
-
-local function SavePlayer(reason)
-    local _source = source
-
-    if (PlayerData[_source].GetRegistrationStatus() == true) then
-        SavePlayerIdentity(_source)
-        SavePlayerMoney(_source)
-    end
-    if (reason ~= 'global_save') then
-        if (PlayerData[_source].GetRegistrationStatus() == true) then
-            print(string.format('ARP> Saving %s. Reason: %s', PlayerData[_source].GetSteamid(), reason))
+MySQL.ready(function()
+    MySQL.Async.fetchAll('SELECT * from items', {}, function(result)
+        for i = 1, #result, 1 do
+            Items[result[i].name] = {}
+            Items[result[i].name].label     = result[i].label
+            Items[result[i].name].weight    = result[i].weight
+            Items[result[i].name].volume    = result[i].volume
+            Items[result[i].name].usable    = result[i].usable
+            print(json.encode(Items[result[i].name]))
         end
-        PlayerData[_source] = nil
-    end
-    return
-end
-
-AddEventHandler('playerDropped', SavePlayer)
-
--- Loading player
-
-local function GetPlayerMoney(steamid)
-    return (MySQL.Sync.fetchAll("SELECT * FROM money WHERE steamid = @identifier", {
-		['@identifier'] = steamid
-    }))
-end
-
-local function LoadPlayer()
-    local _source       = source
-    local steamid       = ARP.GetSteamIdById(_source)
-    local result        = MySQL.Sync.fetchAll("SELECT * FROM users WHERE steamid = @identifier", {
-		['@identifier'] = steamid
-    })
-
-    if (result[1] ~= nil) then
-        PlayerData[_source] = CreateAlter(_source, steamid, ARP.GetLicenseById(_source), true, LoadPersonnalIdentity(result[1]), GetPlayerMoney(steamid))
-        TriggerClientEvent('arp_framework:PlayerLoaded', _source, ARP.BuildClientObject(_source))
-    else
-        PlayerData[_source] = CreateAlter(_source, steamid, ARP.GetLicenseById(_source), false, LoadDefaultIdentity(), {
-            cash = Config.StartingCash,
-            bank = 0,
-            dirty = 0,
-            bankname = 'none'
-        })
-        TriggerClientEvent('arp_register:OpenRegistrationForm', _source)
-    end
-    return
-end
-
-RegisterNetEvent('arp_framework:LoadPlayer')
-AddEventHandler('arp_framework:LoadPlayer', LoadPlayer)
+    end)
+end)
