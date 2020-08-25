@@ -1,7 +1,6 @@
 function CreatePlayerObject(data)
     local self = {}
 
-    self.money      = data.money
     self.identity   = data.identity
 
 -- Getters for identity
@@ -32,41 +31,57 @@ function CreatePlayerObject(data)
 
     self.GetIdentity            = function()
         return ({
-            firstname   = self.identity.GetFirstname(),
-            lastname    = self.identity.GetLastname(),
-            height      = self.identity.GetHeight(),
-            gender      = self.identity.GetGender(),
-            birthdate   = self.identity.GetBirthdate(),
-            skin        = self.identity.GetSkin()
+            firstname   = self.identity.firstname,
+            lastname    = self.identity.lastname,
+            height      = self.identity.height,
+            gender      = self.identity.gender,
+            birthdate   = self.identity.birthdate,
+            skin        = self.identity.skin
         })
     end
 
 -- Getters for money
 
-    self.money.GetCash        = function()
+    self.money = {}
+
+    self.money.cash     = data.money.cash
+    self.money.bank     = data.money.bank
+    self.money.dirty    = data.money.dirty
+    self.money.bankname = data.money.bankname
+    self.money.iban     = data.money.iban
+
+    self.money.GetCash      = function()
         return (self.money.cash)
     end
 
-    self.money.GetBank        = function()
+    self.money.GetBank      = function()
         return (self.money.bank)
     end
 
-    self.money.GetDirty       = function()
+    self.money.GetDirty     = function()
         return (self.money.dirty)
     end
 
-    self.money.GetBankname    = function()
+    self.money.GetBankname  = function()
         return (self.money.bankname)
     end
 
-    self.GetMoney = function() 
+    self.money.GetIban      = function()
+        return (self.money.bankname)
+    end
+
+    self.GetMoney           = function() 
         return ({
-            cash        = self.GetCash(),
-            bank        = self.GetBank(),
-            dirty       = self.GetDirty(),
-            bankname    = self.GetBankname()
+            cash        = self.money.cash,
+            bank        = self.money.bank,
+            dirty       = self.money.dirty,
+            bankname    = self.money.bankname,
+            iban        = self.money.iban
         })
     end
+
+    self.inventory = {}
+    self.inventory.list     = data.inventory
 
     return (self)
 end

@@ -122,3 +122,7 @@ end
 
 RegisterNetEvent('arp_framework:UpdateIdentity')
 AddEventHandler('arp_framework:UpdateIdentity', UpdateIdentity)
+
+ARP.GetPlayerData = function()
+	return (ARP.Player)
+end
