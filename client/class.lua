@@ -4,8 +4,9 @@
 -- Object that will be shared between scripts.
 
 ARP = {}
-ARP.Player = {}
-
+ARP.Player 		= {}
+ARP.World  		= {}
+ARP.Streaming 	= {}
 --
 -- Menus handling (RageUI)
 --
@@ -23,6 +24,10 @@ ARP.Menu.CloseAll = function()
 	for _, v in pairs(ARP.Menu.List) do
 		RageUI.Visible(v, false)
 	end
+	for _, v in pairs(ARP.Menu.Sublist) do
+		RageUI.Visible(v, false)
+	end
+	TriggerEvent('arp_framework:CloseAllMenus')
 end
 
 ARP.Menu.Item.List = function(Label, Items, StartedAtIndex, Description, Style, Enabled, Actions)
@@ -38,8 +43,13 @@ ARP.Menu.Item.Button = function(label, description, style, enabled, action, subm
 	return
 end
 
-ARP.Menu.IsVisible = function(name, items, panels)
-	RageUI.IsVisible(ARP.Menu.List[name], items, panels)
+ARP.Menu.IsVisible = function(name, items, panels, submenu)
+	if (submenu == false) then
+		RageUI.IsVisible(ARP.Menu.List[name], items, panels)
+	else
+		RageUI.IsVisible(ARP.Menu.Sublist[name], items, panels)
+	end
+	return
 end
 
 ARP.Menu.Visible = function(name, submenu)
@@ -50,12 +60,23 @@ ARP.Menu.Visible = function(name, submenu)
 	end
 end
 
+ARP.Menu.GetVisibility = function(name, submenu)
+	if (submenu) then
+		return RageUI.Visible(ARP.Menu.Sublist[name])
+	end
+	return (RageUI.Visible(ARP.Menu.List[name]))
+end
+
 ARP.Menu.RegisterMenu = function(name, title, subtitle)
 	ARP.Menu.List[name] = RageUI.CreateMenu(title, subtitle)
 end
 
 ARP.Menu.RegisterSubmenu = function(name, parent, title, subtitle)
-	ARP.Menu.Sublist[name] = RageUI.CreateSubmenu(ARP.Menu.List[parent], title, subtitle)
+	if (ARP.Menu.List[parent] ~= nil) then
+		ARP.Menu.Sublist[name] = RageUI.CreateSubMenu(ARP.Menu.List[parent], title, subtitle)
+	else
+		ARP.Menu.Sublist[name] = RageUI.CreateSubMenu(ARP.Menu.Sublist[parent], title, subtitle)
+	end
 end
 
 --
@@ -80,48 +101,6 @@ AddEventHandler('arp:ServerCallback', function(requestId, ...)
 	ARP.ServerCallbacks[requestId](...)
 	ARP.ServerCallbacks[requestId] = nil
 end)
-
--- Player values updates
-
-local function UpdateMoney()
-	ARP.TriggerServerCallback('arp_framework:UpdateMoney', function(money)
-		ARP.Player.money.cash		= money.cash
-		ARP.Player.money.bank		= money.bank
-		ARP.Player.money.dirty		= money.dirty
-		ARP.Player.money.bankname	= money.bankname
-		return
-	end)
-	return
-end
-
-RegisterNetEvent('arp_framework:UpdateMoney')
-AddEventHandler('arp_framework:UpdateMoney', UpdateMoney)
-
-local function UpdateSkin()
-	ARP.TriggerServerCallback('arp_framework:UpdateSkin', function(skin)
-		ARP.Player.identity.skin = skin
-		return
-	end)
-	return
-end
-
-RegisterNetEvent('arp_framework:UpdateIdentity')
-AddEventHandler('arp_framework:UpdateIdentity', UpdateSkin)
-
-local function UpdateIdentity()
-	ARP.TriggerServerCallback('arp_framework:UpdateIdentity', function(newIdentity)
-		ARP.Player.identity.firstname 	= newIdentity.firstname
-		ARP.Player.identity.lastname	= newIdentity.lastname
-		ARP.Player.identity.height		= newIdentity.height
-		ARP.Player.identity.birthdate	= newIdentity.birthdate
-		ARP.Player.identity.skin		= newIdentity.skin
-		return
-	end)
-	return
-end
-
-RegisterNetEvent('arp_framework:UpdateIdentity')
-AddEventHandler('arp_framework:UpdateIdentity', UpdateIdentity)
 
 ARP.GetPlayerData = function()
 	return (ARP.Player)

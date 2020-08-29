@@ -1,14 +1,14 @@
 local function SavePlayerInventory(source)
-    local cleanList = {}
-    local list      = PlayerData[source].GetInventory()
+    local list      = {}
+    local inventory = PlayerData[source].GetInventory()
 
-    for k, v in pairs(list) do
-        if (v > 0) then
-            cleanList[k] = v
+    for k, v in pairs(inventory.list) do
+        if (v.amount > 0) then
+            list[v.name] = v.amount
         end
     end
     MySQL.Sync.execute('UPDATE inventory SET `inventory` = @inventory WHERE steamid = @steamid', {
-        ['@inventory']  = json.encode(cleanList),
+        ['@inventory']  = json.encode(list),
         ['@steamid']    = PlayerData[source].GetSteamid()
     })
 end

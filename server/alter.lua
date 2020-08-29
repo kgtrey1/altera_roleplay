@@ -226,49 +226,80 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
 
     self.inventory = {}
 
-    self.inventory.list = inventory
+    self.inventory.list     = inventory
+    self.inventory.weight   = 0
+
+    self.inventory.CreateItem = function(name, amount)
+        self.inventory.list[name] = {}
+        self.inventory.list[name].name          = name
+        self.inventory.list[name].label         = Items[name].label
+        self.inventory.list[name].amount        = amount
+        self.inventory.list[name].weight        = Items[name].weight
+        self.inventory.list[name].totalweight   = Items[name].weight * amount
+        return
+    end
+
+    self.inventory.GetWeight = function()
+        local weight = 0
+
+        print('called')
+        for k, v in pairs(self.inventory.list) do
+            weight = weight + v.totalweight
+            print(v.name)
+        end
+        self.inventory.weight = weight
+    end
 
     self.inventory.AddItem = function(name, amount)
-        if (Items[name] == nil) then
-            print("Invalid item.")
-            return
+        if (Items[name] == nil or amount < 0) then
+            print(string.format("ARP> Invalid call to AddItem. (User: %s, Obj: %s, Num: %d)", self.steamid, name, amount))
+            return (false)
         end
         if (self.inventory.list[name] ~= nil) then
-            self.inventory.list[name] = self.inventory.list[name] + amount
+            self.inventory.list[name].amount = self.inventory.list[name].amount + amount
+            self.inventory.list[name].totalweight = self.inventory.list[name].amount * self.inventory.list[name].weight
         else
-            self.inventory.list[name] = amount
+            self.inventory.CreateItem(name, amount)
         end
+        
         self.inventory.OnInventoryChange()
-        return
+        return (true)
     end
 
     self.inventory.RemoveItem = function(name, amount)
-        if (Items[name] == nil) then
-            print("Invalid item.")
+        if (Items[name] == nil or amount < 0) then
+            print(string.format("ARP> Invalid call to RemoveItem #1. (User: %s, Obj: %s, Num: %d)", self.steamid, name, amount))
             return
         elseif (self.inventory.list[name] == nil) then
-            print("Not enough item.")
+            print(string.format("ARP> Invalid call to RemoveItem #2. (User: %s, Obj: %s, Num: %d)", self.steamid, name, amount))
+            return
+        elseif (self.inventory.list[name].amount < amount) then
+            print(string.format("ARP> Invalid call to RemoveItem #3. (User: %s, Obj: %s, Num: %d)", self.steamid, name, amount))
             return
         end
-        self.inventory.list[name] = self.inventory.list[name] - amount
+        if (self.inventory.list[name].amount <= 0) then
+            self.inventory.list[name] = nil
+        else
+            self.inventory.list[name].amount = self.inventory.list[name].amount - amount
+            self.inventory.list[name].totalweight = self.inventory.list[name].amount * self.inventory.list[name].weight
+        end
         self.inventory.OnInventoryChange()
         return
     end
 
-    self.GetInventory = function()
-        return (self.inventory.list)
-    end
-
-    self.inventory.GetItemAmount = function(item)
-        if (self.inventory.list[item] == nil) then
-            return (0)
-        end
-        return (self.inventory.list[item])
-    end
-
     self.inventory.OnInventoryChange = function()
-        TriggerClientEvent('arp_framework:OnInventoryChange', self.source, self.inventory.list)
+        self.inventory.GetWeight()
+        TriggerClientEvent('arp_framework:OnInventoryChange', self.source, self.inventory.list, self.inventory.weight)
     end
+
+    self.GetInventory = function()
+        return ({
+            list   = self.inventory.list,
+            weight = self.inventory.weight
+        })
+    end
+
+    self.inventory.GetWeight()
 
     return (self)
 end

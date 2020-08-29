@@ -1,5 +1,19 @@
 -- Inventory functions
 
+local function BuildInventory(inventory)
+    local list = {}
+
+    for k, v in pairs(inventory) do
+        list[k]             = {}
+        list[k].name        = k
+        list[k].label       = Items[k].label
+        list[k].amount      = v
+        list[k].weight      = Items[k].weight
+        list[k].totalweight = list[k].weight * list[k].amount
+    end
+    return (list)
+end
+
 local function GetPlayerInventory(steamid)
     local result = MySQL.Sync.fetchAll("SELECT * FROM inventory WHERE steamid = @identifier", {
 		['@identifier'] = steamid
@@ -8,7 +22,7 @@ local function GetPlayerInventory(steamid)
     if (result[1] == nil) then
         return ({})
     end
-    return (json.decode(result[1].inventory))
+    return (BuildInventory(json.decode(result[1].inventory)))
 end
 
 -- Money functions
@@ -110,15 +124,3 @@ end
 
 RegisterNetEvent('arp_framework:LoadPlayer')
 AddEventHandler('arp_framework:LoadPlayer', LoadPlayer)
-
-
-
-RegisterNetEvent('testtt')
-AddEventHandler('testtt', function()
-    PlayerData[source].inventory.AddItem('water_bottle', 1)
-end)
-
-RegisterNetEvent('testttt')
-AddEventHandler('testttt', function()
-    PlayerData[source].inventory.RemoveItem('water_bottle', 1)
-end)

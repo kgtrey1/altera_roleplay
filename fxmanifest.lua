@@ -14,6 +14,7 @@ server_scripts {
     'server/shared.lua',
     'server/load.lua',
     'server/save.lua',
+    'server/command.lua',
     'server/main.lua'
 }
 
@@ -53,6 +54,8 @@ client_scripts {
     'config.lua',
     'client/alter.lua',
     'client/class.lua',
+    'client/streaming.lua',
+    'client/world.lua',
     'client/shared.lua',
     'client/main.lua',
     'client/listenners.lua'

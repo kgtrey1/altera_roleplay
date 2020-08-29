@@ -30,10 +30,8 @@ end
 -- Once data has been prepared.
 
 local function PlayerLoaded(data)
-    print(json.encode(data.identity))
     ARP.Player = CreatePlayerObject(data)
 
-    print(json.encode(ARP.Player.GetMoney()))
     TeleportToLatestPosition(data.position)
     LoadPlayerSkin()
     Citizen.CreateThread(UpdatePlayerPosition)
@@ -58,13 +56,6 @@ AddEventHandler('playerSpawned', LoadPlayer)
 
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(0)
-        if IsControlJustPressed(1, 38) then
-            TriggerServerEvent('testtt')
-        end
-        if IsControlJustPressed(1, 47) then
-            TriggerServerEvent('testttt')
-        end
+        Citizen.Wait(10000)
     end
-
 end)
