@@ -167,6 +167,14 @@ RegisterNUICallback('withdraw', function(data)
 	return
 end)
 
+RegisterNUICallback('transfer', function(data)
+	ARP.TriggerServerCallback('arp_bank:Transfer', function(newBalance)
+		SendNUIMessage({type = 'BalanceUpdate', balance = newBalance})
+		return
+	end, tonumber(data.amount), tostring(data.to))
+	return
+end)
+
 RegisterNetEvent('arp_bank:Result')
 AddEventHandler('arp_bank:Result', function(type, message)
 	SendNUIMessage({type = 'result', m = message, t = type})
@@ -179,23 +187,3 @@ RegisterNUICallback('NUIFocusOff', function()
 	SendNUIMessage({type = 'closeAll'})
 	return
 end)
-
---[[
-
-
-RegisterNUICallback('balance', function()
-	TriggerServerEvent('bank:balance')
-end)
-
-RegisterNetEvent('balance:back')
-AddEventHandler('balance:back', function(balance)
-	SendNUIMessage({type = 'balanceReturn', bal = balance})
-end)
-
-RegisterNUICallback('transfer', function(data)
-	TriggerServerEvent('bank:transfer', data.to, data.amountt)
-	TriggerServerEvent('bank:balance')
-end)
-
-]]
-

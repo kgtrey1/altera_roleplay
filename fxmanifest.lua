@@ -12,12 +12,12 @@ version         '0.0.5'
 
 server_scripts {
     '@mysql-async/lib/MySQL.lua',
-    'server/server.lua'
+    'server/main.lua'
 }
 
 client_script {
     'config.lua',
-    'client/client.lua'
+    'client/main.lua'
 }
 
 dependency {

@@ -31,7 +31,7 @@ function LoadMaze()
 
 function LoadBankTheme(theme)
 {
-    if (event.theme == 'fleeca')
+    if (theme == 'fleeca')
         LoadFleeca()
     else if(theme == 'maze')
         LoadMaze()
@@ -130,7 +130,7 @@ $("#transfer1").submit(function(e) {
 $("#withdraw1").submit(function(e) {
     e.preventDefault(); // Prevent form from submitting
     $.post('http://arp_bank/withdraw', JSON.stringify({
-        amount: $("#amountW").val()
+        amount: $("#amountw").val()
     }));
     $('#withdrawUI').hide();
     $('#general').show();
