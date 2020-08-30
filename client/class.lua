@@ -7,6 +7,8 @@ ARP = {}
 ARP.Player 		= {}
 ARP.World  		= {}
 ARP.Streaming 	= {}
+Drops = {}
+Objects  = {}
 --
 -- Menus handling (RageUI)
 --
@@ -16,9 +18,13 @@ ARP.Menu.List			= {}
 ARP.Menu.Sublist 		= {}
 ARP.Menu.Item			= {}
 
+ARP.Menu.BadgeStyle = RageUI.BadgeStyle
+
 ARP.Menu.Closable = function(name, value)
 	ARP.Menu.List[name].Closable = value
 end
+
+ARP.Menu.GoBack = RageUI.GoBack
 
 ARP.Menu.CloseAll = function()
 	for _, v in pairs(ARP.Menu.List) do

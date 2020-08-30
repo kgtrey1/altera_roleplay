@@ -10,6 +10,7 @@ local function BuildInventory(inventory)
         list[k].amount      = v
         list[k].weight      = Items[k].weight
         list[k].totalweight = list[k].weight * list[k].amount
+        list[k].usable      = Items[k].usable
     end
     return (list)
 end

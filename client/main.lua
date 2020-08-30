@@ -37,6 +37,10 @@ local function PlayerLoaded(data)
     Citizen.CreateThread(UpdatePlayerPosition)
     playerIsLoaded = true
     TriggerEvent('arp_framework:PlayerReady', ARP.Player)
+    Citizen.Wait(5000)
+    HandleDrops()
+    TriggerServerEvent('arp_framework:OnItemDrop', 'chips', 1, GetEntityCoords(GetPlayerPed(-1)))
+    print(string.format("Player coords coords: %s", json.encode(GetEntityCoords(GetPlayerPed(-1)))))
 end
 
 RegisterNetEvent('arp_framework:PlayerLoaded')
@@ -53,9 +57,40 @@ end
 
 AddEventHandler('playerSpawned', LoadPlayer)
 
+function GetCloseDrops(playerCoords)
+    local closeObject  = {}
 
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(10000)
+    for i = 1, #Drops, 1 do
+        if (Drops[i] ~= nil and GetDistanceBetweenCoords(playerCoords, Drops[i].coords) < 10) then
+            table.insert(closeObject, Drops[i])
+        end
     end
-end)
+    return (closeObject)
+end
+
+function HandleDrops()
+    Citizen.CreateThread(function()
+        local drops = {}
+        local playerCoords = nil
+
+        while (true) do
+            Citizen.Wait(0)
+            playerCoords = GetEntityCoords(GetPlayerPed(-1))
+            drops = GetCloseDrops(playerCoords)
+            if (drops[1] == nil) then
+                Citizen.Wait(3000)
+                print('not')
+            else
+                for i = 1, #drops, 1 do
+                    if GetDistanceBetweenCoords(playerCoords, drops[i].coords) <= 5 then
+                        ARP.World.DrawText3D({
+                            x = drops[i].coords.x,
+                            y = drops[i].coords.y,
+                            z = drops[i].coords.z + 0.25
+                        }, string.format('%s x%d', drops[i].label, drops[i].amount))
+                    end
+                end
+            end
+        end
+    end)
+end

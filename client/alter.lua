@@ -81,7 +81,12 @@ function CreatePlayerObject(data)
     end
 
     self.inventory = {}
-    self.inventory.list     = data.inventory
+    self.inventory.list     = data.inventory.list
+    self.inventory.weight   = data.inventory.weight
+
+    self.GetInventory = function()
+        return (self.inventory.list)
+    end
 
     return (self)
 end

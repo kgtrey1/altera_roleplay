@@ -236,6 +236,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         self.inventory.list[name].amount        = amount
         self.inventory.list[name].weight        = Items[name].weight
         self.inventory.list[name].totalweight   = Items[name].weight * amount
+        self.inventory.list[name].usable        = Items[name].usable
         return
     end
 
@@ -285,6 +286,13 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         end
         self.inventory.OnInventoryChange()
         return
+    end
+
+    self.inventory.GetItemAmount = function(name)
+        if (self.inventory.list[name] ~= nil) then
+            return (self.inventory.list[name].amount)
+        end
+        return (0)
     end
 
     self.inventory.OnInventoryChange = function()

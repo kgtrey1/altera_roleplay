@@ -3,10 +3,12 @@
 -- server/class.lua
 -- Object that will be shared between scripts.
 
-ARP         = {}
-PlayerData  = {}
-Items       = {}
-
+ARP          = {}
+PlayerData   = {}
+Items        = {}
+Drops        = {}
+Drops.List   = {}
+Drops.Ticket = 1
 --
 -- Player data
 --

@@ -45,3 +45,22 @@ AddEventHandler('arp_framework:CmdSpawnVehicle', function(model)
         TaskWarpPedIntoVehicle(GetPlayerPed(-1), vehicle, -1)
     end)
 end)
+
+RegisterNetEvent('arp_framework:OnDropListChange')
+AddEventHandler('arp_framework:OnDropListChange', function(drops, index, action)
+    Drops = drops
+    if (action == 'drop') then
+        ARP.World.SpawnLocalObject(Drops[index].texture, {
+            x = Drops[index].coords.x,
+            y = Drops[index].coords.y,
+            z = Drops[index].coords.z - 2.0
+        }, function(newObj)
+            SetEntityAsMissionEntity(newObj, true, false)
+            PlaceObjectOnGroundProperly(newObj)
+            Objects[index] = newObj
+        end)
+    else
+        ARP.Game.DeleteObject(Objects[index])
+	    Objects[index] = nil
+    end
+end)
