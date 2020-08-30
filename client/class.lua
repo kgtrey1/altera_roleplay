@@ -111,3 +111,22 @@ end)
 ARP.GetPlayerData = function()
 	return (ARP.Player)
 end
+
+ARP.ShowNotification = function(msg)
+	SetNotificationTextEntry('STRING')
+	AddTextComponentSubstringPlayerName(msg)
+	DrawNotification(false, true)
+end
+
+ARP.ShowAdvancedNotification = function(title, subject, msg, icon, iconType)
+	SetNotificationTextEntry('STRING')
+	AddTextComponentSubstringPlayerName(msg)
+	SetNotificationMessage(icon, icon, false, iconType, title, subject)
+	DrawNotification(false, false)
+end
+
+ARP.ShowHelpNotification = function(msg)
+	BeginTextCommandDisplayHelp('STRING')
+	AddTextComponentSubstringPlayerName(msg)
+	EndTextCommandDisplayHelp(0, false, true, -1)
+end

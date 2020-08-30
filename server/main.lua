@@ -48,12 +48,12 @@ AddEventHandler('arp_framework:OnItemDrop', function(name, amount, coords)
 end)
 
 RegisterNetEvent('arp_framework:OnItemPickup')
-AddEventHandler('arp_framework:OnItemPickup', function(index, coords)
+AddEventHandler('arp_framework:OnItemPickup', function(index)
     local _source = source
 
-    if (Drops[index] ~= nil) then
-        PlayerData[_source].inventory.AddItem(Drops[index].name, Drops[index].amount)
-        Drops[index] = nil
+    if (Drops.List[index] ~= nil) then
+        PlayerData[_source].inventory.AddItem(Drops.List[index].name, Drops.List[index].amount)
+        Drops.List[index].name = nil
         TriggerClientEvent('arp_framework:OnDropListChange', -1, Drops.List, index, 'pickup')
     else
         print("Illegal call")

@@ -60,7 +60,7 @@ AddEventHandler('arp_framework:OnDropListChange', function(drops, index, action)
             Objects[index] = newObj
         end)
     else
-        ARP.Game.DeleteObject(Objects[index])
+        ARP.World.DeleteObject(Objects[index])
 	    Objects[index] = nil
     end
 end)

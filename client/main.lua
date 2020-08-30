@@ -39,8 +39,7 @@ local function PlayerLoaded(data)
     TriggerEvent('arp_framework:PlayerReady', ARP.Player)
     Citizen.Wait(5000)
     HandleDrops()
-    TriggerServerEvent('arp_framework:OnItemDrop', 'chips', 1, GetEntityCoords(GetPlayerPed(-1)))
-    print(string.format("Player coords coords: %s", json.encode(GetEntityCoords(GetPlayerPed(-1)))))
+
 end
 
 RegisterNetEvent('arp_framework:PlayerLoaded')
@@ -59,11 +58,18 @@ AddEventHandler('playerSpawned', LoadPlayer)
 
 function GetCloseDrops(playerCoords)
     local closeObject  = {}
+    local isEmpty      = true
 
     for i = 1, #Drops, 1 do
-        if (Drops[i] ~= nil and GetDistanceBetweenCoords(playerCoords, Drops[i].coords) < 10) then
-            table.insert(closeObject, Drops[i])
+        if (Drops[i].name ~= nil and GetDistanceBetweenCoords(playerCoords, Drops[i].coords) < 10) then
+            closeObject[i] = Drops[i]
+            if (isEmpty) then
+                isEmpty = false
+            end
         end
+    end
+    if (isEmpty) then
+        return (nil)
     end
     return (closeObject)
 end
@@ -72,22 +78,30 @@ function HandleDrops()
     Citizen.CreateThread(function()
         local drops = {}
         local playerCoords = nil
+        local distance     = nil
+        local playerPed    = nil
 
         while (true) do
             Citizen.Wait(0)
-            playerCoords = GetEntityCoords(GetPlayerPed(-1))
-            drops = GetCloseDrops(playerCoords)
-            if (drops[1] == nil) then
+
+            playerPed    = GetPlayerPed(-1)
+            playerCoords = GetEntityCoords(playerPed)
+            drops        = GetCloseDrops(playerCoords)
+            if (drops == nil) then
                 Citizen.Wait(3000)
                 print('not')
             else
-                for i = 1, #drops, 1 do
-                    if GetDistanceBetweenCoords(playerCoords, drops[i].coords) <= 5 then
+                for k, v in pairs(drops) do
+                    distance = GetDistanceBetweenCoords(playerCoords, v.coords)
+                    if distance <= 5 then
                         ARP.World.DrawText3D({
-                            x = drops[i].coords.x,
-                            y = drops[i].coords.y,
-                            z = drops[i].coords.z + 0.25
-                        }, string.format('%s x%d', drops[i].label, drops[i].amount))
+                            x = v.coords.x,
+                            y = v.coords.y,
+                            z = v.coords.z + 0.25
+                        }, string.format('%s x%d', v.label, v.amount))
+                    end
+                    if (distance <= 1.0 and IsPedOnFoot(playerPed)) then
+                        TriggerServerEvent('arp_framework:OnItemPickup', tonumber(k))
                     end
                 end
             end
