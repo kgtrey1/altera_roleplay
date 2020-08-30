@@ -88,5 +88,7 @@ function CreatePlayerObject(data)
         return (self.inventory.list)
     end
 
+    self.job = data.job
+
     return (self)
 end

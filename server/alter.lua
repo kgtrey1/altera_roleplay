@@ -1,7 +1,6 @@
-function CreateAlter(source, steamid, license, registered, identity, money, inventory)
+function CreateAlter(source, steamid, license, registered, identity, money, inventory, job)
     local self      = {}
 
-    print(json.encode(money))
     -- Game related data.
     self.source     = source
     self.steamid    = steamid
@@ -308,6 +307,26 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
     end
 
     self.inventory.GetWeight()
+
+    -- Job
+
+    self.job = job
+
+
+    self.job.JobIsWhitelisted = function()
+        return (self.job.whitelisted)
+    end
+
+    self.GetJob = function()
+        return ({
+            whitelisted = self.job.whitelisted,
+            name        = self.job.name,
+            label       = self.job.label,
+            enterprise  = self.job.enterprise,
+            grade       = self.job.grade,
+            data        = self.job.data
+        })
+    end
 
     return (self)
 end

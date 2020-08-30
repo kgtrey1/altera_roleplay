@@ -1,3 +1,45 @@
+local function BuildJob(job)
+    local jobObject   = {}
+    local existingJob = ARP.Jobs.GetJob(job.jobname)
+
+    jobObject.whitelisted = existingJob.whitelisted
+    jobObject.name        = existingJob.name
+    jobObject.label       = existingJob.label
+    if (jobObject.whitelisted) then
+        jobObject.enterprise  = job.enterprise
+        jobObject.grade       = job.grade
+    else
+        jobObject.enterprise  = 'none'
+        jobObject.grade       = 1
+    end
+    jobObject.data = ARP.Jobs.GetGradeData(jobObject.name, jobObject.grade)
+    return (jobObject)
+end
+
+local function BuildDefaultJob()
+    local unemployedJob = ARP.Jobs.GetJob('unemployed')
+    local job           = {}
+
+    job.whitelisted = unemployedJob.whitelisted
+    job.name        = unemployedJob.name
+    job.label       = unemployedJob.label
+    job.enterprise  = 'none'
+    job.grade       = 1
+    job.data        = ARP.Jobs.GetGradeData('unemployed', 1)
+    return (job)
+end
+
+local function GetPlayerJob(steamid)
+    local result = MySQL.Sync.fetchAll("SELECT * FROM employee WHERE steamid = @identifier", {
+		['@identifier'] = steamid
+    })
+
+    if (result[1] == nil) then
+        return (BuildDefaultJob())
+    end
+    return (BuildJob(result[1]))
+end
+
 -- Inventory functions
 
 local function BuildInventory(inventory)
@@ -112,12 +154,13 @@ local function LoadPlayer()
     local identity      = GetPlayerIdentity(steamid)
     local money         = GetPlayerMoney(steamid)
     local inventory     = GetPlayerInventory(steamid)
+    local job           = GetPlayerJob(steamid)
 
     if (identity.firstname ~= "undefined") then
-        PlayerData[_source] = CreateAlter(_source, steamid, license, true, identity, money, inventory)
+        PlayerData[_source] = CreateAlter(_source, steamid, license, true, identity, money, inventory, job)
         TriggerClientEvent('arp_framework:PlayerLoaded', _source, ARP.BuildClientObject(_source))
     else
-        PlayerData[_source] = CreateAlter(_source, steamid, license, false, identity, money, inventory)
+        PlayerData[_source] = CreateAlter(_source, steamid, license, false, identity, money, inventory, job)
         TriggerClientEvent('arp_register:OpenRegistrationForm', _source)
     end
     return

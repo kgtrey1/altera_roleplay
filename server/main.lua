@@ -8,7 +8,39 @@ end
 RegisterNetEvent('arp_framework:UpdatePlayerPosition')
 AddEventHandler('arp_framework:UpdatePlayerPosition', UpdatePlayerPosition)
 
-MySQL.ready(function()
+function GetGrades()
+    MySQL.Async.fetchAll('SELECT * from grades', {}, function(result)
+        local grade     = 0
+        local jobname   = ''
+
+        for i = 1, #result, 1 do
+            jobname = tostring(result[i].jobname)
+            grade   = tonumber(result[i].grade)
+            ARP.Jobs.List[jobname].grades[grade]        = {}
+            ARP.Jobs.List[jobname].grades[grade].name   = result[i].name
+            ARP.Jobs.List[jobname].grades[grade].label  = result[i].label
+            ARP.Jobs.List[jobname].grades[grade].rank   = result[i].grade
+            ARP.Jobs.List[jobname].grades[grade].salary = result[i].salary
+            ARP.Jobs.List[jobname].grades[grade].skin_m = json.decode(result[i].skin_m)
+            ARP.Jobs.List[jobname].grades[grade].skin_f = json.decode(result[i].skin_f)
+        end
+    end)
+end
+
+function InitJobs()
+    MySQL.Async.fetchAll('SELECT * from jobs', {}, function(result)
+        for i = 1, #result, 1 do
+            ARP.Jobs.List[result[i].name]               = {}
+            ARP.Jobs.List[result[i].name].name          = result[i].name
+            ARP.Jobs.List[result[i].name].label         = result[i].label
+            ARP.Jobs.List[result[i].name].whitelisted   = result[i].whitelisted
+            ARP.Jobs.List[result[i].name].grades        = {}
+        end
+        GetGrades()
+    end)
+end
+
+function InitItems()
     MySQL.Async.fetchAll('SELECT * from items', {}, function(result)
         for i = 1, #result, 1 do
             Items[result[i].name] = {}
@@ -17,8 +49,15 @@ MySQL.ready(function()
             Items[result[i].name].volume    = result[i].volume
             Items[result[i].name].texture   = result[i].texture
             Items[result[i].name].usable    = result[i].usable
-            print(json.encode(Items[result[i].name]))
         end
+    end)
+end
+
+MySQL.ready(function()
+    Citizen.CreateThread(function()
+        Citizen.Wait(3000)
+        InitJobs()
+        InitItems()
     end)
 end)
 

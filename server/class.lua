@@ -9,6 +9,7 @@ Items        = {}
 Drops        = {}
 Drops.List   = {}
 Drops.Ticket = 1
+
 --
 -- Player data
 --
@@ -21,6 +22,7 @@ ARP.BuildClientObject = function(source)
     obj.position    = Alter.GetPosition()
     obj.identity    = Alter.GetIdentity()
     obj.inventory   = Alter.GetInventory()
+    obj.job         = Alter.GetJob()
     return (obj)
 end
 
@@ -89,4 +91,22 @@ ARP.GetLicenseById = function(id)
     end
 end
 
--- Updates player
+-- Jobs
+
+ARP.Jobs = {}
+
+ARP.Jobs.List = {}
+
+ARP.Jobs.GetJob = function(jobname)
+    if (ARP.Jobs.List[jobname] ~= nil) then
+        return (ARP.Jobs.List[jobname])
+    end
+    return (nil)
+end
+
+ARP.Jobs.GetGradeData = function(jobname, grade)
+    if (ARP.Jobs.List[jobname] ~= nil and ARP.Jobs.List[jobname].grades[grade]) then
+        return (ARP.Jobs.List[jobname].grades[grade])
+    end
+    return (nil)
+end
