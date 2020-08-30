@@ -4,6 +4,13 @@ TriggerEvent('arp_framework:FetchObject', function(obj)
     ARP = obj
 end)
 
+local function AddMoneyAccount(Alter)
+    MySQL.Sync.execute('INSERT INTO money (steamid, cash) VALUES(@steamid, @cash)', {
+        ['@cash']       = Alter.money.GetCash(),
+        ['@steamid']    = Alter.GetSteamid()
+    })
+end
+
 local function AddPlayerToDb(source, data)
     MySQL.Sync.execute('INSERT INTO users                                       \
     (steamid, license, firstname, lastname, birthdate, gender, height, position) VALUES   \
@@ -19,7 +26,6 @@ local function AddPlayerToDb(source, data)
         ['@position']   = data.position
 	})
 end
-
 
 function Capitalize(str)
     return (str:gsub("^%l", string.upper))
@@ -50,6 +56,7 @@ function RegisterPlayer(playerData)
     newPlayer.height = playerData.height
     newPlayer.position = json.encode({x = 0, y = 0, z = 0})
     AddPlayerToDb(_source, newPlayer)
+    AddMoneyAccount(Alter)
 
     -- Updating the player data
     Alter.identity.SetFirstname(newPlayer.firstName)
@@ -57,7 +64,6 @@ function RegisterPlayer(playerData)
     Alter.identity.SetBirthdate(newPlayer.birthdate)
     Alter.identity.SetGender(newPlayer.gender)
     Alter.identity.SetHeight(newPlayer.height)
-    Alter.identity.SetSkin("")
     Alter.SetRegistrationStatus(true)
 
     -- Telling the client that the player is loaded.
