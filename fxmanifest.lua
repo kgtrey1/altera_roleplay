@@ -11,6 +11,7 @@ description     'Altera enterprise system'
 version         '0.0.1'
 
 server_scripts {
+    '@mysql-async/lib/MySQL.lua',
     'server/main.lua'
 }
 
