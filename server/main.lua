@@ -44,6 +44,7 @@ function InitItems()
     MySQL.Async.fetchAll('SELECT * from items', {}, function(result)
         for i = 1, #result, 1 do
             Items[result[i].name] = {}
+            Items[result[i].name].name      = result[i].name
             Items[result[i].name].label     = result[i].label
             Items[result[i].name].weight    = result[i].weight
             Items[result[i].name].volume    = result[i].volume

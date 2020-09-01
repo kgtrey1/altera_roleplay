@@ -110,3 +110,11 @@ ARP.Jobs.GetGradeData = function(jobname, grade)
     end
     return (nil)
 end
+
+-- Items
+
+ARP.Item = {}
+
+ARP.Item.GetItem = function(name)
+    return (Items[name])
+end
