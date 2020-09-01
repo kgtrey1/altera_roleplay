@@ -12,18 +12,21 @@ RegisterNetEvent('arp_framework:OnCashChange')
 AddEventHandler('arp_framework:OnCashChange', function(cash)
     ARP.Player.money.cash = cash
     TriggerEvent('arp_framework:CashChange')
+    TriggerEvent('arp_hud:UpdatePlayerMoney', 'cash', cash)
 end)
 
 RegisterNetEvent('arp_framework:OnBankChange')
 AddEventHandler('arp_framework:OnBankChange', function(bank)
     ARP.Player.money.bank = bank
     TriggerEvent('arp_framework:BankChange')
+    TriggerEvent('arp_hud:UpdatePlayerMoney', 'bank', bank)
 end)
 
 RegisterNetEvent('arp_framework:OnDirtyChange')
 AddEventHandler('arp_framework:OnDirtyChange', function(dirty)
     ARP.Player.money.dirty = dirty
     TriggerEvent('arp_framework:DirtyChange')
+    TriggerEvent('arp_hud:UpdatePlayerMoney', 'dirty', dirty)
 end)
 
 RegisterNetEvent('arp_framework:OnBanknameChange')
