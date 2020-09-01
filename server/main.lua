@@ -8,13 +8,6 @@
 ENT = {}
 ARP = nil
 
-function AlterCanOpenSafe(Alter, enterprise)
-	if (Alter.job.GetEnterprise() == enterprise and Alter.job.GetGrade() > 1) then
-		return (true)
-	end
-	return (false)
-end
-
 TriggerEvent('arp_framework:FetchObject', function(Object)
 	ARP = Object
 end)
@@ -35,36 +28,8 @@ function DeserializeSafe(safe)
 	return (newSafe)
 end
 
-function SafeWithdrawal(enterprise, item, amount)
-	local _source 	= source
-	local Alter		= ARP.GetPlayerById(_source)
-	local Item		= ARP.Item.GetItem(item)
-
-	if (ENT[enterprise] == nil or not AlterCanOpenSafe(Alter, enterprise) or Item == nil or amount < 1) then
-		print("illegal")
-	elseif (ENT[enterprise].safe[item] == nil or ENT[enterprise].safe[item].amount < amount) then
-		print("also illegal")
-	else
-		ENT[enterprise].safe[item].amount = ENT[enterprise].safe[item].amount - amount
-		Alter.inventory.AddItem(item, amount)
-	end
-	return
-end
-
-RegisterNetEvent('arp_enterprise:WithdrawItem')
-AddEventHandler('arp_enterprise:WithdrawItem', SafeWithdrawal)
-
 ARP.RegisterServerCallback('arp_enterprise:GetEnterpriseData', function(source, cb, name)
 	cb(ENT[name])
-end)
-
-ARP.RegisterServerCallback('arp_entreprise:OpenSafe', function(source, cb, enterprise)
-	Alter = ARP.GetPlayerById(source)
-	if (Alter.job.GetEnterprise() == enterprise and Alter.job.GetGrade() > 1) then
-		cb(true, ENT[enterprise].safe)
-	else
-		cb(false, nil)
-	end
 end)
 
 MySQL.ready(function()
