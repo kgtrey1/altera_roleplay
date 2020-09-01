@@ -64,10 +64,10 @@ div.separator { display: block; clear: both; width: 100%; }
 .info.player #money div[id] { float: right; } 
 
 .info.player #money { clear: both; }
-.info.player #money #wallet i { background: linear-gradient(180deg, #18b70b 0%, #128c08 100%); }
-.info.player #money #blackMoney i { background: linear-gradient(180deg, #474747 0%, #252525 100%); }
+.info.player #money #cash i { background: linear-gradient(180deg, #18b70b 0%, #128c08 100%); }
+.info.player #money #dirty i { background: linear-gradient(180deg, #474747 0%, #252525 100%); }
 .info.player #money #bank i { background: linear-gradient(180deg, #c70a0a 0%, #960505 100%); }
-.info.player #money #society i { background: linear-gradient(180deg, #874c14 0%, #6a3c10 100%); }
+.info.player #money #enterprise i { background: linear-gradient(180deg, #874c14 0%, #6a3c10 100%); }
 
 /*.info.player #money #wallet i:before  { content: '\f153';  }*/
 

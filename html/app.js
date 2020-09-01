@@ -66,10 +66,10 @@ window.onload = function () {
 				if (config.showServerLogo == true) { document.querySelector('.info.server').style.display = 'block'; }
 				else if (config.showServerLogo == false) { document.querySelector('.info.player').style.top = '55px'; }
 
-				if (config.showWalletMoney == true) { document.querySelector('#wallet').style.display = 'block'; }
+				if (config.showWalletMoney == true) { document.querySelector('#cash').style.display = 'block'; }
 				if (config.showBankMoney == true) { document.querySelector('#bank').style.display = 'block'; }
-				if (config.showBlackMoney == true) { document.querySelector('#blackMoney').style.display = 'block'; }
-				if (config.showSocietyMoney == true) { document.querySelector('#society').style.display = 'block'; }
+				if (config.showBlackMoney == true) { document.querySelector('#dirty').style.display = 'block'; }
+				if (config.showSocietyMoney == true) { document.querySelector('#enterprise').style.display = 'block'; }
 
 				if (config.showHealth == true) { document.querySelector('#health').style.display = 'block'; }
 				if (config.showArmor == true) { document.querySelector('#armor').style.display = 'block'; }
@@ -90,7 +90,7 @@ window.onload = function () {
 				if (data.task == 'enable') { document.querySelector('#'+data.value).style.display = 'block'; }
 				else if (data.task == 'disable') { document.querySelector('#'+data.value).style.display = 'none'; }
 			},
-			setText: function(data) {
+			SetText: function(data) {
 				var key = document.querySelector('#'+data.id+' span');
 				var html = data.value;
 				saferInnerHTML(key, html);
@@ -101,11 +101,11 @@ window.onload = function () {
 			},
 			setLogo: function(data) { document.querySelector('#server img').setAttribute('src', data.value); },
 			
-			setMoney: function(data) {
+			SetMoney: function(data) {
 				data.value = data.value.toLocaleString();
 				var oldValue = document.querySelector('#'+data.id+' span').innerHTML;
 				if (oldValue != data.value) { document.querySelector('#'+data.id).classList.add('pulse'); }
-				eventCallback['setText'](data);
+				eventCallback['SetText'](data);
 			},
 
 
