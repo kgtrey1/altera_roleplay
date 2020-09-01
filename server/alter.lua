@@ -242,10 +242,8 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
     self.inventory.GetWeight = function()
         local weight = 0
 
-        print('called')
         for k, v in pairs(self.inventory.list) do
             weight = weight + v.totalweight
-            print(v.name)
         end
         self.inventory.weight = weight
     end
@@ -312,9 +310,16 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
 
     self.job = job
 
-
     self.job.JobIsWhitelisted = function()
         return (self.job.whitelisted)
+    end
+
+    self.job.GetEnterprise = function()
+        return (self.job.enterprise)
+    end
+
+    self.job.GetGrade = function()
+        return (self.job.grade)
     end
 
     self.GetJob = function()

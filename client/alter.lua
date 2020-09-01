@@ -90,5 +90,20 @@ function CreatePlayerObject(data)
 
     self.job = data.job
 
+    self.job.GetEnterprise = function()
+        return (self.job.enterprise)
+    end
+
+    self.GetJob = function()
+        return ({
+            name        = self.job.name,
+            label       = self.job.label,
+            whitelisted = self.job.whitelisted,
+            enterprise  = self.job.enterprise,
+            grade       = self.job.grade,
+            data        = self.job.data
+        })
+    end
+
     return (self)
 end
