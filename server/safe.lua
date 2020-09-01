@@ -10,11 +10,10 @@ function SafeDeposit(enterprise, item, amount)
 		print("also illegal")
     else
         if (ENT[enterprise].safe[item] == nil) then
-            ENT[enterprise].safe[item] = {
-                name    = Item.name,
-                label   = Item.label,
-                amount  = amount
-            }
+			ENT[enterprise].safe[item] 		   	= {}
+			ENT[enterprise].safe[item].name    	= Item.name
+			ENT[enterprise].safe[item].label   	= Item.label
+			ENT[enterprise].safe[item].amount  	= amount
         else
             ENT[enterprise].safe[item].amount = ENT[enterprise].safe[item].amount + amount
         end
@@ -45,7 +44,7 @@ end
 RegisterNetEvent('arp_enterprise:WithdrawItem')
 AddEventHandler('arp_enterprise:WithdrawItem', SafeWithdrawal)
 
-ARP.RegisterServerCallback('arp_entreprise:OpenSafe', function(source, cb, enterprise)
+ARP.RegisterServerCallback('arp_enterprise:OpenSafe', function(source, cb, enterprise)
 	Alter = ARP.GetPlayerById(source)
 	if (Alter.job.GetEnterprise() == enterprise and Alter.job.GetGrade() > 1) then
 		cb(true, ENT[enterprise].safe)

@@ -12,10 +12,13 @@ version         '0.0.1'
 
 server_scripts {
     '@mysql-async/lib/MySQL.lua',
-    'server/main.lua'
+    'server/main.lua',
+    'server/acl.lua',
+    'server/safe.lua'
 }
 
 client_script {
+    'client/safe.lua',
     'client/main.lua'
 }
 
