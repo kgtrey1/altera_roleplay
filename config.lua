@@ -11,6 +11,7 @@ Config.Animations = {
 	{
 		name  = 'festives',
 		label = 'Festives',
+		menu  = 'arp_animations:festives',
 		items = {
 			{label = "Fumer une cigarette", type = "scenario", data = {anim = "WORLD_HUMAN_SMOKING"}},
 			{label = "Jouer de la musique", type = "scenario", data = {anim = "WORLD_HUMAN_MUSICIAN"}},
@@ -28,6 +29,7 @@ Config.Animations = {
 	{
 		name  = 'greetings',
 		label = 'Salutations',
+		menu  = 'arp_animations:greetings',
 		items = {
 			{label = "Saluer", type = "anim", data = {lib = "gestures@m@standing@casual", anim = "gesture_hello"}},
 			{label = "Serrer la main", type = "anim", data = {lib = "mp_common", anim = "givetake1_a"}},
@@ -39,6 +41,7 @@ Config.Animations = {
 	{
 		name  = 'work',
 		label = 'Travail',
+		menu  = 'arp_animations:work',
 		items = {
 			{label = "Suspect : se rendre à la police", type = "anim", data = {lib = "random@arrests@busted", anim = "idle_c"}},
 			{label = "Pêcheur", type = "scenario", data = {anim = "world_human_stand_fishing"}},
@@ -63,6 +66,7 @@ Config.Animations = {
 	{
 		name  = 'humors',
 		label = 'Humeurs',
+		menu  = 'arp_animations:humors',
 		items = {
 			{label = "Féliciter", type = "scenario", data = {anim = "WORLD_HUMAN_CHEERING"}},
 			{label = "Super", type = "anim", data = {lib = "mp_action", anim = "thanks_male_06"}},
@@ -88,6 +92,7 @@ Config.Animations = {
 	{
 		name  = 'sports',
 		label = 'Sports',
+		menu  = 'arp_animations:sports',
 		items = {
 			{label = "Montrer ses muscles", type = "anim", data = {lib = "amb@world_human_muscle_flex@arms_at_side@base", anim = "base"}},
 			{label = "Barre de musculation", type = "anim", data = {lib = "amb@world_human_muscle_free_weights@male@barbell@base", anim = "base"}},
@@ -99,6 +104,7 @@ Config.Animations = {
 	{
 		name  = 'misc',
 		label = 'Divers',
+		menu  = 'arp_animations:misc',
 		items = {
 			{label = "Boire un café", type = "anim", data = {lib = "amb@world_human_aa_coffee@idle_a", anim = "idle_a"}},
 			{label = "S'asseoir", type = "anim", data = {lib = "anim@heists@prison_heistunfinished_biztarget_idle", anim = "target_idle"}},
@@ -115,6 +121,7 @@ Config.Animations = {
 	{
 		name  = 'attitudem',
 		label = 'Attitudes',
+		menu  = 'arp_animations:attitudem',
 		items = {
 			{label = "Normal M", type = "attitude", data = {lib = "move_m@confident", anim = "move_m@confident"}},
 			{label = "Normal F", type = "attitude", data = {lib = "move_f@heels@c", anim = "move_f@heels@c"}},
@@ -144,6 +151,7 @@ Config.Animations = {
 	{
 		name  = 'porn',
 		label = 'PEGI 21',
+		menu  = 'arp_animations:porn',
 		items = {
 			{label = "Homme se faire su*** en voiture", type = "anim", data = {lib = "oddjobs@towing", anim = "m_blow_job_loop"}},
 			{label = "Femme faire une gaterie en voiture", type = "anim", data = {lib = "oddjobs@towing", anim = "f_blow_job_loop"}},
