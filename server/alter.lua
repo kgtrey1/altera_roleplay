@@ -1,4 +1,4 @@
-function CreateAlter(source, steamid, license, registered, identity, money, inventory, job)
+function CreateAlter(source, steamid, license, registered, identity, money, inventory, job, stats)
     local self      = {}
 
     -- Game related data.
@@ -297,6 +297,20 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         TriggerClientEvent('arp_framework:OnInventoryChange', self.source, self.inventory.list, self.inventory.weight)
     end
 
+    self.CanCarryItem = function(item, amount)
+        local weight = 0
+
+        if (Items[name] == nil or amount < 0) then
+            print(string.format("ARP> Invalid call to CanCarryItem. (User: %s, Obj: %s, Num: %d)", self.steamid, name, amount))
+            return
+        end
+        weight = Items[name].weight * amount
+        if (weight + self.inventory.weight <= self.stats.attr.weight) then
+            return (true)
+        end
+        return (false)
+    end
+
     self.GetInventory = function()
         return ({
             list   = self.inventory.list,
@@ -330,6 +344,33 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
             enterprise  = self.job.enterprise,
             grade       = self.job.grade,
             data        = self.job.data
+        })
+    end
+
+    -- Stats
+
+    self.stats = {}
+    
+    self.stats.list = stats
+    self.stats.attr = {}
+
+    self.stats.GetWeight = function()
+        return (self.stats.attr.weight)
+    end
+
+    self.stats.OnStrengthLevelUp = function()
+        self.stats.attr.maxhealth    = Config.Stats.MaxHealth[self.stats.list.strengthLevel]
+        self.stats.attr.healthregen  = Config.Stats.HealthRegen[self.stats.list.strengthLevel]
+        self.stats.attr.weight       = Config.Stats.Weight[self.stats.list.strengthLevel]
+    end
+
+    self.stats.OnStrengthLevelUp()
+
+
+    self.GetStats = function()
+        return ({
+            list = self.stats.list,
+            attr = self.stats.attr
         })
     end
 

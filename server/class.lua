@@ -23,6 +23,7 @@ ARP.BuildClientObject = function(source)
     obj.identity    = Alter.GetIdentity()
     obj.inventory   = Alter.GetInventory()
     obj.job         = Alter.GetJob()
+    obj.stats       = Alter.GetStats()
     return (obj)
 end
 

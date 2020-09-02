@@ -88,6 +88,8 @@ function CreatePlayerObject(data)
         return (self.inventory.list)
     end
 
+    -- job
+
     self.job = data.job
 
     self.job.GetEnterprise = function()
@@ -104,6 +106,10 @@ function CreatePlayerObject(data)
             data        = self.job.data
         })
     end
+
+    --
+
+    self.stats = data.stats
 
     return (self)
 end

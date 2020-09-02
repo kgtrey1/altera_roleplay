@@ -1,3 +1,33 @@
+-- Stats
+
+local function BuildDefaultStats()
+    return ({
+        strengthLevel    = 1,
+        strengthProgress = 0.0
+    })
+end
+
+local function BuildStats(stats)
+    local statsObject = {}
+
+    statsObject.strengthLevel    = stats.str_lvl
+    statsObject.strengthProgress = stats.str_prog
+    return (statsObject)
+end
+
+local function GetPlayerStats(steamid)
+    local result = MySQL.Sync.fetchAll("SELECT * FROM stats WHERE steamid = @identifier", {
+		['@identifier'] = steamid
+    })
+
+    if (result[1] == nil) then
+        return (BuildDefaultStats())
+    end
+    return (BuildStats(result[1]))
+end
+
+-- Jobs
+
 local function BuildJob(job)
     local jobObject   = {}
     local existingJob = ARP.Jobs.GetJob(job.jobname)
@@ -155,12 +185,13 @@ local function LoadPlayer()
     local money         = GetPlayerMoney(steamid)
     local inventory     = GetPlayerInventory(steamid)
     local job           = GetPlayerJob(steamid)
+    local stats         = GetPlayerStats(steamid)
 
     if (identity.firstname ~= "undefined") then
-        PlayerData[_source] = CreateAlter(_source, steamid, license, true, identity, money, inventory, job)
+        PlayerData[_source] = CreateAlter(_source, steamid, license, true, identity, money, inventory, job, stats)
         TriggerClientEvent('arp_framework:PlayerLoaded', _source, ARP.BuildClientObject(_source))
     else
-        PlayerData[_source] = CreateAlter(_source, steamid, license, false, identity, money, inventory, job)
+        PlayerData[_source] = CreateAlter(_source, steamid, license, false, identity, money, inventory, job, stats)
         TriggerClientEvent('arp_register:OpenRegistrationForm', _source)
     end
     return

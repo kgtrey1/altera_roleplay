@@ -39,7 +39,7 @@ local function PlayerLoaded(data)
     TriggerEvent('arp_framework:PlayerReady', ARP.Player)
     Citizen.Wait(5000)
     HandleDrops()
-
+    HandleStats()
 end
 
 RegisterNetEvent('arp_framework:PlayerLoaded')
@@ -89,7 +89,6 @@ function HandleDrops()
             drops        = GetCloseDrops(playerCoords)
             if (drops == nil) then
                 Citizen.Wait(3000)
-                print('not')
             else
                 for k, v in pairs(drops) do
                     distance = GetDistanceBetweenCoords(playerCoords, v.coords)
@@ -104,6 +103,63 @@ function HandleDrops()
                         TriggerServerEvent('arp_framework:OnItemPickup', tonumber(k))
                     end
                 end
+            end
+        end
+    end)
+end
+
+Citizen.CreateThread(function()
+    while (true) do
+        Citizen.Wait(0)
+        if IsControlJustPressed(1, 47) then
+            TriggerEvent('arp_enterprise:OpenSafeMenu', 'ent_bennys')
+        end
+    end
+end)
+
+function HandleStats()
+    Config.Limit            = 10000
+    Config.OnRegen          = false
+    Config.HealthPerRegen   = 100
+    SetPedMaxHealth(PlayerPedId(), 10000)
+    SetEntityHealth(PlayerPedId(), 101)
+    Citizen.CreateThread(function()
+        
+        while true do
+            Citizen.Wait(0)
+            SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)
+            print(GetEntityHealth(PlayerPedId()))
+        end
+    end)
+    Citizen.CreateThread(function()
+        local oldHealth     = 0
+        local currentHealth = 0
+        local playerPed     = nil
+    
+        while (true) do
+            playerPed     = PlayerPedId()
+            currentHealth = GetEntityHealth(playerPed)
+            if (currentHealth < Config.Limit) then
+                Config.OnRegen = true
+                oldHealth = currentHealth
+                Citizen.Wait(5000)
+                while (Config.OnRegen) do
+                    currentHealth = GetEntityHealth(playerPed)
+                    if (currentHealth == oldHealth) then
+                        if (currentHealth + Config.HealthPerRegen < Config.Limit) then
+                            SetEntityHealth(playerPed, currentHealth + Config.HealthPerRegen)
+                            oldHealth = currentHealth + Config.HealthPerRegen
+                            Citizen.Wait(1000)
+                        else
+                            SetEntityHealth(playerPed, Config.Limit)
+                            Config.OnRegen = false
+                        end
+                    else
+                        Config.OnRegen = false
+                    end
+                end
+            else
+                Citizen.Wait(3000)
             end
         end
     end)

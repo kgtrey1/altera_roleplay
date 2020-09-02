@@ -91,7 +91,7 @@ RegisterNetEvent('arp_framework:OnItemPickup')
 AddEventHandler('arp_framework:OnItemPickup', function(index)
     local _source = source
 
-    if (Drops.List[index] ~= nil) then
+    if (Drops.List[index].name ~= nil and PlayerData[_source].CanCarryItem(Drops.List[index].name, Drops.List[index].amount)) then
         PlayerData[_source].inventory.AddItem(Drops.List[index].name, Drops.List[index].amount)
         Drops.List[index].name = nil
         TriggerClientEvent('arp_framework:OnDropListChange', -1, Drops.List, index, 'pickup')
