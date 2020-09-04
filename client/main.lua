@@ -10,6 +10,7 @@ Action  = nil
 Items 	= {}
 Clothes = {}
 Outfits = {}
+Owned   = {}
 Texture = {}    
 
 TriggerEvent('arp_framework:FetchObject', function(object)
@@ -37,9 +38,10 @@ end
 function SynchronizeData()
     ARP.TriggerServerCallback('arp_stylizer:GetPlayerData', function(savedData)
         Outfits = savedData.saved
+        Owned   = savedData.owned
         for k, v in pairs(savedData.owned) do
-            for i = 1, #v.value, 1 do
-                Items[v.name].ListF[v.value[i]] = 'Possédé'
+            for i = 1, #v, 1 do
+                Items[k].ListF[v[i]] = 'Possédé'
             end
         end
         LoadClothesData()
@@ -61,8 +63,6 @@ function CreateRestrictedTable(component, maxVal, Restricted, texture)
     Items[component.name].Component  = component
     Items[component.name].restricted = true
     if (texture ~= nil) then
-        
-
         Items[component.name].textured         = true
         Items[component.name].Texture          = {}
         Items[component.name].Texture.list     = {}
@@ -77,9 +77,7 @@ function CreateRestrictedTable(component, maxVal, Restricted, texture)
             table.insert(Items[component.name].ListR, tostring(i))
             table.insert(Items[component.name].prices, Restricted[i])
             if (Items[component.name].textured) then
-                print(playerPed .. ' ' .. component.componentId .. ' ' .. i)
                 local textureList = CreateIndexList(GetNumberOfPedTextureVariations(playerPed, component.componentId, i))
-                print(GetNumberOfPedTextureVariations(playerPed, component.componentId, i))
                 table.insert(Items[component.name].Texture.list, textureList)
             end
             f = f + 1
@@ -92,13 +90,12 @@ end
 function CreateTable(component, maxVal, texture)
     local i = 1
     local playerPed = PlayerPedId()
+
     Items[component.name]            = {}
     Items[component.name].List       = {}
     Items[component.name].Component  = component
     Items[component.name].restricted = false
     if (texture ~= nil) then
-       
-
         Items[component.name].textured     = true
         Items[component.name].Texture      = {}
         Items[component.name].Texture.list = {}
@@ -122,7 +119,6 @@ function CreateIndexList(size)
     local i    = 1
     local list = {}
 
-    print(size)
     while (i <= size) do
         table.insert(list, i)
         i = i + 1
@@ -152,7 +148,6 @@ function CreateItemsTable(component, maxVal)
     local Restricted = IsTypeRestricted(component.name)
     local texture    = IsComponentTextured(component.name)
 
-    print(texture)
     if (Restricted == nil) then
         CreateTable(component, maxVal, texture)
     else
