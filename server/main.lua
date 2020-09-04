@@ -11,7 +11,7 @@ OwnedCloth[1] = {
     {name = 'shoes_1', value = {1, 2, 4}}
 }
 
-ARP.RegisterServerCallback('arp_stylizer:GetOwnedCloth', function(source, cb)
+ARP.RegisterServerCallback('arp_stylizer:GetPlayerData', function(source, cb)
     cb(Data[source])
 end)
 

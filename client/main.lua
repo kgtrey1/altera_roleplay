@@ -8,6 +8,7 @@
 ARP 	= nil
 Items 	= {}
 Clothes = {}
+Outfits = {}
 
 TriggerEvent('arp_framework:FetchObject', function(object)
 	ARP = object
@@ -27,10 +28,22 @@ function LoadClothesData()
             end
         end
     end
-    ARP.TriggerServerCallback('arp_stylizer:GetOwnedCloth', function(Object)
-        Clothes = Object
-    end, Clothes)
     return
+end
+
+function SynchronizeData(type)
+    ARP.TriggerServerCallback('arp_stylizer:GetPlayerData', function(savedData)
+        Outfits = savedData.saved
+        for (k, v in pairs savedData.owned) do
+            for i = 1, #v.value, 1 do
+                Items[v.name].ListF[v.value[i]] = 'Possédé'
+            end
+        end
+        LoadClothesData()
+        if (type == 'clothes') then
+            DrawClothesMenu()
+        end
+    end)
 end
 
 function CreateRestrictedTable(component, maxVal, Restricted)
@@ -89,7 +102,7 @@ function CreateItemsTable(component, maxVal)
     return
 end
 
-function LoadSkinData(components, maxVals)
+function LoadSkinData(components, maxVals, type)
     for i = 1, #components, 1 do
         for k, v in pairs(maxVals) do
             if (k == components[i].name) then
@@ -98,6 +111,6 @@ function LoadSkinData(components, maxVals)
             end
         end
     end
-    LoadClothesData()
+    SynchronizeData(type)
     return
 end
