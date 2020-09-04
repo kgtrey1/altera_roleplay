@@ -14,12 +14,24 @@ Config.Shops = {
 
 Config.List = {}
 
+Config.Textured = {
+	{ name = 'tshirt_1', 		texture = 'tshirt_2'	},
+	{ name = 'torso_1',  		texture = 'torso_2'		},
+	{ name = 'pants_1',			texture = 'pants_2'		},
+	{ name = 'shoes_1', 		texture = 'shoes_2'		},
+	{ name = 'mask_1',			texture = 'mask_2'		},
+	{ name = 'bproof_1', 		texture = 'bproof_2'	},
+	{ name = 'chain_1',			texture = 'chain_2'		},
+	{ name = 'helmet_1',		texture = 'helmet_2'	},
+	{ name = 'glasses_1',		texture = 'glasses_2'	},
+	{ name = 'watches_1',		texture = 'watches_2'	},
+	{ name = 'bracelets_1',		texture = 'bracelets_2'	},
+	{ name = 'bags_1',			texture = 'bags_2'		},
+	{ name = 'ears_1',			texture = 'ears_1'		}
+}
+
 Config.List.Clothes = {
-	'chain_1', 'chain_2', 'bracelets_1', 'bracelets_2',
-	'watches_1', 'watches_2', 'helmet_1', 'helmet_2', 'shoes_1', 
-	'shoes_2', 'pants_1', 'pants_2', 'arms', 'arms_2',
-	'decals_1', 'decals_2', 'torso_1', 'torso_2', 'tshirt_1',
-	'tshirt_2', 'ear_accessories', 'ear_accessories_color'
+	'tshirt_1', 'torso_1', 'arms', 'pants_1', 'shoes_1', 'chain_1', 'bracelets_1'
 }
 
 Config.Restricted = {
