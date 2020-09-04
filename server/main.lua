@@ -5,11 +5,18 @@ TriggerEvent('arp_framework:FetchObject', function(Object)
     ARP = Object
 end)
 
-OwnedCloth = {}
+ARP.RegisterServerCallback('arp_stylizer:BuyItem', function(source, cb, comp, offset, price)
+    local Alter = ARP.GetPlayerById(source)
 
-OwnedCloth[1] = {
-    {name = 'shoes_1', value = {1, 2, 4}}
-}
+    if (Alter.money.GetCash() >= price) then
+        Alter.money.RemoveCash(price)
+        if (Data[source].owned[comp] == nil) then
+            Data[source].owned[comp] = {}
+        end
+        table.insert(Data[source].owned[comp], offset)
+        cb(true, Data[source])
+    end
+end)
 
 ARP.RegisterServerCallback('arp_stylizer:GetPlayerData', function(source, cb)
     cb(Data[source])
@@ -24,18 +31,18 @@ function CreatePlayerEntry(Alter, source)
     }
     MySQL.Sync.execute('INSERT INTO clothes (steamid, owned, saved) VALUES (@steamid, @owned, @saved)', {
             ['@steamid']    = Alter.GetSteamid(),
-            ['@owned']      = json.encode(ownedClothes)
-            ['@saved']      = json.encode(savedOutfit)
+            ['@owned']      = json.encode(owned),    
+            ['@saved']      = json.encode(saved)
     })
-    Data[_source] = {}
-    Data[_source].owned = owned
-    Data[_source].saved = saved
+    Data[source] = {}
+    Data[source].owned = owned
+    Data[source].saved = saved
 end
 
-function GetPlayerData()
+function InitializePlayer()
     local _source = source
     local Alter = ARP.GetPlayerById(_source)
-    local result = MySQL.Sync.fetchAll("SELECT * FROM stats WHERE steamid = @identifier", {
+    local result = MySQL.Sync.fetchAll("SELECT * FROM clothes WHERE steamid = @identifier", {
 		['@identifier'] = Alter.GetSteamid()
     })
 
@@ -49,5 +56,5 @@ function GetPlayerData()
     return
 end
 
-RegisterNetEvent('arp_stylizer:GetPlayerData')
-AddEventHandler('arp_stylizer:GetPlayerData', GetPlayerData)
+RegisterNetEvent('arp_stylizer:InitializePlayer')
+AddEventHandler('arp_stylizer:InitializePlayer', InitializePlayer)
