@@ -31,7 +31,7 @@ end
 
 local function PlayerLoaded(data)
     ARP.Player = CreatePlayerObject(data)
-
+    NetworkSetEntityInvisibleToNetwork(PlayerPedId(), false)
     TeleportToLatestPosition(data.position)
     LoadPlayerSkin()
     Citizen.CreateThread(UpdatePlayerPosition)
@@ -128,7 +128,6 @@ function HandleStats()
         while true do
             Citizen.Wait(0)
             SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)
-            print(GetEntityHealth(PlayerPedId()))
         end
     end)
     Citizen.CreateThread(function()
