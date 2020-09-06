@@ -4,7 +4,7 @@
 fx_version      'bodacious'
 game            'gta5'
 description     'Altera Framework'
-version         '0.0.5'
+version         '0.2.5'
 
 server_scripts {
     '@mysql-async/lib/MySQL.lua',
