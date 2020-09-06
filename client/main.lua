@@ -61,7 +61,7 @@ local function DrawAnimationMenu()
 	MenuIsOpen = true
 	ARP.Menu.CloseAll()
 	ARP.Menu.Visible(MainMenu, false)
-	while (MenuIsOpen) do
+	while (MenuIsOpen and ARP.Player.CanOpenMenu()) do
 		Citizen.Wait(0)
 		for k, v in pairs(Config.Animations) do
 			DrawSubmenu(v)
@@ -73,13 +73,14 @@ local function DrawAnimationMenu()
 		end, function() end, false)
 		MenuIsOpen = VerifyMenuVisibility()
 	end
+	MenuIsOpen = false
 end
 
 function StartThread() 
 	Citizen.CreateThread(function()
 		while (true) do
 			Citizen.Wait(0)
-			if (IsControlJustPressed(1, 170)) then
+			if (IsControlJustPressed(1, 170) and ARP.Player.CanOpenMenu()) then
 				DrawAnimationMenu()
 			end
 		end

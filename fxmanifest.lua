@@ -8,10 +8,10 @@
 fx_version      'bodacious'
 game            'gta5'
 description     'Altera animation menu'
-version         '0.0.1'
+version         '1.0.0'
 dependency      'arp_framework'
 
-client_script {
+client_scripts {
     'config.lua',
     'client/main.lua'
 }
