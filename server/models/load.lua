@@ -1,3 +1,10 @@
+--
+-- ALTERA PROJECT, 2020
+-- ARP_Framework
+-- File description:
+-- Functions which load player on connection.
+--
+
 -- Stats
 
 local function BuildDefaultStats()

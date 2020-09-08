@@ -1,3 +1,10 @@
+--
+-- ALTERA PROJECT, 2020
+-- ARP_Framework
+-- File description:
+-- Functions which save player on drop.
+--
+
 local function SavePlayerInventory(source)
     local list      = {}
     local inventory = PlayerData[source].GetInventory()
