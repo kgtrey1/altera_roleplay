@@ -4,7 +4,6 @@
 -- Object that will be shared between scripts.
 
 ARP          = {}
-PlayerData   = {}
 Items        = {}
 Drops        = {}
 Drops.List   = {}
