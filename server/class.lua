@@ -10,10 +10,6 @@ Drops        = {}
 Drops.List   = {}
 Drops.Ticket = 1
 
---
--- Player data
---
-
 ARP.BuildClientObject = function(source)
     local Alter = ARP.GetPlayerById(source)
     local obj   = {}
@@ -40,35 +36,6 @@ ARP.GetPlayerBySteamid  = function(steamid)
     return (nil)
 end
 
--- Section done
--- Callbacks (server side implementation).
---
-
-ARP.ServerCallbacks = {} -- Contain all server callback.
-
-ARP.RegisterServerCallback = function(callbackName, functionPointer)
-    ARP.ServerCallbacks[callbackName] = functionPointer
-end
-
-ARP.TriggerServerCallback = function(callbackName, requestId, source, functionPointer, ...)
-    if (ARP.ServerCallbacks[callbackName] ~= nil) then
-        ARP.ServerCallbacks[callbackName](source, functionPointer, ...)
-    else
-        print(string.format("arp_framework: Cannot find callback '%s'.", callbackName))
-    end
-end
-
-RegisterNetEvent('arp:TriggerServerCallback')
-AddEventHandler('arp:TriggerServerCallback', function(callbackName, requestId, ...)
-    local _source = source
-
-    ARP.TriggerServerCallback(callbackName, requestId, _source, function(...)
-        TriggerClientEvent('arp:ServerCallback', _source, requestId, ...)
-    end, ...)
-end)
-
--- Utils function
-
 ARP.GetSteamIdById = function(id)
     local identifiers = GetPlayerIdentifiers(id)
     local steamid = nil
@@ -90,32 +57,4 @@ ARP.GetLicenseById = function(id)
             return (string.gsub(v, "license:", ""))
         end
     end
-end
-
--- Jobs
-
-ARP.Jobs = {}
-
-ARP.Jobs.List = {}
-
-ARP.Jobs.GetJob = function(jobname)
-    if (ARP.Jobs.List[jobname] ~= nil) then
-        return (ARP.Jobs.List[jobname])
-    end
-    return (nil)
-end
-
-ARP.Jobs.GetGradeData = function(jobname, grade)
-    if (ARP.Jobs.List[jobname] ~= nil and ARP.Jobs.List[jobname].grades[grade]) then
-        return (ARP.Jobs.List[jobname].grades[grade])
-    end
-    return (nil)
-end
-
--- Items
-
-ARP.Item = {}
-
-ARP.Item.GetItem = function(name)
-    return (Items[name])
 end
