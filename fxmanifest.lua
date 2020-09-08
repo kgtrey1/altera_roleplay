@@ -9,11 +9,13 @@ version         '0.2.5'
 server_scripts {
     '@mysql-async/lib/MySQL.lua',
     'config.lua',
-    'server/alter.lua',
-    'server/class.lua',
-    'server/shared.lua',
-    'server/load.lua',
-    'server/save.lua',
+    'server/alter/player_object.lua',
+    'server/shared/shared.lua',
+    'server/shared/jobs.lua',
+    'server/shared/items.lua',
+    'server/shared/callbacks.lua',
+    'server/models/load.lua',
+    'server/models/save.lua',
     'server/command.lua',
     'server/main.lua'
 }
