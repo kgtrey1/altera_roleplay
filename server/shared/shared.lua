@@ -10,6 +10,10 @@ Drops        = {}
 Drops.List   = {}
 Drops.Ticket = 1
 
+AddEventHandler('arp_framework:FetchObject', function(cb)
+    cb(ARP)
+end)
+
 ARP.BuildClientObject = function(source)
     local Alter = ARP.GetPlayerById(source)
     local obj   = {}
