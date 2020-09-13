@@ -7,7 +7,14 @@
 
 Config = {}
 
-Config.GasStations = {
+Config.Blips		= {
+	sprite = 361,
+	scale  = 1.0,
+	colour = 4,
+	string = 'Station service'
+}
+
+Config.GasStations 	= {
 	vector3(49.4187, 2778.793, 58.043),
 	vector3(263.894, 2606.463, 44.983),
 	vector3(1039.958, 2671.134, 39.550),
