@@ -10,7 +10,7 @@ Config = {}
 Config.Blips		= {
 	sprite = 361,
 	scale  = 1.0,
-	colour = 4,
+	color  = 4,
 	string = 'Station service'
 }
 
