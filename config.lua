@@ -7,6 +7,8 @@
 
 Config = {}
 
+Config.Distance	= 50.0
+
 Config.Blips		= {
 	sprite = 361,
 	scale  = 1.0,

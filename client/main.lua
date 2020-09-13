@@ -20,6 +20,68 @@ AddEventHandler('arp_framework:PlayerReady', function(playerData)
     end
 end)
 
+-- Get the closest pump entity, and distance.
+function GetClosestPump(validPumps)
+    local playerCoords = GetEntityCoords(PlayerPedId())
+    local closestPump, closestDist = nil
+    local currentDist = nil
+
+    for k, v in pairs(validPumps) do
+        currentDist = GetDistanceBetweenCoords(v.coords, playerCoords)
+        if (closestDist == nil or closestDist > currentDist) then
+            closestDist = currentDist
+            closestPump = v
+        end
+    end
+    return (closestPump, closestDist)
+end
+
+-- Manage valid pumps until player is too far from them.
+function ManageValidPumps(validPumps)
+    local closestPump = nil
+    local distance    = 49
+
+    repeat
+        closestPump, distance = GetClosestPump(validPumps)
+        if (distance < 5) then
+
+        else
+            Citizen.Wait(500)
+        end
+    until distance <= Config.Distance
+end
+
+-- Gets closest pumps.
+function GetValidPumps()
+    local playerCoords  = GetEntityCoords(PlayerPedId())
+    local validPumps    = {}
+    local resultIsNil   = true
+
+    for k, v in pairs(Pumps) do
+         if (GetDistanceBetweenCoords(v.coords, playerCoords) < Config.Distance) then
+            table.insert(validPumps, v)
+            resultIsNil = false
+         end
+    end
+    if (resultIsNil) then
+        return (nil)
+    end
+    return (validPumps)
+end
+
+-- Proximity management with fuel pumps
+Citizen.CreateThread(function()
+    local closestValidPump = nil
+
+    while (true) do
+        closestValidPump = GetValidPumps()
+        if (closestValidPump ~= nil) then
+            ManageValidPumps(closestValidPump)
+        end
+        Citizen.Wait(5000)
+    end
+end)
+
 -- Fetching each pump object & coordinates.
 Citizen.CreateThread(function()
 	local handle, object    = FindFirstObject()
