@@ -82,7 +82,7 @@ ARP.World.GetClosestVehicle = function()
 	local success = false
 
 	repeat
-		coords = GetEntityCoords(vehicle)
+		vehicleCoords = GetEntityCoords(vehicle)
 		distance = GetDistanceBetweenCoords(playerCoords, vehicleCoords)
 		if (distance <= closestDistance) then
 			closestDistance = distance
@@ -91,5 +91,5 @@ ARP.World.GetClosestVehicle = function()
 		success, vehicle = FindNextVehicle(handle, vehicle)
 	until not success
 	EndFindVehicle(handle)
-	return (closestVehicle, closestDistance)
+	return closestVehicle, closestDistance
 end
