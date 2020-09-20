@@ -19,12 +19,12 @@ function PickupKeys(plate)
 
     if (Keys[plate] ~= nil and Keys[plate] == steamId) then
         Keys[plate] == nil
-        Alter.ShowNotification(_U('drop_keys'))
+        Alter.ShowNotification("~g~Vous avez posé les clés du véhicule.~s~")
     elseif (Keys[plate] == nil) then
         Keys[plate] == steamId
-        Alter.ShowNotification(_U('pickup_keys'))
+        Alter.ShowNotification("~g~Vous avez prit les clés du véhicule~s~")
     else
-        Alter.ShowNotification(_U('keys_taken'))
+        Alter.ShowNotification("~r~Il n'y a pas de clés dans ce véhicule~s~")
     end
     return
 end
@@ -40,4 +40,5 @@ ARP.RegisterServerCallback('arp_vehiclemanager:DoesPlayerHaveKey', function(sour
         cb(true)
     else
         cb(false)
+    return
 end)
