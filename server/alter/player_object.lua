@@ -27,6 +27,13 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         return (self.license)
     end
 
+    -- Utils
+
+    self.ShowNotification       = function(message)
+        TriggerClientEvent('arp_framework:ShowNotification', self.source, message)
+        return
+    end
+
     -- Registration
 
     self.registered = registered
