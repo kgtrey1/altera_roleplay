@@ -10,5 +10,12 @@ game            'gta5'
 description     'Altera Framework - Vehicle management'
 version         '0.0.5'
 dependency      'arp_framework'
-client_script   'client/main.lua'
-server_script   'server/main.lua'
+client_scripts {
+    'config.lua',
+    'client/main.lua'
+}
+
+server_scripts {
+    'config.lua',
+    'server/main.lua'
+}
