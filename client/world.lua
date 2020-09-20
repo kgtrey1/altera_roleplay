@@ -71,3 +71,7 @@ ARP.World.DrawText3D = function(coords, text, size)
 		DrawText(x, y)
 	end
 end
+
+ARP.World.GetClosestVehicle = function()
+	
+end
