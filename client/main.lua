@@ -16,16 +16,31 @@ AddEventHandler('arp_framework:PlayerReady', function(data)
     Citizen.CreateThread(ListenUserInput)
 end)
 
+function IsPlateValid(plate)
+    return (true)
+end
+
+function PickupAndDropKeys()
+    local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(GetPlayerPed(-1), true))
+
+    if (IsPlateValid(plate) == true) then
+        TriggerServerEvent('arp_vehiclelock:PickupKeys', plate)
+    else
+        ARP.ShowNotification(_U('keys_taken'))
+    end
+    return
+end
+
 function ListenUserInput()
     while (true) do
-        Citizen.Wait(0)
         if (IsControlJustPressed(1, 303)) then 
             if (IsPedInAnyVehicle(PlayerPedId(), true)) then
-                manageKeyPicking()
+                PickupAndDropKeys()
             else
                 changeVehicleState()
             end
             Citizen.Wait(3000)
         end
+        Citizen.Wait(0)
     end
 end
