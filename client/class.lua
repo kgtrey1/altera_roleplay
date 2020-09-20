@@ -94,7 +94,7 @@ ARP.CurrentRequestId    = 0
 
 ARP.TriggerServerCallback = function(callbackName, functionPointer, ...)
 	ARP.ServerCallbacks[ARP.CurrentRequestId] = functionPointer
-	TriggerServerEvent('arp:TriggerServerCallback', callbackName, ARP.CurrentRequestId, ...)
+	TriggerServerEvent('arp_framework:TriggerServerCallback', callbackName, ARP.CurrentRequestId, ...)
 	if (ARP.CurrentRequestId < 65535) then
 		ARP.CurrentRequestId = ARP.CurrentRequestId + 1
 	else
@@ -102,8 +102,8 @@ ARP.TriggerServerCallback = function(callbackName, functionPointer, ...)
 	end
 end
 
-RegisterNetEvent('arp:ServerCallback')
-AddEventHandler('arp:ServerCallback', function(requestId, ...)
+RegisterNetEvent('arp_framework:ServerCallback')
+AddEventHandler('arp_framework:ServerCallback', function(requestId, ...)
 	ARP.ServerCallbacks[requestId](...)
 	ARP.ServerCallbacks[requestId] = nil
 end)
