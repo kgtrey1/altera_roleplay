@@ -31,3 +31,13 @@ end
 
 RegisterNetEvent('arp_vehiclemanager:PickupKeys')
 AddEventHandler('arp_vehiclemanager:PickupKeys', PickupKeys)
+
+ARP.RegisterServerCallback('arp_vehiclemanager:DoesPlayerHaveKey', function(source, cb, plate)
+    local Alter     = ARP.GetPlayerById(source)
+    local steamId   = Alter.GetSteamid()
+
+    if (Keys[plate] ~= nil and Keys[plate] == steamId) then
+        cb(true)
+    else
+        cb(false)
+end)
