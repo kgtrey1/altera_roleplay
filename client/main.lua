@@ -26,7 +26,7 @@ function ChangeVehicleState()
         ARP.ShowNotification("~r~Aucun véhicule à proximité~s~")
         return
     end
-    ARP.TriggerServerEvent('arp_vehiclemanager:DoesPlayerHaveKey', function(resp)
+    ARP.TriggerServerCallback('arp_vehiclemanager:DoesPlayerHaveKey', function(resp)
         if (resp == false) then
             ARP.ShowNotification("Vous n'avez pas les ~r~clés~s~ de ce véhicule.")
             return
@@ -49,10 +49,10 @@ function IsPlateValid(plate)
 end
 
 function PickupAndDropKeys()
-    local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(GetPlayerPed(-1), true))
+    local plate = GetVehicleNumberPlateText(GetVehiclePedIsIn(PlayerPedId(), true))
 
     if (IsPlateValid(plate) == true) then
-        TriggerServerEvent('arp_vehiclelock:PickupKeys', plate)
+        TriggerServerEvent('arp_vehiclemanager:PickupKeys', plate)
     else
         ARP.ShowNotification("~r~Il n'y a pas de clés dans ce véhicule~s~")
     end
@@ -65,7 +65,7 @@ function ListenUserInput()
             if (IsPedInAnyVehicle(PlayerPedId(), true)) then
                 PickupAndDropKeys()
             else
-                changeVehicleState()
+                ChangeVehicleState()
             end
             Citizen.Wait(3000)
         end
