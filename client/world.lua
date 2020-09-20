@@ -73,5 +73,23 @@ ARP.World.DrawText3D = function(coords, text, size)
 end
 
 ARP.World.GetClosestVehicle = function()
-	
+	local playerCoords = GetEntityCoords(PlayerPedId())
+	local closestVehicle = nil
+	local closestDistance = 1000000
+	local distance = 0
+	local vehicleCoords = nil
+	local handle, vehicle = FindFirstVehicle()
+	local success = false
+
+	repeat
+		coords = GetEntityCoords(vehicle)
+		distance = GetDistanceBetweenCoords(playerCoords, vehicleCoords)
+		if (distance <= closestDistance) then
+			closestDistance = distance
+			closestVehicle = vehicle
+		end
+		success, vehicle = FindNextVehicle(handle, vehicle)
+	until not success
+	EndFindVehicle(handle)
+	return (closestVehicle, closestDistance)
 end
