@@ -7,7 +7,7 @@
 
 PlayerData   = {}
 
-function CreateAlter(source, steamid, license, registered, identity, money, inventory, job, stats)
+function CreateAlter(source, steamid, license, registered, identity, money, inventory, job, stats, licenses)
     local self      = {}
 
     -- Game related data.
@@ -388,6 +388,76 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
             list = self.stats.list,
             attr = self.stats.attr
         })
+    end
+
+    self.licenses = {}
+
+    self.licenses.idCard    = licenses.idcard
+    self.licenses.car       = licenses.car
+    self.licenses.truck     = licenses.truck
+    self.licenses.bike      = licenses.bike
+    self.licenses.firearms  = licenses.firearms
+
+    self.licenses.GetDrivingLicense = function()
+        if (not self.licenses.car and not self.licenses.truck and not self.licenses.bike) then
+            return (false)
+        end
+        return ({
+            car     = self.licenses.car,
+            truck   = self.licenses.truck,
+            bike    = self.licenses.bike
+        })
+    end
+
+    self.licenses.GetFirearmsLicense = function()
+        return (self.licenses.firearms)
+    end
+
+    self.licenses.GetIdCard = function()
+        if (self.licenses.idcard) then
+            local personnalInfo = self.GetIdentity()       
+            return (personnalInfo)
+        end
+        return (false)
+    end
+
+    self.licenses.SetDrivingLicense = function(type, value)
+        if (type == 'car' or type == 'truck' or type == 'bike' and value == true or value == false) then
+            self.licenses[type] = value
+            MySQL.Sync.execute('UPDATE licenses SET `' .. type .. '` = @value WHERE steamid = @steamid', {
+                ['@value']   = value,
+                ['@steamid'] = self.steamid
+            })
+        else
+            print('ARP : Wrong call')
+        end
+        return
+    end
+
+    self.licenses.SetFirearmsLicense = function(value)
+        if (value == true or value == false) then
+            self.licenses.firearms = value
+            MySQL.Sync.execute('UPDATE licenses SET `firearms` = @value WHERE steamid = @steamid', {
+                ['@value']   = value,
+                ['@steamid'] = self.steamid
+            })
+        else
+            print('ARP : Wrong call')
+        end
+        return
+    end
+
+    self.licenses.SetIdCard = function(value)
+        if (value == true or value == false) then
+            self.licenses.idcard = value
+            MySQL.Sync.execute('UPDATE licenses SET `idcard` = @value WHERE steamid = @steamid', {
+                ['@value']   = value,
+                ['@steamid'] = self.steamid
+            })
+        else
+            print('ARP : Wrong call')
+        end
+        return
     end
 
     return (self)
