@@ -1,25 +1,29 @@
 local open = false
 
--- Open ID card
-RegisterNetEvent('jsfour-idcard:open')
-AddEventHandler('jsfour-idcard:open', function( data, type )
+function ShowLicense(data, type)
 	open = true
 	SendNUIMessage({
 		action = "open",
 		array  = data,
 		type   = type
 	})
-end)
+end
 
--- Key events
-Citizen.CreateThread(function()
-	while true do
-		Wait(0)
-		if IsControlJustReleased(0, 322) and open or IsControlJustReleased(0, 177) and open then
-			SendNUIMessage({
-				action = "close"
-			})
-			open = false
+function ListenUserInput()
+	while (true) do
+		if (open) then
+			if ((IsControlJustReleased(0, 322) and open) or (IsControlJustReleased(0, 177) and open) then
+				SendNUIMessage({ action = "close" })
+				open = false
+			end
+			Citizen.Wait(0)
+		else
+			Citizen.Wait(2000)
 		end
 	end
-end)
+end
+
+RegisterNetEvent('arp_idcard:ShowLicense')
+AddEventHandler('arp_idcard:ShowLicense', ShowLicense)
+
+Citizen.CreateThread(ListenUserInput)
