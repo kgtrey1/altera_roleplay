@@ -5,6 +5,31 @@
 -- Functions which load player on connection.
 --
 
+-- Licenses
+
+local function GetPlayerLicenses(steamid)
+    local result = MySQL.Sync.fetchAll("SELECT * FROM licenses WHERE steamid = @identifier", {
+		['@identifier'] = steamid
+    })
+
+    if (result[1] == nil) then
+        return ({
+            car         = false,
+            bike        = false,
+            truck       = false,
+            idcard      = false,
+            firewarms   = false
+        })
+    end
+    return ({
+        car         = result[1].car,
+        bike        = result[1].bike,
+        truck       = result[1].truck,
+        idcard      = result[1].idcard,
+        firewarms   = result[1].firearms
+    })
+end
+
 -- Stats
 
 local function BuildDefaultStats()
@@ -193,12 +218,13 @@ local function LoadPlayer()
     local inventory     = GetPlayerInventory(steamid)
     local job           = GetPlayerJob(steamid)
     local stats         = GetPlayerStats(steamid)
+    local licenses      = GetPlayerLicenses(steamid)
 
     if (identity.firstname ~= "undefined") then
-        PlayerData[_source] = CreateAlter(_source, steamid, license, true, identity, money, inventory, job, stats)
+        PlayerData[_source] = CreateAlter(_source, steamid, license, true, identity, money, inventory, job, stats, licenses)
         TriggerClientEvent('arp_framework:PlayerLoaded', _source, ARP.BuildClientObject(_source))
     else
-        PlayerData[_source] = CreateAlter(_source, steamid, license, false, identity, money, inventory, job, stats)
+        PlayerData[_source] = CreateAlter(_source, steamid, license, false, identity, money, inventory, job, stats, licenses)
         TriggerClientEvent('arp_register:OpenRegistrationForm', _source)
     end
     return
