@@ -399,9 +399,6 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
     self.licenses.firearms  = licenses.firearms
 
     self.licenses.GetDrivingLicense = function()
-        if (not self.licenses.car and not self.licenses.truck and not self.licenses.bike) then
-            return (false)
-        end
         return ({
             car     = self.licenses.car,
             truck   = self.licenses.truck,
@@ -414,11 +411,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
     end
 
     self.licenses.GetIdCard = function()
-        if (self.licenses.idcard) then
-            local personnalInfo = self.GetIdentity()       
-            return (personnalInfo)
-        end
-        return (false)
+        return (self.licenses.idcard)
     end
 
     self.licenses.SetDrivingLicense = function(type, value)
