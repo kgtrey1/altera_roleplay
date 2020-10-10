@@ -8,6 +8,8 @@ function SafeDeposit(enterprise, item, amount)
 		print("illegal")
 	elseif (inventory.list[item] == nil or inventory.list[item].amount < amount) then
 		print("also illegal")
+	elseif (not Alter.CanCarryItem(item, amount)) then
+		print("No space")
     else
         if (ENT[enterprise].safe[item] == nil) then
 			ENT[enterprise].safe[item] 		   	= {}
