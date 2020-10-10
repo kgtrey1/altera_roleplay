@@ -31,7 +31,7 @@ local function GetDrivingInfos(Alter)
 		return ({
 			firstname	= userData.firstName,
 			lastname 	= userData.lastName,
-			dateOfBirth = userData.dateOfBirth,
+			dateofbirth = userData.dateOfBirth,
 			gender 		= userData.gender,
 			height 		= userData.height,
 			car			= drivingLicense.car,
@@ -66,35 +66,6 @@ function ShowLicense(target, type)
 
 	if (type == "id" or type == "driving" or type == "firearms") then
 		if (type == 'id') then
-			data, show = GetIdentityInfos(Alterb)
-		elseif (type == 'driving') then
-			data, show = GetDrivingInfos(Alterb)
-		else
-			data, show = GetFirearmsInfos(Alterb)
-		end
-		if (show) then
-			Altera.TriggerEvent('arp_idcard:ShowLicense', data, type)
-		else
-			Altera.ShowNotification("Cette personne ne possède pas ce type de license.")
-		end
-	else
-		print("Illegal call")
-	end
-	return
-end
-
-RegisterServerEvent('arp_idcard:RequestLicense')
-AddEventHandler('arp_idcard:RequestLicense', RequestLicense)
-
-function ShowLicense(target, type)
-	local _source 	= source
-	local Altera	= ARP.GetPlayerById(_source)
-	local Alterb	= ARP.GetPlayerById(target)
-	local show		= false
-	local data		= nil
-
-	if (type == "id" or type == "driving" or type == "firearms") then
-		if (type == 'id') then
 			data, show = GetIdentityInfos(Altera)
 		elseif (type == 'driving') then
 			data, show = GetDrivingInfos(Altera)
@@ -102,7 +73,7 @@ function ShowLicense(target, type)
 			data, show = GetFirearmsInfos(Altera)
 		end
 		if (show) then
-			Alterb.TriggerEvent('arp_idcard:ShowLicense', data, type)
+			Alterb.TriggerEvent('arp_licenses:ShowLicense', data, type)
 		else
 			Altera.ShowNotification("Vous ne possedez pas ce type de licence.")
 		end
@@ -112,5 +83,5 @@ function ShowLicense(target, type)
 	return
 end
 
-RegisterServerEvent('arp_idcard:ShowLicense')
-AddEventHandler('arp_idcard:ShowLicense', ShowLicense)
+RegisterServerEvent('arp_licenses:ShowLicense')
+AddEventHandler('arp_licenses:ShowLicense', ShowLicense)

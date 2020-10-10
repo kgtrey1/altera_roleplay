@@ -23,7 +23,7 @@ function ListenUserInput()
 	end
 end
 
-RegisterNetEvent('arp_idcard:ShowLicense')
-AddEventHandler('arp_idcard:ShowLicense', ShowLicense)
+RegisterNetEvent('arp_licenses:ShowLicense')
+AddEventHandler('arp_licenses:ShowLicense', ShowLicense)
 
 Citizen.CreateThread(ListenUserInput)
