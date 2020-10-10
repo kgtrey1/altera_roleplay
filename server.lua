@@ -85,3 +85,45 @@ end
 
 RegisterServerEvent('arp_licenses:ShowLicense')
 AddEventHandler('arp_licenses:ShowLicense', ShowLicense)
+
+function SetFirearmsLicense(value)
+	local _source = source
+	local Alter = ARP.GetPlayerById(_source)
+
+	if (value == true or value == false) then
+		Alter.licenses.SetFirearmsLicense(value)
+	else
+		print('Illegal call')
+	end
+end
+
+RegisterNetEvent('arp_licenses:SetFirearmsLicense')
+AddEventHandler('arp_licenses:SetFirearmsLicense', SetFirearmsLicense)
+
+function SetIdLicense(value)
+	local _source = source
+	local Alter = ARP.GetPlayerById(_source)
+
+	if (value == true or value == false) then
+		Alter.licenses.SetIdCard(value)
+	else
+		print('Illegal call')
+	end
+end
+
+RegisterNetEvent('arp_licenses:SetIdLicense')
+AddEventHandler('arp_licenses:SetIdLicense', SetIdLicense)
+
+function SetDrivingLicense(type, value)
+	local _source = source
+	local Alter = ARP.GetPlayerById(_source)
+
+	if (type == 'car' or type == 'truck' or type == 'bike' and value == true or value == false) then
+		Alter.licenses.SetDrivingLicense(type, value)
+	else
+		print('Illegal call')
+	end
+end
+
+RegisterNetEvent('arp_licenses:SetDrivingLicense')
+AddEventHandler('arp_licenses:SetDrivingLicense', SetDrivingLicense)
