@@ -4,6 +4,12 @@ TriggerEvent('arp_framework:FetchObject', function(obj)
     ARP = obj
 end)
 
+local function CreateLicensesTable(Alter)
+    MySQL.Sync.execute('INSERT INTO licenses (steamid) VALUES(@steamid)', {
+        ['@steamid']    = Alter.GetSteamid()
+    })
+end
+
 local function AddMoneyAccount(Alter)
     MySQL.Sync.execute('INSERT INTO money (steamid, cash) VALUES(@steamid, @cash)', {
         ['@cash']       = Alter.money.GetCash(),
@@ -57,6 +63,7 @@ function RegisterPlayer(playerData)
     newPlayer.position = json.encode({x = 0, y = 0, z = 0})
     AddPlayerToDb(_source, newPlayer)
     AddMoneyAccount(Alter)
+    CreateLicensesTable(Alter)
 
     -- Updating the player data
     Alter.identity.SetFirstname(newPlayer.firstName)
