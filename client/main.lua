@@ -7,11 +7,19 @@
 
 local ARP           = nil
 local FSMenu        = 'arp_skin:FaceSelection'
+local SkinMenu      = 'arp_skin:SkinMenu'
 local FSItems       = {}
+local CSItems       = {}
+local BSItems       = {} -- Bag selection
+
 local Items         = {}
 
 TriggerEvent('arp_framework:FetchObject', function(obj)
     ARP = obj
+end)
+
+AddEventHandler('arp_framework:PlayerReady', function(Object)
+    ARP.Player = Object
 end)
 
 ARP.Menu.RegisterMenu(FSMenu, 'Création de perso', 'Personnalisation')
@@ -39,7 +47,7 @@ function ShowFaceSelectionMenu()
                     end)
                     FSIsOpen = false
             end, onHovered = function() end, onActive = function() end}, function() end)
-        end, function() end)
+        end, function() end, false)
     end
 end
 
@@ -54,6 +62,8 @@ function DisableInput()
     DisableControlAction(0, 24, true) -- Input Attack
     DisableControlAction(0, 169, true)
 end
+
+function 
 
 function LoadFaceData()
     for i = 1, #Config.AuthorizedFaceMod, 1 do

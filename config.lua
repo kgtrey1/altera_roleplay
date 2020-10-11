@@ -15,3 +15,10 @@ Config.AuthorizedFaceMod = {
     'blush_2', 'blush_3', 'complexion_1', 'complexion_2', 'beard_1', 'beard_2',
     'beard_3', 'beard_4', 'blemishes_1', 'blemishes_2'
 }
+
+Config.AuthorizedClothMod = {
+    'ear_accessories', 'chain_1', 'chain_2', 'bracelets_1', 'bracelets_2',
+    'watches_1', 'watches_2', 'helmet_1', 'helmet_2', 'shoes_1', 'shoes_2',
+    'pants_1', 'pants_2', 'arms', 'arms_2', 'decals_1', 'decals_2', 'torso_1',
+    'torso_2', 'tshirt_1', 'tshirt_2', 'ear_accessories', 'ear_accessories_color'
+}
