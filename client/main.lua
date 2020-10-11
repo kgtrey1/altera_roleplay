@@ -5,9 +5,12 @@
 -- Main client side script.
 --
 
-ARP     = nil
-Pumps   = {}
+ARP             = nil
+Pumps           = {}
 PumpsAreLoaded  = false
+PumpFueling     = false
+JericanFueling  = false
+IsCloseToPump   = false
 
 TriggerEvent('arp_framework:FetchObject', function(object)
 	ARP = object
@@ -19,6 +22,18 @@ AddEventHandler('arp_framework:PlayerReady', function(playerData)
         Citizen.Wait(1000)
     end
 end)
+
+-- Pump fueling.
+function ManagePumpFueling()
+    local vehicle, distance = ARP.World.GetClosestVehicle()
+    PumpFueling = true
+    while (JCanFueling == false and distance < 5) do
+
+
+        Citizen.Wait(0)
+    end
+    PumpFueling = false
+end
 
 -- Get the closest pump entity, and distance.
 function GetClosestPump(validPumps)
@@ -41,14 +56,15 @@ function ManageValidPumps(validPumps)
     local closestPump = nil
     local distance    = 49
 
-    repeat
+    while (distance <= Config.Distance) do
         closestPump, distance = GetClosestPump(validPumps)
         if (distance < 5) then
-
+            ManagePumpFueling(closestPump, distance)
         else
             Citizen.Wait(500)
         end
-    until distance <= Config.Distance
+    end
+    return
 end
 
 -- Gets closest pumps.
