@@ -105,7 +105,7 @@ function StartMainThread()
     ARP.Menu.RegisterSubmenu(Inventory.Selected, MainMenu, 'Inventaire', 'MENU OBJET')
     Citizen.CreateThread(function()
         while (true) do
-            Citizen.Wait(0)
+            Citizen.Wait(5)
             if(IsControlJustPressed(1, Config.Key)) then
                 if (MenuIsOpen) then
                     ARP.Menu.CloseAll()
