@@ -30,10 +30,7 @@ function ItemIsOwned(compName, compOffset)
 end
 
 local function OnItemSelected(name, offset, price, fakeOffset)
-    print(name)
-    print(offset)
-    print(price)
-    print(fakeOffset)
+    print(string.format("Name: %s, vrai offset: %d, prix: %d, fake: %d", name, offset, price, fakeOffset))
     if (price == nil or ItemIsOwned(name, offset)) then
         NewOutfit[name] = offset
     else

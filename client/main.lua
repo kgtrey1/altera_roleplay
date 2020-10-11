@@ -41,7 +41,7 @@ function SynchronizeData()
         Owned   = savedData.owned
         for k, v in pairs(savedData.owned) do
             for i = 1, #v, 1 do
-                Items[k].ListF[v[i]] = 'Possédé'
+                Items[k].ListF[tonumber(listR[v[i]])] = 'Possédé'
             end
         end
         LoadClothesData()
@@ -59,7 +59,7 @@ function CreateRestrictedTable(component, maxVal, Restricted, texture)
     Items[component.name]            = {}
     Items[component.name].ListF      = {}
     Items[component.name].ListR      = {}
-    Items[component.name].prices     = {}
+    Items[component.name].prices     = Restricted
     Items[component.name].Component  = component
     Items[component.name].restricted = true
     if (texture ~= nil) then
@@ -75,7 +75,6 @@ function CreateRestrictedTable(component, maxVal, Restricted, texture)
         if (Restricted[i] ~= -1) then
             table.insert(Items[component.name].ListF, string.format("%d\t~h~~g~%d$~s~", f, Restricted[i]))
             table.insert(Items[component.name].ListR, tostring(i))
-            table.insert(Items[component.name].prices, Restricted[i])
             if (Items[component.name].textured) then
                 local textureList = CreateIndexList(GetNumberOfPedTextureVariations(playerPed, component.componentId, i))
                 table.insert(Items[component.name].Texture.list, textureList)
