@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+    image: arp_gameserver:3.7-alpine
+    build:
+        context: .
+        dockerfile: docker/gameserver.dockerfile
+    container_name: arp_gameserver
