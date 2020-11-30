@@ -415,40 +415,40 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
     end
 
     self.licenses.SetDrivingLicense = function(type, value)
-        if (type == 'car' or type == 'truck' or type == 'bike' and value == true or value == false) then
+        if (type == 'car' or type == 'truck' or type == 'bike' and type(value) == 'boolean') then
             self.licenses[type] = value
             MySQL.Sync.execute('UPDATE licenses SET `' .. type .. '` = @value WHERE steamid = @steamid', {
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
         else
-            print('ARP : Wrong call')
+            print('ARP> Attempting to set driving licence with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
         return
     end
 
     self.licenses.SetFirearmsLicense = function(value)
-        if (value == true or value == false) then
+        if (type(value) == 'boolean') then
             self.licenses.firearms = value
             MySQL.Sync.execute('UPDATE licenses SET `firearms` = @value WHERE steamid = @steamid', {
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
         else
-            print('ARP : Wrong call')
+            print('ARP> Attempting to set firearms licence with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
         return
     end
 
     self.licenses.SetIdCard = function(value)
-        if (value == true or value == false) then
+        if (type(value) == 'boolean') then
             self.licenses.idcard = value
             MySQL.Sync.execute('UPDATE licenses SET `idcard` = @value WHERE steamid = @steamid', {
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
         else
-            print('ARP : Wrong call')
+            print('ARP> Attempting to set driving licence with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
         return
     end
