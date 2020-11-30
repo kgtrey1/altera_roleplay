@@ -86,42 +86,45 @@ end
 RegisterServerEvent('arp_licenses:ShowLicense')
 AddEventHandler('arp_licenses:ShowLicense', ShowLicense)
 
-function SetFirearmsLicense(value)
+function SetFirearmsLicense(target, value)
 	local _source = source
-	local Alter = ARP.GetPlayerById(_source)
+	local Altera = ARP.GetPlayerById(target)
+	local Alterb = ARP.GetPlayerById(_source)
 
-	if (value == true or value == false) then
-		Alter.licenses.SetFirearmsLicense(value)
+	if (type(value) == 'boolean' and Altera ~= nil) then
+		Altera.licenses.SetFirearmsLicense(value)
 	else
-		print('Illegal call')
+		string.format('ARP> Trying to set firearms licence with value ' .. value .. '(Called by SteamID %s on SteamId %s).', Alterb.GetSteamid(), Altera.GetSteamid())
 	end
 end
 
 RegisterNetEvent('arp_licenses:SetFirearmsLicense')
 AddEventHandler('arp_licenses:SetFirearmsLicense', SetFirearmsLicense)
 
-function SetIdLicense(value)
+function SetIdLicense(target, value)
 	local _source = source
-	local Alter = ARP.GetPlayerById(_source)
+	local Altera = ARP.GetPlayerById(target)
+	local Alterb = ARP.GetPlayerById(_source)
 
-	if (value == true or value == false) then
-		Alter.licenses.SetIdCard(value)
+	if (type(value) == 'boolean' and Altera ~= nil) then
+		Altera.licenses.SetIdCard(value)
 	else
-		print('Illegal call')
+		string.format('ARP> Trying to set ID licence with value ' .. value .. ' (Called by SteamID %s on SteamId %s).', Alterb.GetSteamid(), Altera.GetSteamid())
 	end
 end
 
 RegisterNetEvent('arp_licenses:SetIdLicense')
 AddEventHandler('arp_licenses:SetIdLicense', SetIdLicense)
 
-function SetDrivingLicense(type, value)
+function SetDrivingLicense(target, type, value)
 	local _source = source
-	local Alter = ARP.GetPlayerById(_source)
+	local Altera = ARP.GetPlayerById(target)
+	local Alterb = ARP.GetPlayerById(_source)
 
-	if (type == 'car' or type == 'truck' or type == 'bike' and value == true or value == false) then
-		Alter.licenses.SetDrivingLicense(type, value)
+	if (type == 'car' or type == 'truck' or type == 'bike' and type(value) == 'boolean' and Altera ~= nil) then
+		Altera.licenses.SetDrivingLicense(type, value)
 	else
-		print('Illegal call')
+		string.format('ARP> Trying to set driving licences for %s with value ' .. value .. ' (Called by SteamID %s on SteamId %s).', type, Alterb.GetSteamid(), Altera.GetSteamid())
 	end
 end
 
