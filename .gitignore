@@ -41,3 +41,10 @@ luac.out
 
 # VSCode
 .vscode
+
+
+src/node_modules
+src/package-lock.json
+dist
+
+.idea
