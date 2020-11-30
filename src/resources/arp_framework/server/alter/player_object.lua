@@ -397,11 +397,15 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
 
     self.licenses = {}
 
-    self.licenses.idcard    = licenses.idcard
-    self.licenses.car       = licenses.car
-    self.licenses.truck     = licenses.truck
-    self.licenses.bike      = licenses.bike
-    self.licenses.firearms  = licenses.firearms
+    self.licenses.idcard        = licenses.idcard
+    self.licenses.car           = licenses.car
+    self.licenses.truck         = licenses.truck
+    self.licenses.bike          = licenses.bike
+    self.licenses.firearms      = licenses.firearms
+
+    self.licenses.hasidcard     = licenses.hasidcard
+    self.licenses.hasdriving    = licenses.hasdriving
+    self.licenses.hasfirearms   = licenses.hasfirearms
 
     self.licenses.GetDrivingLicense = function()
         return ({
@@ -454,6 +458,57 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
             })
         else
             print('ARP> Attempting to set driving licence with a non boolean value (SteamID:' .. self.steamid .. ').')
+        end
+        return
+    end
+
+    self.licenses.GetIdCardOwnership = function()
+        return (self.licenses.hasidcard)
+    end
+
+    self.licenses.SetIdCardOwnership = function(value)
+        if (type(value) == 'boolean') then
+            self.licenses.hasidcard = value
+            MySQL.Sync.execute('UPDATE licenses SET `hasidcard` = @value WHERE steamid = @steamid', {
+                ['@value']   = value,
+                ['@steamid'] = self.steamid
+            })
+        else
+            print('ARP> Attempting to set id card ownership with a non boolean value (SteamID:' .. self.steamid .. ').')
+        end
+        return
+    end
+
+    self.licenses.GetFirearmsOwnership = function()
+        return (self.licenses.hasfirearms)
+    end
+
+    self.licenses.SetFirearmsOwnership = function(value)
+        if (type(value) == 'boolean') then
+            self.licenses.hasfirearms = value
+            MySQL.Sync.execute('UPDATE licenses SET `hasfirearms` = @value WHERE steamid = @steamid', {
+                ['@value']   = value,
+                ['@steamid'] = self.steamid
+            })
+        else
+            print('ARP> Attempting to set firearms ownership with a non boolean value (SteamID:' .. self.steamid .. ').')
+        end
+        return
+    end
+
+    self.licenses.GetDrivingOwnership = function()
+        return (self.licenses.hasdriving)
+    end
+
+    self.licenses.SetDrivingOwnership = function(value)
+        if (type(value) == 'boolean') then
+            self.licenses.hasdriving = value
+            MySQL.Sync.execute('UPDATE licenses SET `hasdriving` = @value WHERE steamid = @steamid', {
+                ['@value']   = value,
+                ['@steamid'] = self.steamid
+            })
+        else
+            print('ARP> Attempting to set driving ownership with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
         return
     end

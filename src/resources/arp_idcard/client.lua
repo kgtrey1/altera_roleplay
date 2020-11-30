@@ -1,4 +1,10 @@
 local open = false
+local NPCMenuIsOpen = false
+local ARP = nil
+
+TriggerEvent('arp_framework:FetchObject', function(object)
+	ARP = object
+end)
 
 function ShowLicense(data, type)
 	open = true
@@ -22,6 +28,33 @@ end
 
 RegisterNetEvent('arp_licenses:ShowLicense')
 AddEventHandler('arp_licenses:ShowLicense', ShowLicense)
+
+function HandleNPC()
+	local playerCoords = nil
+	local distance = nil
+	local playerPed = PlayerPedId()
+
+	while (true) do
+		playerCoords = GetEntityCoords(playerPed)
+		distance = GetDistanceBetweenCoords(playerCoords, Config.CityHallNPC.pos)
+		if (distance <= 10 and not NPCMenuIsOpen) then
+			ARP.ShowNotification("Appuyez sur ~INPUT_CONTEXT~ pour faire vos papiers.")
+			if (IsControlJustReleased(IsControlJustPressed(1, 38)) then
+				ARP.TriggerServerCallback('arp_licenses:GetLicensesData', function(data)
+					
+				end)
+			end
+			Citizen.Wait(0)
+		else
+			NPCMenuIsOpen = false
+			if (distance < 50 and distance > 10) then
+				Citizen.Wait(1000)
+			else
+				Citizen.Wait(5000)
+			end
+		end
+	end
+end
 
 function SpawnCityHallNPC()
 	local hash = GetHashKey(Config.CityHallNPC.model)
