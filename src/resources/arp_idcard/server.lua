@@ -10,16 +10,16 @@ local function GetFirearmsInfos(Alter)
 	if (firearmsLicense) then
 		local userData = Alter.GetIdentity()
 
-		return ({
-			firstname	= userData.firstName,
-			lastname 	= userData.lastName,
-			dateOfBirth = userData.dateOfBirth,
+		return {
+			firstname	= userData.firstname,
+			lastname 	= userData.lastname,
+			dateofbirth = userData.birthdate,
 			gender 		= userData.gender,
 			height 		= userData.height,
 			firearms	= true
-		}, true)
+		}, true
 	end
-	return (nil, false)
+	return nil, false
 end
 
 local function GetDrivingInfos(Alter)
@@ -28,33 +28,33 @@ local function GetDrivingInfos(Alter)
 	if (drivingLicense.car or drivingLicense.bike or drivingLicense.truck) then
 		local userData = Alter.GetIdentity()
 
-		return ({
-			firstname	= userData.firstName,
-			lastname 	= userData.lastName,
-			dateofbirth = userData.dateOfBirth,
+		return {
+			firstname	= userData.firstname,
+			lastname 	= userData.lastname,
+			dateofbirth = userData.birthdate,
 			gender 		= userData.gender,
 			height 		= userData.height,
 			car			= drivingLicense.car,
 			truck		= drivingLicense.truck,
 			bike		= drivingLicense.bike
-		}, true)
+		}, true
 	end
-	return (nil, false)
+	return nil, false
 end
 
 local function GetIdentityInfos(Alter)
 	if (Alter.licenses.GetIdCard()) then
 		local userData = Alter.GetIdentity()
 
-		return ({
-			firstname	= userData.firstName,
-			lastname 	= userData.lastName,
-			dateOfBirth = userData.dateOfBirth,
+		return {
+			firstname	= userData.firstname,
+			lastname 	= userData.lastname,
+			dateofbirth = userData.birthdate,
 			gender 		= userData.gender,
 			height 		= userData.height
-		}, true)
+		}, true
 	end
-	return (nil, false)
+	return nil, false
 end
 
 function ShowLicense(target, type)

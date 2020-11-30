@@ -1,8 +1,8 @@
 $(document).ready(function() {
-    window.addEventListener('message', function( event ) {
+    window.addEventListener('message', function(event) {
         if (event.data.action == 'open') {
-            var type        = event.data.type;
-            var userData    = event.data.array[0];
+            let type        = event.data.type;
+            let userData    = event.data.array;
 
             if (type == 'driving' || type == 'id') {
                 $('img').show();
@@ -31,7 +31,7 @@ $(document).ready(function() {
                 else
                     $('#id-card').css('background', 'url(assets/images/idcard.png)');
             }
-            else if (type == 'weapon') {
+            else if (type == 'firearms') {
                 $('img').hide();
                 $('#name').css('color', '#d9d9d9');
                 $('#name').text(userData.firstname + ' ' + userData.lastname);
