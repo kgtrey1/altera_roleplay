@@ -1,12 +1,13 @@
 version: "3.8"
 services:
     gameserver:
-        image: arp_gameserver:3.7-alpine
+        image: arp_gameserver:buster-slim
         build:
             context: .
             dockerfile: docker/gameserver.dockerfile
         ports: 
-            - "30120:30120"
+            - "30120:30120/tcp"
+            - "30120:30120/udp"
         stdin_open: true
         tty: true 
         container_name: arp_gameserver
