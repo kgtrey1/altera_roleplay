@@ -34,6 +34,11 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         return
     end
 
+    self.TriggerEvent           = function(eventName, ...)
+        TriggerClientEvent(eventName, self.source, ...)
+        return
+    end
+
     -- Registration
 
     self.registered = registered
@@ -392,7 +397,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
 
     self.licenses = {}
 
-    self.licenses.idCard    = licenses.idcard
+    self.licenses.idcard    = licenses.idcard
     self.licenses.car       = licenses.car
     self.licenses.truck     = licenses.truck
     self.licenses.bike      = licenses.bike
