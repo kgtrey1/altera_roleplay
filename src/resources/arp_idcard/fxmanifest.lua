@@ -9,7 +9,10 @@ server_script {
 	'server.lua'
 }
 
-client_script 'client.lua'
+client_script {
+	'client.lua',
+	'config.lua'
+}
 
 files {
 	'html/index.html',
