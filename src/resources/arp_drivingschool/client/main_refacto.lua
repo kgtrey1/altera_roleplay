@@ -3,6 +3,8 @@ local ARP       = nil
 local MainMenu      = 'arp_drivingschool:MainMenu'
 local MenuIsOpen    = false
 
+local CurrentTest	= nil
+
 -- arp_framework Initialization.
 
 TriggerEvent('arp_framework:FetchObject', function(object)
@@ -16,10 +18,65 @@ AddEventHandler('arp_framework:PlayerReady', function(playerData)
 	Citizen.CreateThread(HandleDrivingSchoolPoint)
 end)
 
+-- Code
+
+function StopTheoryTest(success)
+	CurrentTest = nil
+	SendNUIMessage({
+		openQuestion = false
+	})
+	SetNuiFocus(false)
+	if (success) then
+		TriggerServerEvent('arp_licenses:SetCodeLicense', GetPlayerServerId(PlayerId()), true)
+		ARP.ShowNotification("Vous avez reussi l'examen du code.")
+	else
+		ARP.ShowNotification("Vous avez échoué l'examen du code.")
+	end
+end
+
+RegisterNUICallback('question', function(data, cb)
+	SendNUIMessage({
+		openSection = 'question'
+	})
+	cb()
+end)
+
+RegisterNUICallback('close', function(data, cb)
+	StopTheoryTest(true)
+	cb()
+end)
+
+RegisterNUICallback('kick', function(data, cb)
+	StopTheoryTest(false)
+	cb()
+end)
+
+function StartTheoryTest()
+	CurrentTest = 'theory'
+	SendNUIMessage({
+		openQuestion = true
+	})
+	SetNuiFocus(true, true)
+end
+
+function StartTest(type)
+	if (type == 'code') then
+		StartTheoryTest()
+	end
+end
+
+RegisterNetEvent('arp_drivingschool:StartTest')
+AddEventHandler('arp_drivingschool:StartTest', StartTest)
+
+-- Driving School Menu Thread
+
 function RenderSchoolMenu(licenses)
 	if (not licenses.code) then
 		ARP.Menu.Item.Button("Passer l'examen du code", 'Passer le code pour avoir accès aux permis.', {}, true, {
-			
+			onSelected = function()
+				TriggerServerEvent('arp_drivingschool:Buy', 'code')
+				ARP.Menu.CloseAll()
+			end
 		}, nil)
 		ARP.Menu.Item.Button("Passer le permis A", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
 		ARP.Menu.Item.Button("Passer le permis B", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
@@ -28,8 +85,6 @@ function RenderSchoolMenu(licenses)
 		print('has code')
 	end
 end
-
--- Driving School Menu Thread
 
 function OpenSchoolMenu(licenses)
 	if (MenuIsOpen) then
@@ -64,16 +119,16 @@ function HandleDrivingSchoolPoint()
 
 	while (true) do
 		playerCoords = GetEntityCoords(PlayerPedId())
-		distance = #(playerCoords - Config.Zones.School.pos)
+		distance = #(playerCoords - Config.Zones.School.Pos)
 		if (distance <= 50) then
-			if (distance <= 3 and not MenuIsOpen) then
-				ARP.ShowHelpNotification(STR.OpenMenu)
+			if (distance <= 3 and not MenuIsOpen and CurrentTest == nil) then
+				ARP.ShowHelpNotification("E open")
 				if (IsControlJustReleased(1, 38)) then
 					ARP.TriggerServerCallback('arp_licenses:GetLicensesData', function(data)
 						OpenSchoolMenu(data)
 					end)
 				end
-			elseif (distance > 3)
+			elseif (distance > 3) then
 				MenuIsOpen = false
 			end
 			Citizen.Wait(0)
@@ -87,7 +142,8 @@ end
 -- Blip
 
 function CreateDrivingSchoolBlip()
-	local blip = AddBlipForCoord(Config.Zones.School.pos.x, Config.Zones.School.pos.y, Config.Zones.School.pos.z)
+	print(json.encode(Config))
+	local blip = AddBlipForCoord(Config.Zones.School.Pos)
 
 	SetBlipSprite(blip, 438)
 	SetBlipScale(blip, 0.7)
