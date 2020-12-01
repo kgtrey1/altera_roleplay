@@ -143,3 +143,23 @@ ARP.RegisterServerCallback('arp_licenses:GetLicensesData', function(_source, cb)
 	obj.firearms			= Alter.licenses.GetFirearmsLicense()
 	cb(obj)
 end)
+
+function RegisterAsCitizen()
+	local _source = source
+	local Alter = ARP.GetPlayerById(_source)
+
+	if (Alter == nil) then
+		return
+	elseif (Alter.money.GetCash() >= Config.price.CitizenRegistration) then
+		Alter.money.RemoveCash(Config.price.CitizenRegistration)
+		Alter.licenses.SetIdCard(true)
+		Alter.licenses.SetIdCardOwnership(true)
+		Alter.ShowNotification("Vous êtes officiellement citoyen.")
+	else
+		Alter.ShowNotification("Vous n'avez pas assez d'argent.")
+	end
+	return
+end
+
+RegisterNetEvent('arp_idcard:RegisterAsCitizen')
+AddEventHandler('arp_idcard:RegisterAsCitizen', RegisterAsCitizen)

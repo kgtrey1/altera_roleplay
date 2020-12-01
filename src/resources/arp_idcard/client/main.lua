@@ -40,7 +40,12 @@ AddEventHandler('arp_licenses:ShowLicense', ShowLicense)
 
 function RenderMainMenu(data)
 	if (not data.idcard) then -- if player have to make his ID Card
-		ARP.Menu.Item.Button("M'enregistrer comme citoyen", '', {}, true, {}, nil)
+		ARP.Menu.Item.Button("M'enregistrer comme citoyen", '', {}, true, {
+			onSelected = function()
+				TriggerServerEvent('arp_idcard:RegisterAsCitizen')
+				ARP.Menu.CloseAll()
+			end
+		}, nil)
 	else
 		ARP.Menu.Item.Button("M'enregistrer comme citoyen", 'Vous êtes déjà recensé.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
 	end
