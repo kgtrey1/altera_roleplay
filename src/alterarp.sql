@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le : Dim 11 oct. 2020 à 17:43
--- Version du serveur :  10.4.13-MariaDB
--- Version de PHP : 7.4.8
+-- Hôte : gk91407-001.dbaas.ovh.net:35364
+-- Généré le : mar. 01 déc. 2020 à 10:47
+-- Version du serveur :  10.5.8-MariaDB-1:10.5.8+maria~buster-log
+-- Version de PHP : 7.4.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -188,8 +188,18 @@ CREATE TABLE `licenses` (
   `bike` tinyint(1) NOT NULL DEFAULT 0,
   `truck` tinyint(1) NOT NULL DEFAULT 0,
   `idcard` tinyint(1) NOT NULL DEFAULT 0,
-  `firearms` tinyint(1) NOT NULL DEFAULT 0
+  `firearms` tinyint(1) NOT NULL DEFAULT 0,
+  `hasdriving` tinyint(4) NOT NULL DEFAULT 0,
+  `hasfirearms` tinyint(4) NOT NULL DEFAULT 0,
+  `hasidcard` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `licenses`
+--
+
+INSERT INTO `licenses` (`steamid`, `car`, `bike`, `truck`, `idcard`, `firearms`, `hasdriving`, `hasfirearms`, `hasidcard`) VALUES
+('76561199031450989', 1, 1, 0, 1, 1, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -212,7 +222,7 @@ CREATE TABLE `money` (
 --
 
 INSERT INTO `money` (`id`, `steamid`, `cash`, `bank`, `dirty`, `bankname`, `iban`) VALUES
-(5, '76561199031450989', 9999671, 500, 0, 'maze', 'TEST'),
+(5, '76561199031450989', 9997671, 500, 0, 'maze', 'TEST'),
 (6, 'sqfdezfeza', 0, 200, 0, 'maze', 'lol'),
 (7, '76561198260097021', 1000, 0, 0, 'none', 'none');
 
@@ -294,7 +304,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `steamid`, `license`, `height`, `birthdate`, `firstname`, `lastname`, `skin`, `position`, `gender`) VALUES
-(5, '76561199031450989', 'd45d7a63d583433bcc200b87f5c9daee3de83588', '200', '30/01/1997', 'Obiwan', 'Kenobi', '{\"blush_3\":0,\"beard_2\":0,\"bracelets_1\":-1,\"eyebrows_4\":0,\"complexion_1\":0,\"eye_color\":0,\"glasses_1\":0,\"pants_1\":0,\"makeup_3\":0,\"age_1\":0,\"eyebrows_1\":0,\"age_2\":0,\"shoes_1\":0,\"beard_1\":0,\"tshirt_1\":0,\"sun_1\":0,\"chain_1\":0,\"lipstick_1\":0,\"beard_4\":0,\"makeup_4\":0,\"bproof_2\":0,\"hair_1\":0,\"bracelets_2\":0,\"hair_2\":0,\"bodyb_1\":0,\"chest_1\":0,\"torso_1\":0,\"chest_3\":0,\"blemishes_1\":0,\"lipstick_2\":0,\"blush_1\":0,\"bags_2\":0,\"mask_1\":0,\"eyebrows_2\":0,\"skin\":3,\"sun_2\":0,\"ears_1\":-1,\"hair_color_1\":0,\"tshirt_2\":0,\"face\":0,\"moles_2\":0,\"chain_2\":0,\"decals_2\":0,\"watches_2\":0,\"mask_2\":0,\"torso_2\":0,\"decals_1\":0,\"pants_2\":0,\"bproof_1\":0,\"bags_1\":0,\"beard_3\":0,\"sex\":0,\"watches_1\":-1,\"glasses_2\":0,\"lipstick_3\":0,\"makeup_2\":0,\"bodyb_2\":0,\"moles_1\":0,\"shoes_2\":0,\"arms\":0,\"helmet_1\":-1,\"chest_2\":0,\"ears_2\":0,\"hair_color_2\":0,\"helmet_2\":0,\"eyebrows_3\":0,\"blush_2\":0,\"lipstick_4\":0,\"makeup_1\":0,\"blemishes_2\":0,\"arms_2\":0,\"complexion_2\":0}', '{\"y\":-945.48828125,\"z\":29.759893417358,\"x\":136.18380737305}', 'M'),
+(5, '76561199031450989', 'd45d7a63d583433bcc200b87f5c9daee3de83588', '200', '30/01/1997', 'Obiwan', 'Kenobii', '{\"blush_3\":0,\"beard_2\":0,\"bracelets_1\":-1,\"eyebrows_4\":0,\"complexion_1\":0,\"eye_color\":0,\"glasses_1\":0,\"pants_1\":0,\"makeup_3\":0,\"age_1\":0,\"eyebrows_1\":0,\"age_2\":0,\"shoes_1\":0,\"beard_1\":0,\"tshirt_1\":0,\"sun_1\":0,\"chain_1\":0,\"lipstick_1\":0,\"beard_4\":0,\"makeup_4\":0,\"bproof_2\":0,\"hair_1\":0,\"bracelets_2\":0,\"hair_2\":0,\"bodyb_1\":0,\"chest_1\":0,\"torso_1\":0,\"chest_3\":0,\"blemishes_1\":0,\"lipstick_2\":0,\"blush_1\":0,\"bags_2\":0,\"mask_1\":0,\"eyebrows_2\":0,\"skin\":3,\"sun_2\":0,\"ears_1\":-1,\"hair_color_1\":0,\"tshirt_2\":0,\"face\":0,\"moles_2\":0,\"chain_2\":0,\"decals_2\":0,\"watches_2\":0,\"mask_2\":0,\"torso_2\":0,\"decals_1\":0,\"pants_2\":0,\"bproof_1\":0,\"bags_1\":0,\"beard_3\":0,\"sex\":0,\"watches_1\":-1,\"glasses_2\":0,\"lipstick_3\":0,\"makeup_2\":0,\"bodyb_2\":0,\"moles_1\":0,\"shoes_2\":0,\"arms\":0,\"helmet_1\":-1,\"chest_2\":0,\"ears_2\":0,\"hair_color_2\":0,\"helmet_2\":0,\"eyebrows_3\":0,\"blush_2\":0,\"lipstick_4\":0,\"makeup_1\":0,\"blemishes_2\":0,\"arms_2\":0,\"complexion_2\":0}', '{\"z\":9.352839469909668,\"y\":-1118.1990966796876,\"x\":-837.07373046875}', 'M'),
 (6, '76561198260097021', '7a3e242231dbad2b4967b4318511aed7d0cbcda4', '180', '15/10/1996', 'Aeron', 'Lieto', '{\"makeup_2\":0,\"sun_2\":0,\"sun_1\":0,\"lipstick_1\":0,\"eyebrows_4\":0,\"mask_1\":0,\"glasses_2\":0,\"bodyb_2\":0,\"decals_1\":0,\"bracelets_2\":0,\"helmet_1\":-1,\"blemishes_2\":0,\"lipstick_3\":0,\"makeup_4\":0,\"chain_2\":0,\"glasses_1\":5,\"age_2\":0,\"shoes_1\":0,\"age_1\":0,\"hair_2\":0,\"hair_color_1\":1,\"watches_2\":0,\"shoes_2\":0,\"makeup_3\":0,\"eyebrows_2\":10,\"blush_2\":0,\"chest_2\":0,\"chain_1\":0,\"tshirt_2\":0,\"lipstick_2\":0,\"face\":0,\"moles_1\":0,\"decals_2\":0,\"bproof_1\":0,\"bracelets_1\":-1,\"hair_color_2\":22,\"pants_1\":0,\"blush_3\":0,\"mask_2\":0,\"eye_color\":1,\"skin\":0,\"bags_1\":0,\"watches_1\":-1,\"beard_1\":11,\"moles_2\":0,\"beard_3\":0,\"complexion_1\":0,\"arms\":0,\"chest_1\":0,\"eyebrows_1\":0,\"blemishes_1\":0,\"pants_2\":0,\"ears_2\":0,\"lipstick_4\":0,\"arms_2\":0,\"beard_2\":5,\"eyebrows_3\":0,\"chest_3\":0,\"makeup_1\":0,\"torso_1\":0,\"complexion_2\":0,\"sex\":0,\"blush_1\":0,\"tshirt_1\":0,\"bproof_2\":0,\"bodyb_1\":0,\"helmet_2\":0,\"bags_2\":0,\"beard_4\":0,\"ears_1\":-1,\"hair_1\":3,\"torso_2\":0}', '{\"z\":38.69100189209,\"y\":-306.02728271484,\"x\":-154.27418518066}', 'M');
 
 --
