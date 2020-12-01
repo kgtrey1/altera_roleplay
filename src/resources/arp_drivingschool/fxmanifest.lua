@@ -1,33 +1,15 @@
-fx_version 'adamant'
-
+fx_version 'cerulean'
 game 'gta5'
-
-description 'ESX DMV School'
-
-version '1.0.4'
+author 'kgtrey1'
+description 'Driving school system for Altera Roleplay (Fork from ESX_dmvschool)'
+version '0.50.0'
 
 server_scripts {
-	'@es_extended/locale.lua',
-	'locales/br.lua',
-	'locales/fi.lua',
-	'locales/fr.lua',
-	'locales/en.lua',
-	'locales/es.lua',
-	'locales/pl.lua',
-	'locales/sv.lua',
 	'config.lua',
 	'server/main.lua'
 }
 
 client_scripts {
-	'@es_extended/locale.lua',
-	'locales/br.lua',
-	'locales/fi.lua',
-	'locales/fr.lua',
-	'locales/en.lua',
-	'locales/es.lua',
-	'locales/pl.lua',
-	'locales/sv.lua',
 	'config.lua',
 	'client/main.lua'
 }
@@ -45,6 +27,6 @@ files {
 }
 
 dependencies {
-	'es_extended',
-	'esx_license'
+	'arp_framework',
+	'arp_idcard'
 }
