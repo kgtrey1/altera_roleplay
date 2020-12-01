@@ -1,3 +1,10 @@
+--
+-- ALTERA PROJECT, 2020
+-- arp_drivingschool
+-- File description:
+-- fxmanifest
+--
+
 fx_version 'cerulean'
 game 'gta5'
 author 'kgtrey1'
