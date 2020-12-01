@@ -1,3 +1,10 @@
+--
+-- ALTERA PROJECT, 2020
+-- arp_idcard
+-- File description:
+-- Configuration file.
+--
+
 Config = {}
 
 Config.CityHallNPC = {}
