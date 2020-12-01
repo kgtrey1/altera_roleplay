@@ -12,7 +12,9 @@ end)
 AddEventHandler('arp_framework:PlayerReady', function(playerData)
 	ARP.Player = playerData
 	ARP.Menu.RegisterMenu(MainMenu, "Mairie", "MENU D'ADMINISTRATION")
+	Citizen.CreateThread(CreateCityHallBlip)
 	Citizen.CreateThread(SpawnCityHallNPC)
+	Citizen.CreateThread(HandleNPC)
 end)
 
 function ShowLicense(data, type)
@@ -98,6 +100,18 @@ function HandleNPC()
 	end
 end
 
+function CreateCityHallBlip()
+	local blip = AddBlipForCoord(Config.CityHallNPC.pos.x, Config.CityHallNPC.pos.y, Config.CityHallNPC.pos.z)
+	
+	SetBlipSprite(blip, 438)
+	SetBlipScale(blip, 0.7)
+	SetBlipAsShortRange(blip, true)
+	SetBlipColour(blip, 39)
+	BeginTextCommandSetBlipName("STRING")
+	AddTextComponentString('Mairie')
+	EndTextCommandSetBlipName(blip)
+end
+
 function SpawnCityHallNPC()
 	local hash = GetHashKey(Config.CityHallNPC.model)
 
@@ -109,5 +123,4 @@ function SpawnCityHallNPC()
 	SetBlockingOfNonTemporaryEvents(ped, true)
     SetEntityInvincible(ped, true)
 	FreezeEntityPosition(ped, true)
-	HandleNPC()
 end
