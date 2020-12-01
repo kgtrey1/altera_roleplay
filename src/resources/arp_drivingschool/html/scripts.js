@@ -86,11 +86,11 @@ window.addEventListener('message', function (event) {
 
 // Handle Button Presses
 $(".btnQuestion").click(function () {
-	$.post('http://esx_dmvschool/question', JSON.stringify({}));
+	$.post('https://arp_drivingschool/question', JSON.stringify({}));
 });
 
 $(".btnClose").click(function () {
-	$.post('http://esx_dmvschool/close', JSON.stringify({}));
+	$.post('https://arp_drivingschool/close', JSON.stringify({}));
 	userAnswer = [];
 	goodAnswer = [];
 	questionUsed = [];
@@ -98,7 +98,7 @@ $(".btnClose").click(function () {
 });
 
 $(".btnKick").click(function () {
-	$.post('http://esx_dmvschool/kick', JSON.stringify({}));
+	$.post('https://arp_drivingschool/kick', JSON.stringify({}));
 	userAnswer = [];
 	goodAnswer = [];
 	questionUsed = [];

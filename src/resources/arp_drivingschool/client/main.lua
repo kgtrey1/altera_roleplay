@@ -27,36 +27,9 @@ function DrawMissionText(msg, time)
 	EndTextCommandPrint(time, true)
 end
 
-function StartTheoryTest()
-	CurrentTest = 'theory'
 
-	SendNUIMessage({
-		openQuestion = true
-	})
 
-	ESX.SetTimeout(200, function()
-		SetNuiFocus(true, true)
-	end)
 
-	TriggerServerEvent('esx_dmvschool:pay', Config.Prices['dmv'])
-end
-
-function StopTheoryTest(success)
-	CurrentTest = nil
-
-	SendNUIMessage({
-		openQuestion = false
-	})
-
-	SetNuiFocus(false)
-
-	if success then
-		TriggerServerEvent('esx_dmvschool:addLicense', 'dmv')
-		ESX.ShowNotification(_U('passed_test'))
-	else
-		ESX.ShowNotification(_U('failed_test'))
-	end
-end
 
 function StartDriveTest(type)
 	ESX.Game.SpawnVehicle(Config.VehicleModels[type], Config.Zones.VehicleSpawnPoint.Pos, Config.Zones.VehicleSpawnPoint.Pos.h, function(vehicle)
@@ -159,41 +132,9 @@ function OpenDMVSchoolMenu()
 	end)
 end
 
-RegisterNUICallback('question', function(data, cb)
-	SendNUIMessage({
-		openSection = 'question'
-	})
 
-	cb()
-end)
 
-RegisterNUICallback('close', function(data, cb)
-	StopTheoryTest(true)
-	cb()
-end)
 
-RegisterNUICallback('kick', function(data, cb)
-	StopTheoryTest(false)
-	cb()
-end)
-
-AddEventHandler('esx_dmvschool:hasEnteredMarker', function(zone)
-	if zone == 'DMVSchool' then
-		CurrentAction     = 'dmvschool_menu'
-		CurrentActionMsg  = _U('press_open_menu')
-		CurrentActionData = {}
-	end
-end)
-
-AddEventHandler('esx_dmvschool:hasExitedMarker', function(zone)
-	CurrentAction = nil
-	ESX.UI.Menu.CloseAll()
-end)
-
-RegisterNetEvent('esx_dmvschool:loadLicenses')
-AddEventHandler('esx_dmvschool:loadLicenses', function(licenses)
-	Licenses = licenses
-end)
 
 -- Create Blips
 Citizen.CreateThread(function()
