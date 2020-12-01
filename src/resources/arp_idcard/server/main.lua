@@ -131,16 +131,32 @@ end
 RegisterNetEvent('arp_licenses:SetDrivingLicense')
 AddEventHandler('arp_licenses:SetDrivingLicense', SetDrivingLicense)
 
+function SetCodeLicense(target, value)
+	local _source = source
+	local Altera = ARP.GetPlayerById(target)
+	local Alterb = ARP.GetPlayerById(_source)
+
+	if (type(value) == 'boolean' and Altera ~= nil) then
+		Altera.licenses.SetCode(value)
+	else
+		string.format('ARP> Trying to set driving licences for %s with value ' .. value .. ' (Called by SteamID %s on SteamId %s).', type, Alterb.GetSteamid(), Altera.GetSteamid())
+	end
+end
+
+RegisterNetEvent('arp_licenses:SetCodeLicense')
+AddEventHandler('arp_licenses:SetCodeLicense', SetCodeLicense)
+
 ARP.RegisterServerCallback('arp_licenses:GetLicensesData', function(_source, cb)
 	local Alter = ARP.GetPlayerById(_source)
 	local obj 	= {}
 
 	obj.hasdriving			= Alter.licenses.GetDrivingOwnership()
-	obj.hasdriving	 		= Alter.licenses.GetIdCardOwnership()
+	obj.hasidcard	 		= Alter.licenses.GetIdCardOwnership()
 	obj.hasfirearms			= Alter.licenses.GetFirearmsOwnership()
 	obj.driving				= Alter.licenses.GetDrivingLicense()
 	obj.idcard				= Alter.licenses.GetIdCard()
 	obj.firearms			= Alter.licenses.GetFirearmsLicense()
+	obj.code				= Alter.licenses.GetCode()
 	cb(obj)
 end)
 

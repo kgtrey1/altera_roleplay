@@ -18,7 +18,11 @@ local function GetPlayerLicenses(steamid)
             bike        = false,
             truck       = false,
             idcard      = false,
-            firewarms   = false
+            firearms    = false,
+            code        = false,
+            hasidcard   = false,
+            hasdriving  = false,
+            hasfirearms = false
         })
     end
     return ({
@@ -27,6 +31,7 @@ local function GetPlayerLicenses(steamid)
         truck       = result[1].truck,
         idcard      = result[1].idcard,
         firearms    = result[1].firearms,
+        code        = result[1].code,
         hasidcard   = result[1].hasidcard,
         hasdriving  = result[1].hasdriving,
         hasfirearms = result[1].hasfirearms

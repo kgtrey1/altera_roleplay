@@ -398,6 +398,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
     self.licenses = {}
 
     self.licenses.idcard        = licenses.idcard
+    self.licenses.code          = licenses.code
     self.licenses.car           = licenses.car
     self.licenses.truck         = licenses.truck
     self.licenses.bike          = licenses.bike
@@ -511,6 +512,22 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
             print('ARP> Attempting to set driving ownership with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
         return
+    end
+
+    self.licenses.SetCode = function(value)
+        if (type(value) == 'boolean') then
+            self.licenses.code = value
+            MySQL.Sync.execute('UPDATE licenses SET `code` = @value WHERE steamid = @steamid', {
+                ['@value']   = value,
+                ['@steamid'] = self.steamid
+            })
+        else
+            print('ARP> Attempting to set code with a non boolean value (SteamID:' .. self.steamid .. ').')
+        end
+    end
+
+    self.licenses.GetCode = function(value)
+        return (self.licenses.code)
     end
 
     return (self)
