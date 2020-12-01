@@ -130,3 +130,16 @@ end
 
 RegisterNetEvent('arp_licenses:SetDrivingLicense')
 AddEventHandler('arp_licenses:SetDrivingLicense', SetDrivingLicense)
+
+ARP.RegisterServerCallback('arp_licenses:GetLicensesData', function(_source, cb)
+	local Alter = ARP.GetPlayerById(_source)
+	local obj 	= {}
+
+	obj.hasdriving			= Alter.licenses.GetDrivingOwnership()
+	obj.hasdriving	 		= Alter.licenses.GetIdCardOwnership()
+	obj.hasfirearms			= Alter.licenses.GetFirearmsOwnership()
+	obj.driving				= Alter.licenses.GetDrivingLicense()
+	obj.idcard				= Alter.licenses.GetIdCard()
+	obj.firearms			= Alter.licenses.GetFirearmsLicense()
+	cb(obj)
+end)
