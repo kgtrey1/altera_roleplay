@@ -215,11 +215,40 @@ function RenderSchoolMenu(licenses)
 				ARP.Menu.CloseAll()
 			end
 		}, nil)
-		ARP.Menu.Item.Button("Passer le permis A", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
-		ARP.Menu.Item.Button("Passer le permis B", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
-		ARP.Menu.Item.Button("Passer le permis C", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+		ARP.Menu.Item.Button("Passer l'examen du permis A", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+		ARP.Menu.Item.Button("Passer l'examen du permis B", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+		ARP.Menu.Item.Button("Passer l'examen du permis C", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
 	else
-		print('has code')
+		if (not licenses.driving.bike) then
+			ARP.Menu.Item.Button("Passer l'examen du permis A", '', {}, true, {
+				onSelected = function()
+					TriggerServerEvent('arp_drivingschool:Buy', 'bike')
+					ARP.Menu.CloseAll()
+				end
+			}, nil)
+		else
+			ARP.Menu.Item.Button("Passer l'examen du permis A", 'Vous possédez ce permis.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+		end
+		if (not licenses.driving.car) then
+			ARP.Menu.Item.Button("Passer l'examen du permis B", '', {}, true, {
+				onSelected = function()
+					TriggerServerEvent('arp_drivingschool:Buy', 'car')
+					ARP.Menu.CloseAll()
+				end
+			}, nil)
+		else
+			ARP.Menu.Item.Button("Passer l'examen du permis B", 'Vous possédez ce permis.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+		end
+		if (not licenses.driving.truck) then
+			ARP.Menu.Item.Button("Passer l'examen du permis C", '', {}, true, {
+				onSelected = function()
+					TriggerServerEvent('arp_drivingschool:Buy', 'truck')
+					ARP.Menu.CloseAll()
+				end
+			}, nil)
+		else
+			ARP.Menu.Item.Button("Passer l'examen du permis C", 'Vous possédez ce permis.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+		end
 	end
 end
 
