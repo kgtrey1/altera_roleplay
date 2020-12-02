@@ -1,0 +1,6 @@
+--
+-- ALTERA PROJECT, 2020
+-- arp_cardealer
+-- File description:
+-- main client side script
+--
