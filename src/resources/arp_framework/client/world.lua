@@ -93,3 +93,8 @@ ARP.World.GetClosestVehicle = function()
 	EndFindVehicle(handle)
 	return closestVehicle, closestDistance
 end
+
+ARP.World.DeleteVehicle = function(vehicle)
+	SetEntityAsMissionEntity(vehicle, false, true)
+	DeleteVehicle(vehicle)
+end
