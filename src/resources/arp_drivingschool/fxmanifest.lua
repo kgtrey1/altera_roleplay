@@ -12,13 +12,13 @@ description 'Driving school system for Altera Roleplay (Fork from ESX_dmvschool)
 version '0.50.0'
 
 server_scripts {
-	'config2.lua',
-	'server/main_refacto.lua'
+	'config.lua',
+	'server/main.lua'
 }
 
 client_scripts {
-	'config2.lua',
-	'client/main_refacto.lua'
+	'config.lua',
+	'client/main.lua'
 }
 
 ui_page 'html/ui.html'

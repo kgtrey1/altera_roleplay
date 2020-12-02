@@ -1,9 +1,10 @@
-ESX                     = nil
-local CurrentAction     = nil
-local CurrentActionMsg  = nil
-local CurrentActionData = nil
-local Licenses          = {}
-local CurrentTest       = nil
+local ARP       = nil
+
+local MainMenu      = 'arp_drivingschool:MainMenu'
+local MenuIsOpen    = false
+
+local CurrentTest	= nil
+
 local CurrentTestType   = nil
 local CurrentVehicle    = nil
 local CurrentCheckPoint, DriveErrors = 0, 0
@@ -13,12 +14,24 @@ local CurrentZoneType   = nil
 local IsAboveSpeedLimit = false
 local LastVehicleHealth = nil
 
-Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		Citizen.Wait(0)
-	end
+-- arp_framework Initialization.
+
+TriggerEvent('arp_framework:FetchObject', function(object)
+	ARP = object
 end)
+
+AddEventHandler('arp_framework:PlayerReady', function(playerData)
+	ARP.Player = playerData
+	ARP.Menu.RegisterMenu(MainMenu, "Auto Ecole", "MENU AUTO ECOLE")
+	Citizen.CreateThread(CreateDrivingSchoolBlip)
+	Citizen.CreateThread(HandleDrivingSchoolPoint)
+end)
+
+-- Drive
+
+function SetCurrentZoneType(type)
+	CurrentZoneType = type
+end
 
 function DrawMissionText(msg, time)
 	ClearPrints()
@@ -27,12 +40,100 @@ function DrawMissionText(msg, time)
 	EndTextCommandPrint(time, true)
 end
 
+function StopDriveTest(success)
+	if success then
+		TriggerServerEvent('arp_licenses:SetDrivingLicense', GetPlayerServerId(PlayerId()), CurrentTestType, trues)
+		ARP.ShowNotification("Vous avez ~g~réussi~s~ l'examen de conduite.")
+	else
+		ARP.ShowNotification("Vous avez ~r~échoué~s~ l'examen de conduite.")
+	end
+	CurrentTest     = nil
+	CurrentTestType = nil
+end
 
+function ManageTest()
+	Citizen.CreateThread(function()
+		while (CurrentTest ~= nil) do
+			Citizen.Wait(0)
+			local playerPed      = PlayerPedId()
+			local coords         = GetEntityCoords(playerPed)
+			local nextCheckPoint = CurrentCheckPoint + 1
 
+			if Config.CheckPoints[nextCheckPoint] == nil then
+				if DoesBlipExist(CurrentBlip) then
+					RemoveBlip(CurrentBlip)
+				end
+				CurrentTest = nil
+				ARP.ShowNotification("Vous avez terminé l'examen de conduite.")
+				if DriveErrors < Config.MaxErrors then
+					StopDriveTest(true)
+				else
+					StopDriveTest(false)
+				end
+			else
+				if CurrentCheckPoint ~= LastCheckPoint then
+					if DoesBlipExist(CurrentBlip) then
+						RemoveBlip(CurrentBlip)
+					end
+					CurrentBlip = AddBlipForCoord(Config.CheckPoints[nextCheckPoint].Pos.x, Config.CheckPoints[nextCheckPoint].Pos.y, Config.CheckPoints[nextCheckPoint].Pos.z)
+					SetBlipRoute(CurrentBlip, 1)
+					LastCheckPoint = CurrentCheckPoint
+				end
+				local distance = GetDistanceBetweenCoords(coords, Config.CheckPoints[nextCheckPoint].Pos.x, Config.CheckPoints[nextCheckPoint].Pos.y, Config.CheckPoints[nextCheckPoint].Pos.z, true)
 
+				if distance <= 100.0 then
+					DrawMarker(1, Config.CheckPoints[nextCheckPoint].Pos.x, Config.CheckPoints[nextCheckPoint].Pos.y, Config.CheckPoints[nextCheckPoint].Pos.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 1.5, 1.5, 1.5, 102, 204, 102, 100, false, true, 2, false, false, false, false)
+				end
+				if distance <= 3.0 then
+					Config.CheckPoints[nextCheckPoint].Action(playerPed, CurrentVehicle, SetCurrentZoneType)
+					CurrentCheckPoint = CurrentCheckPoint + 1
+				end
+			end
+		end
+	end)
+end
+
+-- Speed / Damage control
+function ManageVehicle()
+	Citizen.CreateThread(function()
+		while (CurrentTest ~= nil) do
+			Citizen.Wait(10)
+			local playerPed = PlayerPedId()
+
+			if IsPedInAnyVehicle(playerPed, false) then
+				local vehicle      = GetVehiclePedIsIn(playerPed, false)
+				local speed        = GetEntitySpeed(vehicle) * Config.SpeedMultiplier
+				local tooMuchSpeed = false
+
+				for k,v in pairs(Config.SpeedLimits) do
+					if CurrentZoneType == k and speed > v then
+						tooMuchSpeed = true
+						if not IsAboveSpeedLimit then
+							DriveErrors       = DriveErrors + 1
+							IsAboveSpeedLimit = true
+							ARP.ShowNotification(string.format("Vous conduisez trop vite. Vitesse limitée à: ~y~%s~s~ km/h!", v))
+							ARP.ShowNotification(string.format("Erreur(s): ~r~%s~s~/%s.", DriveErrors, Config.MaxErrors))
+						end
+					end
+				end
+				if not tooMuchSpeed then
+					IsAboveSpeedLimit = false
+				end
+				local health = GetEntityHealth(vehicle)
+				if health < LastVehicleHealth then
+					DriveErrors = DriveErrors + 1
+					ARP.ShowNotification("Vous avez endommagé votre véhicule.")
+					ARP.ShowNotification(string.format("Erreur(s): ~r~%s~s~/%s.", DriveErrors, Config.MaxErrors))
+					LastVehicleHealth = health
+					Citizen.Wait(1500)
+				end
+			end
+		end
+	end)
+end
 
 function StartDriveTest(type)
-	ESX.Game.SpawnVehicle(Config.VehicleModels[type], Config.Zones.VehicleSpawnPoint.Pos, Config.Zones.VehicleSpawnPoint.Pos.h, function(vehicle)
+	ARP.World.SpawnVehicle(Config.VehicleModels[type], Config.Zones.VehicleSpawnPoint.Pos, Config.Zones.VehicleSpawnPoint.Pos.h, function(vehicle)
 		CurrentTest       = 'drive'
 		CurrentTestType   = type
 		CurrentCheckPoint = 0
@@ -47,299 +148,145 @@ function StartDriveTest(type)
 		TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
 		SetVehicleFuelLevel(vehicle, 100.0)
 		DecorSetFloat(vehicle, "_FUEL_LEVEL", GetVehicleFuelLevel(vehicle))
+		ManageTest()
+		ManageVehicle()
 	end)
-
-	TriggerServerEvent('esx_dmvschool:pay', Config.Prices[type])
 end
 
-function StopDriveTest(success)
-	if success then
-		TriggerServerEvent('esx_dmvschool:addLicense', CurrentTestType)
-		ESX.ShowNotification(_U('passed_test'))
+-- Code
+
+function StopTheoryTest(success)
+	CurrentTest = nil
+	SendNUIMessage({
+		openQuestion = false
+	})
+	SetNuiFocus(false)
+	if (success) then
+		TriggerServerEvent('arp_licenses:SetCodeLicense', GetPlayerServerId(PlayerId()), true)
+		ARP.ShowNotification("Vous avez ~g~réussi~s~ l'examen du code.")
 	else
-		ESX.ShowNotification(_U('failed_test'))
+		ARP.ShowNotification("Vous avez ~r~échoué~s~ l'examen du code.")
 	end
-
-	CurrentTest     = nil
-	CurrentTestType = nil
 end
 
-function SetCurrentZoneType(type)
-CurrentZoneType = type
+RegisterNUICallback('question', function(data, cb)
+	SendNUIMessage({
+		openSection = 'question'
+	})
+	cb()
+end)
+
+RegisterNUICallback('close', function(data, cb)
+	StopTheoryTest(true)
+	cb()
+end)
+
+RegisterNUICallback('kick', function(data, cb)
+	StopTheoryTest(false)
+	cb()
+end)
+
+function StartTheoryTest()
+	CurrentTest = 'theory'
+	SendNUIMessage({
+		openQuestion = true
+	})
+	SetNuiFocus(true, true)
 end
 
-function OpenDMVSchoolMenu()
-	local ownedLicenses = {}
-
-	for i=1, #Licenses, 1 do
-		ownedLicenses[Licenses[i].type] = true
+function StartTest(type)
+	if (type == 'code') then
+		StartTheoryTest()
+	else
+		StartDrivingTest(type)
 	end
-
-	local elements = {}
-
-	if not ownedLicenses['dmv'] then
-		table.insert(elements, {
-			label = (('%s: <span style="color:green;">%s</span>'):format(_U('theory_test'), _U('school_item', ESX.Math.GroupDigits(Config.Prices['dmv'])))),
-			value = 'theory_test'
-		})
-	end
-
-	if ownedLicenses['dmv'] then
-		if not ownedLicenses['drive'] then
-			table.insert(elements, {
-				label = (('%s: <span style="color:green;">%s</span>'):format(_U('road_test_car'), _U('school_item', ESX.Math.GroupDigits(Config.Prices['drive'])))),
-				value = 'drive_test',
-				type = 'drive'
-			})
-		end
-
-		if not ownedLicenses['drive_bike'] then
-			table.insert(elements, {
-				label = (('%s: <span style="color:green;">%s</span>'):format(_U('road_test_bike'), _U('school_item', ESX.Math.GroupDigits(Config.Prices['drive_bike'])))),
-				value = 'drive_test',
-				type = 'drive_bike'
-			})
-		end
-
-		if not ownedLicenses['drive_truck'] then
-			table.insert(elements, {
-				label = (('%s: <span style="color:green;">%s</span>'):format(_U('road_test_truck'), _U('school_item', ESX.Math.GroupDigits(Config.Prices['drive_truck'])))),
-				value = 'drive_test',
-				type = 'drive_truck'
-			})
-		end
-	end
-
-	ESX.UI.Menu.CloseAll()
-
-	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'dmvschool_actions', {
-		title    = _U('driving_school'),
-		elements = elements,
-		align    = 'top-left'
-	}, function(data, menu)
-		if data.current.value == 'theory_test' then
-			menu.close()
-			StartTheoryTest()
-		elseif data.current.value == 'drive_test' then
-			StartDriveTest(data.current.type)
-		end
-	end, function(data, menu)
-		menu.close()
-
-		CurrentAction     = 'dmvschool_menu'
-		CurrentActionMsg  = _U('press_open_menu')
-		CurrentActionData = {}
-	end)
 end
 
+RegisterNetEvent('arp_drivingschool:StartTest')
+AddEventHandler('arp_drivingschool:StartTest', StartTest)
 
+-- Driving School Menu Thread
 
+function RenderSchoolMenu(licenses)
+	if (not licenses.code) then
+		ARP.Menu.Item.Button("Passer l'examen du code", 'Passer le code pour avoir accès aux permis.', {}, true, {
+			onSelected = function()
+				TriggerServerEvent('arp_drivingschool:Buy', 'code')
+				ARP.Menu.CloseAll()
+			end
+		}, nil)
+		ARP.Menu.Item.Button("Passer le permis A", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+		ARP.Menu.Item.Button("Passer le permis B", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+		ARP.Menu.Item.Button("Passer le permis C", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+	else
+		print('has code')
+	end
+end
 
+function OpenSchoolMenu(licenses)
+	if (MenuIsOpen) then
+		return
+	end
+	MenuIsOpen = true
+	if (not licenses.hasidcard) then
+		ARP.ShowNotification("Vous devez avoir votre carte d'identité pour passer le permis.")
+		Citizen.Wait(10000)
+		MenuIsOpen = false
+		return
+	end
+	ARP.Menu.CloseAll()
+	ARP.Menu.Visible(MainMenu, false)
+	while (MenuIsOpen) do
+		ARP.Menu.IsVisible(MainMenu, function()
+			RenderSchoolMenu(licenses)
+		end, function() end, false)
+		if (not ARP.Menu.GetVisibility(MainMenu, false)) then
+			MenuIsOpen = false
+		end
+		Citizen.Wait(0)
+	end
+	MenuIsOpen = false
+end
 
--- Create Blips
-Citizen.CreateThread(function()
-	local blip = AddBlipForCoord(Config.Zones.DMVSchool.Pos.x, Config.Zones.DMVSchool.Pos.y, Config.Zones.DMVSchool.Pos.z)
+-- Driving School point
 
-	SetBlipSprite (blip, 408)
-	SetBlipDisplay(blip, 4)
-	SetBlipScale  (blip, 1.2)
+function HandleDrivingSchoolPoint()
+	local playerCoords = nil
+	local distance = nil
+
+	while (true) do
+		playerCoords = GetEntityCoords(PlayerPedId())
+		distance = #(playerCoords - Config.Zones.School.Pos)
+		if (distance <= 50) then
+			if (distance <= 3 and not MenuIsOpen and CurrentTest == nil) then
+				ARP.ShowHelpNotification("Appuyez sur ~INPUT_CONTEXT~ pour accèder à l'auto école.")
+				if (IsControlJustReleased(1, 38)) then
+					ARP.TriggerServerCallback('arp_licenses:GetLicensesData', function(data)
+						OpenSchoolMenu(data)
+					end)
+				end
+			elseif (distance > 3) then
+				MenuIsOpen = false
+			end
+			Citizen.Wait(0)
+		else
+			MenuIsOpen = false
+			Citizen.Wait(5000)
+		end
+	end
+end
+
+-- Blip
+
+function CreateDrivingSchoolBlip()
+	print(json.encode(Config))
+	local blip = AddBlipForCoord(Config.Zones.School.Pos)
+
+	SetBlipSprite(blip, 438)
+	SetBlipScale(blip, 0.7)
 	SetBlipAsShortRange(blip, true)
-
+	SetBlipColour(blip, 39)
 	BeginTextCommandSetBlipName("STRING")
-	AddTextComponentString(_U('driving_school_blip'))
+	AddTextComponentString('Auto école')
 	EndTextCommandSetBlipName(blip)
-end)
-
--- Display markers
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(0)
-
-		local coords = GetEntityCoords(PlayerPedId())
-
-		for k,v in pairs(Config.Zones) do
-			if(v.Type ~= -1 and GetDistanceBetweenCoords(coords, v.Pos.x, v.Pos.y, v.Pos.z, true) < Config.DrawDistance) then
-				DrawMarker(v.Type, v.Pos.x, v.Pos.y, v.Pos.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, v.Size.x, v.Size.y, v.Size.z, v.Color.r, v.Color.g, v.Color.b, 100, false, true, 2, false, false, false, false)
-			end
-		end
-	end
-end)
-
--- Enter / Exit marker events
-Citizen.CreateThread(function()
-	while true do
-
-		Citizen.Wait(100)
-
-		local coords      = GetEntityCoords(PlayerPedId())
-		local isInMarker  = false
-		local currentZone = nil
-
-		for k,v in pairs(Config.Zones) do
-			if(GetDistanceBetweenCoords(coords, v.Pos.x, v.Pos.y, v.Pos.z, true) < v.Size.x) then
-				isInMarker  = true
-				currentZone = k
-			end
-		end
-
-		if (isInMarker and not HasAlreadyEnteredMarker) or (isInMarker and LastZone ~= currentZone) then
-			HasAlreadyEnteredMarker = true
-			LastZone                = currentZone
-			TriggerEvent('esx_dmvschool:hasEnteredMarker', currentZone)
-		end
-
-		if not isInMarker and HasAlreadyEnteredMarker then
-			HasAlreadyEnteredMarker = false
-			TriggerEvent('esx_dmvschool:hasExitedMarker', LastZone)
-		end
-	end
-end)
-
--- Block UI
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(1)
-
-		if CurrentTest == 'theory' then
-			local playerPed = PlayerPedId()
-
-			DisableControlAction(0, 1, true) -- LookLeftRight
-			DisableControlAction(0, 2, true) -- LookUpDown
-			DisablePlayerFiring(playerPed, true) -- Disable weapon firing
-			DisableControlAction(0, 142, true) -- MeleeAttackAlternate
-			DisableControlAction(0, 106, true) -- VehicleMouseControlOverride
-		else
-			Citizen.Wait(500)
-		end
-	end
-end)
-
--- Key Controls
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(0)
-
-		if CurrentAction then
-			ESX.ShowHelpNotification(CurrentActionMsg)
-
-			if IsControlJustReleased(0, 38) then
-				if CurrentAction == 'dmvschool_menu' then
-					OpenDMVSchoolMenu()
-				end
-
-				CurrentAction = nil
-			end
-		else
-			Citizen.Wait(500)
-		end
-	end
-end)
-
--- Drive test
-Citizen.CreateThread(function()
-	while true do
-
-		Citizen.Wait(0)
-
-		if CurrentTest == 'drive' then
-			local playerPed      = PlayerPedId()
-			local coords         = GetEntityCoords(playerPed)
-			local nextCheckPoint = CurrentCheckPoint + 1
-
-			if Config.CheckPoints[nextCheckPoint] == nil then
-				if DoesBlipExist(CurrentBlip) then
-					RemoveBlip(CurrentBlip)
-				end
-
-				CurrentTest = nil
-
-				ESX.ShowNotification(_U('driving_test_complete'))
-
-				if DriveErrors < Config.MaxErrors then
-					StopDriveTest(true)
-				else
-					StopDriveTest(false)
-				end
-			else
-
-				if CurrentCheckPoint ~= LastCheckPoint then
-					if DoesBlipExist(CurrentBlip) then
-						RemoveBlip(CurrentBlip)
-					end
-
-					CurrentBlip = AddBlipForCoord(Config.CheckPoints[nextCheckPoint].Pos.x, Config.CheckPoints[nextCheckPoint].Pos.y, Config.CheckPoints[nextCheckPoint].Pos.z)
-					SetBlipRoute(CurrentBlip, 1)
-
-					LastCheckPoint = CurrentCheckPoint
-				end
-
-				local distance = GetDistanceBetweenCoords(coords, Config.CheckPoints[nextCheckPoint].Pos.x, Config.CheckPoints[nextCheckPoint].Pos.y, Config.CheckPoints[nextCheckPoint].Pos.z, true)
-
-				if distance <= 100.0 then
-					DrawMarker(1, Config.CheckPoints[nextCheckPoint].Pos.x, Config.CheckPoints[nextCheckPoint].Pos.y, Config.CheckPoints[nextCheckPoint].Pos.z, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 1.5, 1.5, 1.5, 102, 204, 102, 100, false, true, 2, false, false, false, false)
-				end
-
-				if distance <= 3.0 then
-					Config.CheckPoints[nextCheckPoint].Action(playerPed, CurrentVehicle, SetCurrentZoneType)
-					CurrentCheckPoint = CurrentCheckPoint + 1
-				end
-			end
-		else
-			-- not currently taking driver test
-			Citizen.Wait(500)
-		end
-	end
-end)
-
--- Speed / Damage control
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(10)
-
-		if CurrentTest == 'drive' then
-
-			local playerPed = PlayerPedId()
-
-			if IsPedInAnyVehicle(playerPed, false) then
-
-				local vehicle      = GetVehiclePedIsIn(playerPed, false)
-				local speed        = GetEntitySpeed(vehicle) * Config.SpeedMultiplier
-				local tooMuchSpeed = false
-
-				for k,v in pairs(Config.SpeedLimits) do
-					if CurrentZoneType == k and speed > v then
-						tooMuchSpeed = true
-
-						if not IsAboveSpeedLimit then
-							DriveErrors       = DriveErrors + 1
-							IsAboveSpeedLimit = true
-
-							ESX.ShowNotification(_U('driving_too_fast', v))
-							ESX.ShowNotification(_U('errors', DriveErrors, Config.MaxErrors))
-						end
-					end
-				end
-
-				if not tooMuchSpeed then
-					IsAboveSpeedLimit = false
-				end
-
-				local health = GetEntityHealth(vehicle)
-				if health < LastVehicleHealth then
-
-					DriveErrors = DriveErrors + 1
-
-					ESX.ShowNotification(_U('you_damaged_veh'))
-					ESX.ShowNotification(_U('errors', DriveErrors, Config.MaxErrors))
-
-					-- avoid stacking faults
-					LastVehicleHealth = health
-					Citizen.Wait(1500)
-				end
-			end
-		else
-			-- not currently taking driver test
-			Citizen.Wait(500)
-		end
-	end
-end)
+end

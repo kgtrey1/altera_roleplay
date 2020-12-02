@@ -1,29 +1,26 @@
-ESX = nil
+local ARP = nil
 
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-
-AddEventHandler('esx:playerLoaded', function(source)
-	TriggerEvent('esx_license:getLicenses', source, function(licenses)
-		TriggerClientEvent('esx_dmvschool:loadLicenses', source, licenses)
-	end)
+TriggerEvent('arp_framework:FetchObject', function(obj)
+	ARP = obj
 end)
 
-RegisterNetEvent('esx_dmvschool:addLicense')
-AddEventHandler('esx_dmvschool:addLicense', function(type)
+function Buy(type)
 	local _source = source
+	local Alter = ARP.GetPlayerById(_source)
 
-	TriggerEvent('esx_license:addLicense', _source, type, function()
-		TriggerEvent('esx_license:getLicenses', _source, function(licenses)
-			TriggerClientEvent('esx_dmvschool:loadLicenses', _source, licenses)
-		end)
-	end)
-end)
+    if (Config.Prices[type] == nil) then
+        return
+    end
+	if (Alter == nil) then
+		return
+	elseif (Alter.money.GetCash() >= Config.Prices[type]) then
+        Alter.money.RemoveCash(Config.Prices[type])
+        TriggerClientEvent('arp_drivingschool:StartTest', _source, type)
+	else
+		Alter.ShowNotification("Vous n'avez pas assez d'argent.")
+	end
+	return
+end
 
-RegisterNetEvent('esx_dmvschool:pay')
-AddEventHandler('esx_dmvschool:pay', function(price)
-	local _source = source
-	local xPlayer = ESX.GetPlayerFromId(_source)
-
-	xPlayer.removeMoney(price)
-	TriggerClientEvent('esx:showNotification', _source, _U('you_paid', ESX.Math.GroupDigits(price)))
-end)
+RegisterNetEvent('arp_drivingschool:Buy')
+AddEventHandler('arp_drivingschool:Buy', Buy)
