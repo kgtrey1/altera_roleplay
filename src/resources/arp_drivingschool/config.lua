@@ -32,9 +32,9 @@ Config.VehicleModels = {
 }
 
 Config.SpeedLimits = {
-	residence = 50,
-	town      = 80,
-	freeway   = 120
+	residence = 1000,
+	town      = 1000,
+	freeway   = 1000
 }
 
 Config.CheckPoints = {
@@ -69,7 +69,7 @@ Config.CheckPoints = {
 			setCurrentZoneType('town')
 
 			Citizen.CreateThread(function()
-				DrawMissionText(string.format("Marquez un ~r~arrêt~s~ et regardez à votre ~y~gauche~s~. Vitesse limitée à: ~y~%s~s~ KM/H!"), Config.SpeedLimits['town']), 5000)
+				DrawMissionText(string.format("Marquez un ~r~arrêt~s~ et regardez à votre ~y~gauche~s~. Vitesse limitée à: ~y~%s~s~ KM/H!", Config.SpeedLimits['town']), 5000)
 				PlaySound(-1, 'RACE_PLACED', 'HUD_AWARDS', false, 0, true)
 				FreezeEntityPosition(vehicle, true)
 				Citizen.Wait(6000)
@@ -155,7 +155,7 @@ Config.CheckPoints = {
 	{
 		Pos = {x = 235.283, y = -1398.329, z = 28.921},
 		Action = function(playerPed, vehicle, setCurrentZoneType)
-			ARP.Game.DeleteVehicle(vehicle)
+			ARP.World.DeleteVehicle(vehicle)
 		end
 	}
 }

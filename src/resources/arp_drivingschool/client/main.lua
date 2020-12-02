@@ -1,4 +1,4 @@
-local ARP       = nil
+ARP       = nil
 
 local MainMenu      = 'arp_drivingschool:MainMenu'
 local MenuIsOpen    = false
@@ -29,6 +29,13 @@ end)
 
 -- Drive
 
+function ResetSpeed()
+	Citizen.CreateThread(function()
+		Citizen.Wait(3000)
+		IsAboveSpeedLimit = false
+	end)
+end
+
 function SetCurrentZoneType(type)
 	CurrentZoneType = type
 end
@@ -42,7 +49,7 @@ end
 
 function StopDriveTest(success)
 	if success then
-		TriggerServerEvent('arp_licenses:SetDrivingLicense', GetPlayerServerId(PlayerId()), CurrentTestType, trues)
+		TriggerServerEvent('arp_licenses:SetDrivingLicense', GetPlayerServerId(PlayerId()), CurrentTestType, true)
 		ARP.ShowNotification("Vous avez ~g~réussi~s~ l'examen de conduite.")
 	else
 		ARP.ShowNotification("Vous avez ~r~échoué~s~ l'examen de conduite.")
@@ -113,6 +120,7 @@ function ManageVehicle()
 							IsAboveSpeedLimit = true
 							ARP.ShowNotification(string.format("Vous conduisez trop vite. Vitesse limitée à: ~y~%s~s~ km/h!", v))
 							ARP.ShowNotification(string.format("Erreur(s): ~r~%s~s~/%s.", DriveErrors, Config.MaxErrors))
+							ResetSpeed()
 						end
 					end
 				end
@@ -198,7 +206,7 @@ function StartTest(type)
 	if (type == 'code') then
 		StartTheoryTest()
 	else
-		StartDrivingTest(type)
+		StartDriveTest(type)
 	end
 end
 
@@ -219,6 +227,7 @@ function RenderSchoolMenu(licenses)
 		ARP.Menu.Item.Button("Passer l'examen du permis B", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
 		ARP.Menu.Item.Button("Passer l'examen du permis C", 'Vous devez avoir le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
 	else
+		ARP.Menu.Item.Button("Passer l'examen du code", 'Vous possédez le code.', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
 		if (not licenses.driving.bike) then
 			ARP.Menu.Item.Button("Passer l'examen du permis A", '', {}, true, {
 				onSelected = function()
@@ -308,7 +317,6 @@ end
 -- Blip
 
 function CreateDrivingSchoolBlip()
-	print(json.encode(Config))
 	local blip = AddBlipForCoord(Config.Zones.School.Pos)
 
 	SetBlipSprite(blip, 438)
