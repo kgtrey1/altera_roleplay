@@ -72,3 +72,8 @@ RegisterNetEvent('arp_framework:ShowNotification')
 AddEventHandler('arp_framework:ShowNotification', function(message)
     ARP.ShowNotification(message)
 end)
+
+RegisterNetEvent('arp_framework:SetJob')
+AddEventHandler('arp_framework:SetJob', function(data)
+    ARP.Player.job.SetJob(data)
+end)

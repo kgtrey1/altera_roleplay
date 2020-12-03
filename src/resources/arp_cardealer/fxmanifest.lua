@@ -18,6 +18,7 @@ server_scripts {
 
 client_scripts {
 	'config.lua',
+	'client/enterprise.lua',
 	'client/main.lua'
 }
 

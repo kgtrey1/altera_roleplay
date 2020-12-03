@@ -107,6 +107,23 @@ function CreatePlayerObject(data)
         })
     end
 
+    self.job.SetJob = function(newJob)
+        self.job.name        = newJob.name
+        self.job.label       = newJob.label
+        self.job.whitelisted = newJob.whitelisted
+        self.job.enterprise  = newJob.enterprise
+        self.job.grade       = newJob.grade
+        self.job.data        = newJob.data
+        TriggerEvent('arp_framework:OnSetJob')
+    end
+
+    self.job.GetGrade = function()
+        return (self.job.grade)
+    end
+
+    self.job.GetGradeName = function()
+        return (self.job.data.name)
+    end
     --
 
     self.stats = data.stats
