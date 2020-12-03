@@ -28,6 +28,10 @@ function DeserializeSafe(safe)
 	return (newSafe)
 end
 
+ARP.RegisterServerCallback('arp_enterprise:GetEnterpriseSaleStatus', function(source, cb, name)
+	cb(ENT[name].for_sale)
+end)
+
 ARP.RegisterServerCallback('arp_enterprise:GetEnterpriseData', function(source, cb, name)
 	cb(ENT[name])
 end)
@@ -36,6 +40,7 @@ MySQL.ready(function()
 	MySQL.Async.fetchAll('SELECT * from enterprises', {}, function(result)
         for i = 1, #result, 1 do
 			ENT[result[i].name] = {}
+			ENT[result[i].name].jobname	 = result[i].jobname
 			ENT[result[i].name].name 	 = result[i].name
 			ENT[result[i].name].label	 = result[i].label
 			ENT[result[i].name].money	 = result[i].money
