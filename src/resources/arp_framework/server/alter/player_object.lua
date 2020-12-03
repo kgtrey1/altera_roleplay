@@ -380,7 +380,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         end
         -- Set new job
         self.job.whitelisted = ARP.Jobs.IsJobWhitelisted(jobName)
-        if (JobIsWhitelisted) then
+        if (self.job.whitelisted) then
             self.job.enterprise = enterprise
             self.job.name       = jobName
             self.job.label      = ARP.Jobs.GetJobLabel(jobName)
@@ -392,7 +392,12 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
             self.job.grade      = 1
             self.job.data       = ARP.Jobs.GetGradeData(jobName, grade)
         end
-
+        MySQL.Sync.execute('UPDATE employee SET `jobname` = @jobname, `enterprise` = @enterprise, `grade` = @grade WHERE steamid = @steamid', {
+            ['@jobname']    = self.job.name,
+            ['@enterprise'] = self.job.enterprise,
+            ['@grade']      = self.job.grade,
+            ['@steamid']    = self.steamid
+        })
         return
     end
 

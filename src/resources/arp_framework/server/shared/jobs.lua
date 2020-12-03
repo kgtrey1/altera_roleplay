@@ -35,9 +35,9 @@ ARP.Jobs.IsJobWhitelisted = function(jobName)
 end
 
 ARP.Jobs.GetBossGrade = function(jobName)
-    for k, v in pairs(ARP.Jobs.List[jobName].grades) do
-        if (v.name == "boss") then
-            return (v.grade)
+    for i = 1, #ARP.Jobs.List[jobName].grades, 1 do
+        if (ARP.Jobs.List[jobName].grades[i].name == "boss") then
+            return (ARP.Jobs.List[jobName].grades[i].rank)
         end
     end
 end
