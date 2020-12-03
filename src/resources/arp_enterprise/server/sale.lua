@@ -19,6 +19,14 @@ function BuyEnterprise(entName)
         Alter.ShowNotification("Vous n'avez pas assez d'argent pour acheter cette entreprise.")
     else
         Alter.job.SetJob(ENT[entName].jobname, entName, ARP.Jobs.GetBossGrade(ENT[entName].jobname))
+        MySQL.Sync.execute('UPDATE enterprises SET `for_sale` = @status WHERE name = @name', {
+            ['@status']     = false,
+            ['@name']       = entName
+        })
+        ENT[entName].for_sale = false
+        for _, playerId in ipairs(GetPlayers()) do
+            TriggerClientEvent('arp_enterprise:SetEnterpriseStatus', playerId, entName, false)
+        end
     end
 end
 

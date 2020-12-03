@@ -17,7 +17,7 @@ AddEventHandler('arp_framework:PlayerReady', function(playerData)
     ARP.Player = playerData
     
     for _, enterprise in pairs(Config.Enterprises) do -- Register enterprise, either for sale or for blip.
-        TriggerEvent('arp_enterprise:RegisterEnterpriseStatus', {name = enterprise.name, bpos = enterprise.shared.bpos, sale = enterprise.shared.sale, blipsetting = Config.Blip})
+        TriggerEvent('arp_enterprise:RegisterEnterpriseStatus', {name = enterprise.name, config = enterprise.blip})
     end
 end)
 
