@@ -398,6 +398,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
             ['@grade']      = self.job.grade,
             ['@steamid']    = self.steamid
         })
+        self.TriggerEvent('arp_framework:SetJob', self.GetJob())
         return
     end
 
