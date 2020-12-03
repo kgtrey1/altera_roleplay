@@ -63,6 +63,7 @@ function CreateSaleThread(ent_name)
                         TriggerServerEvent('arp_enterprise:BuyEnterprise', ent_name)
                     end
                 end
+                DrawMarker(1, Enterprises[ent_name].sale, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.5, 1.5, 1.5, 204, 204, 0, 100, false, true, 2, false, nil, nil, false)
                 Citizen.Wait(0)
             else
                 Citizen.Wait(5000)
