@@ -23,13 +23,21 @@ ARP.Jobs.GetGradeData = function(jobname, grade)
 end
 
 ARP.Jobs.GetJobLabel = function(jobName)
-    if (ARP.Jobs.List[jobname] ~= nil) then
-        return (ARP.Jobs.List[jobname].label)
+    if (ARP.Jobs.List[jobName] ~= nil) then
+        return (ARP.Jobs.List[jobName].label)
     end
 end
 
 ARP.Jobs.IsJobWhitelisted = function(jobName)
     if (ARP.Jobs.List[jobName] ~= nil) then
         return (ARP.Jobs.List[jobName].whitelisted)
+    end
+end
+
+ARP.Jobs.GetBossGrade = function(jobName)
+    for k, v in pairs(ARP.Jobs.List[jobName].grades) do
+        if (v.name == "boss") then
+            return (v.grade)
+        end
     end
 end
