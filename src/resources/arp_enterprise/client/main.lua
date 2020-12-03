@@ -14,5 +14,4 @@ end)
 AddEventHandler('arp_framework:PlayerReady', function(playerData)
 	ARP.Player = playerData
 	RegisterSafeMenus()
-	RegisterBossMenus()
 end)

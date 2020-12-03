@@ -14,10 +14,12 @@ server_scripts {
     '@mysql-async/lib/MySQL.lua',
     'server/main.lua',
     'server/acl.lua',
+    'server/sale.lua',
     'server/safe.lua'
 }
 
 client_script {
+    'client/sale.lua',
     'client/safe.lua',
     'client/main.lua'
 }

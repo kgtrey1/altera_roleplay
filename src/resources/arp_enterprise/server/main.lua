@@ -28,10 +28,6 @@ function DeserializeSafe(safe)
 	return (newSafe)
 end
 
-ARP.RegisterServerCallback('arp_enterprise:GetEnterpriseSaleStatus', function(source, cb, name)
-	cb(ENT[name].for_sale)
-end)
-
 ARP.RegisterServerCallback('arp_enterprise:GetEnterpriseData', function(source, cb, name)
 	cb(ENT[name])
 end)
@@ -40,13 +36,14 @@ MySQL.ready(function()
 	MySQL.Async.fetchAll('SELECT * from enterprises', {}, function(result)
         for i = 1, #result, 1 do
 			ENT[result[i].name] = {}
-			ENT[result[i].name].jobname	 = result[i].jobname
-			ENT[result[i].name].name 	 = result[i].name
-			ENT[result[i].name].label	 = result[i].label
-			ENT[result[i].name].money	 = result[i].money
-			ENT[result[i].name].for_sale = result[i].for_sale
-			ENT[result[i].name].public	 = result[i].public
-			ENT[result[i].name].safe	 = DeserializeSafe(json.decode(result[i].safe))
+			ENT[result[i].name].jobname	 	= result[i].jobname
+			ENT[result[i].name].name 	 	= result[i].name
+			ENT[result[i].name].label	 	= result[i].label
+			ENT[result[i].name].money	 	= result[i].money
+			ENT[result[i].name].for_sale 	= result[i].for_sale
+			ENT[result[i].name].sell_price	= result[i].sale_price
+			ENT[result[i].name].safe	 	= DeserializeSafe(json.decode(result[i].safe))
+			ENT[result[i].name].employees 	= {}
         end
     end)
 end)
