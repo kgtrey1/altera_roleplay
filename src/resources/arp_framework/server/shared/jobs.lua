@@ -21,3 +21,15 @@ ARP.Jobs.GetGradeData = function(jobname, grade)
     end
     return (nil)
 end
+
+ARP.Jobs.GetJobLabel = function(jobName)
+    if (ARP.Jobs.List[jobname] ~= nil) then
+        return (ARP.Jobs.List[jobname].label)
+    end
+end
+
+ARP.Jobs.IsJobWhitelisted = function(jobName)
+    if (ARP.Jobs.List[jobName] ~= nil) then
+        return (ARP.Jobs.List[jobName].whitelisted)
+    end
+end
