@@ -349,6 +349,10 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         return (self.job.whitelisted)
     end
 
+    self.job.GetJobName = function()
+        return (self.job.name)
+    end
+
     self.job.GetEnterprise = function()
         return (self.job.enterprise)
     end
