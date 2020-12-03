@@ -372,14 +372,14 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         })
     end
 
-    self.job.SetJob() = function(jobName, enterprise)
+    self.job.SetJob = function(jobName, enterprise, grade)
         -- remove player from current enterprise
         if (self.job.whitelisted) then
             TriggerEvent('arp_enterprise:RemovePlayerFromEnterprise', self.source)
             self.enterprise = 'none'
         end
         -- Set new job
-        self.job.whitelisted = ARP.Job.IsJobWhitelisted(jobName)
+        self.job.whitelisted = ARP.Jobs.IsJobWhitelisted(jobName)
         if (JobIsWhitelisted) then
             self.job.enterprise = enterprise
             self.job.name       = jobName
@@ -392,6 +392,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
             self.job.grade      = 1
             self.job.data       = ARP.Jobs.GetGradeData(jobName, grade)
         end
+
         return
     end
 
