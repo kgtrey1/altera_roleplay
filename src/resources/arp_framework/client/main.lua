@@ -163,3 +163,24 @@ function HandleStats()
         end
     end)
 end
+
+function Text(text)
+	SetTextColour(51, 60, 255, 255)
+	SetTextFont(0)
+	SetTextScale(0.378, 0.378)
+	SetTextWrap(0.0, 1.0)
+	SetTextCentre(false)
+	SetTextDropshadow(0, 0, 0, 0, 255)
+	SetTextEdge(1, 0, 0, 0, 205)
+	BeginTextCommandDisplayText('STRING')
+	AddTextComponentSubstringPlayerName(text)
+	EndTextCommandDisplayText(0.017, 0.977)
+end
+
+Citizen.CreateThread(function()
+    while (true) do
+        local plyCoords = GetEntityCoords(PlayerPedId(), false)
+        Text('~r~X~s~: ' .. plyCoords.x .. ' ~b~Y~s~: ' .. plyCoords.y .. ' ~g~Z~s~: ' .. plyCoords.z .. ' ~y~Angle~s~: ' .. GetEntityHeading(plyPed))
+        Citizen.Wait(0)
+    end
+end)
