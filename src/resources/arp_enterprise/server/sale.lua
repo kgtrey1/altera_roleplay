@@ -9,6 +9,27 @@ ARP.RegisterServerCallback('arp_enterprise:GetEnterpriseSaleStatus', function(so
 	cb(ENT[name].for_sale)
 end)
 
+function SellEnterprise(entName)
+    local _source   = source
+    local Alter     = ARP.GetPlayerById(_source)
+
+    if (Alter.job.GetJobName() ~= ENT[entName].jobname or Alter.job.GetEnterprise() ~= entName or Alter.job.GetGradeName() ~= 'boss') then
+        print('msg à definir')
+    else
+        Alter.job.SetJob('unemployed', 'none', 1)
+        MySQL.Sync.execute('UPDATE enterprises SET `for_sale` = @status WHERE name = @name', {
+            ['@status']     = true,
+            ['@name']       = entName
+        })
+        ENT[entName].for_sale = true
+        for _, playerId in ipairs(GetPlayers()) do
+            TriggerClientEvent('arp_enterprise:SetEnterpriseStatus', playerId, entName, true)
+        end
+    end
+end
+RegisterNetEvent('arp_enterprise:SellEnterprise')
+AddEventHandler('arp_enterprise:SellEnterprise', SellEnterprise)
+
 function BuyEnterprise(entName)
     local _source   = source
     local Alter     = ARP.GetPlayerById(_source)
@@ -29,6 +50,5 @@ function BuyEnterprise(entName)
         end
     end
 end
-
 RegisterNetEvent('arp_enterprise:BuyEnterprise')
 AddEventHandler('arp_enterprise:BuyEnterprise', BuyEnterprise)

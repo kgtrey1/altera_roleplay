@@ -47,3 +47,16 @@ MySQL.ready(function()
         end
     end)
 end)
+
+ARP.RegisterServerCallback('arp_enterprise:OpenBossMenu', function(source, cb, entName)
+	local Alter 			= ARP.GetPlayerById(source)
+	local playerEnterprise 	= Alter.job.GetEnterprise()
+	local playerGradeName 	= Alter.job.GetGradeName()
+
+	if (playerEnterprise ~= entName and playerGradeName ~= 'boss') then
+		print(string.format('ARP Enterprise> %s tried to access boss menu of enterprise %s without privilege. (Enterprise: %s ; Grade: %s)', Alter.GetSteamid(), entName, playerEnterprise, playerGradeName))
+		cb(false)
+	else
+		cb(true)
+	end
+end)
