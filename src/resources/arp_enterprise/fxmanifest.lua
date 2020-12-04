@@ -20,6 +20,7 @@ server_scripts {
 
 client_script {
     'client/sale.lua',
+    'client/boss.lua',
     'client/safe.lua',
     'client/main.lua'
 }
