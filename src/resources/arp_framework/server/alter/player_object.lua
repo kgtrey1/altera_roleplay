@@ -361,6 +361,10 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         return (self.job.grade)
     end
 
+    self.job.GetGradeName = function()
+        return (self.job.data.name)
+    end
+
     self.GetJob = function()
         return ({
             whitelisted = self.job.whitelisted,
