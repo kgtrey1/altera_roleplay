@@ -22,6 +22,7 @@ function SetJob()
 		end, job.enterprise)
 	end
 end
+AddEventHandler('arp_framework:OnSetJob', SetJob)
 
 function SetMoney()
 	local cash  = ARP.Player.money.GetCash()
