@@ -23,7 +23,8 @@ Config.Enterprises = {
                 sprite  = 200,
                 text    = "Concession à vendre"
             }
-        }
+        },
+        boss = vector3(1155.12, 2248.14, 49.1)
     },
     {
         name = 'concess2',
@@ -40,6 +41,7 @@ Config.Enterprises = {
                 sprite  = 200,
                 text    = "Concession à vendre"
             }
-        }
+        },
+        boss = vector3(1155.12, 2248.14, 49.1)
     }
 }

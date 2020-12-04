@@ -7,7 +7,7 @@ local MenuIsOpen = false
 function RenderBossButtons(entName)
     ARP.Menu.Item.Button("Vendre l'entreprise", "Vendre l'entreprise", {}, true, {
         onSelected = function()
-            TriggerServerEvent('arp_entreprise:SellEnterprise', entName)
+            TriggerServerEvent('arp_enterprise:SellEnterprise', entName)
             ARP.Menu.CloseAll()
         end
     }, nil)
@@ -16,7 +16,7 @@ end
 function DrawBossMenu(entName)
     if (MenuIsOpen) then
         return
-    else
+    end
     MenuIsOpen = true
     ARP.Menu.CloseAll()
     ARP.Menu.Visible(BossMenu.main, false)
@@ -33,6 +33,10 @@ function DrawBossMenu(entName)
 end
 
 function OpenBossMenu(entName)
+    print('here')
+    if (MenuIsOpen) then
+        return
+    end
     ARP.TriggerServerCallback('arp_enterprise:OpenBossMenu', function(resp)
         if (resp == true) then
             DrawBossMenu(entName)

@@ -31,10 +31,9 @@ function OnSetJob()
         if (entName == enterprise.name) then
             ENT = enterprise
             if (ARP.Player.job.GetGradeName() == 'boss') then -- If he's boss, it start boss threads
-                BossThread()
+                Citizen.CreateThread(BossThread)
             end
         end
     end
 end
-
 AddEventHandler('arp_framework:OnSetJob', OnSetJob)

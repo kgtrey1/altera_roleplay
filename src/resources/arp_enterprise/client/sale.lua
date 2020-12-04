@@ -20,7 +20,7 @@ RegisterNetEvent('arp_enterprise:SetEnterpriseStatus')
 AddEventHandler('arp_enterprise:SetEnterpriseStatus', function(ent_name, status)
     Enterprises[ent_name].forSale = status
     RemoveBlip(Enterprises[ent_name].blip)
-    if (forSale) then
+    if (Enterprises[ent_name].forSale == true) then
         SetSaleBlip(ent_name)
         CreateSaleThread(ent_name)
     else
