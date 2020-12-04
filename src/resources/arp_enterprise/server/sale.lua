@@ -2,11 +2,11 @@
 -- ALTERA PROJECT, 2020
 -- ARP_Enterprise
 -- File description:
--- Server side sale script
+-- Server side script selling and buying an enterprise
 --
 
-ARP.RegisterServerCallback('arp_enterprise:GetEnterpriseSaleStatus', function(source, cb, name)
-	cb(ENT[name].for_sale)
+ARP.RegisterServerCallback('arp_enterprise:GetEnterpriseSaleStatus', function(source, cb, entName)
+	cb(ENT[entName].for_sale, ENT[entName].sell_price)
 end)
 
 function SellEnterprise(entName)
@@ -16,6 +16,7 @@ function SellEnterprise(entName)
     if (Alter.job.GetJobName() ~= ENT[entName].jobname or Alter.job.GetEnterprise() ~= entName or Alter.job.GetGradeName() ~= 'boss') then
         print('msg à definir')
     else
+        Alter.ShowNotification("Vous avez vendu votre entreprise.")
         Alter.job.SetJob('unemployed', 'none', 1)
         MySQL.Sync.execute('UPDATE enterprises SET `for_sale` = @status WHERE name = @name', {
             ['@status']     = true,
@@ -39,6 +40,8 @@ function BuyEnterprise(entName)
     elseif (Alter.money.GetCash() < ENT[entName].sell_price) then
         Alter.ShowNotification("Vous n'avez pas assez d'argent pour acheter cette entreprise.")
     else
+        Alter.ShowNotification("Vous avez acheté une entreprise.")
+        Alter.money.RemoveCash(ENT[entName].sell_price)
         Alter.job.SetJob(ENT[entName].jobname, entName, ARP.Jobs.GetBossGrade(ENT[entName].jobname))
         MySQL.Sync.execute('UPDATE enterprises SET `for_sale` = @status WHERE name = @name', {
             ['@status']     = false,

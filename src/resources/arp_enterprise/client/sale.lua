@@ -4,7 +4,8 @@ local Enterprises = {}
 
 AddEventHandler('arp_enterprise:RegisterEnterpriseStatus', function(ent)
     Enterprises[ent.name] = ent
-    ARP.TriggerServerCallback('arp_enterprise:GetEnterpriseSaleStatus', function(status)
+    ARP.TriggerServerCallback('arp_enterprise:GetEnterpriseSaleStatus', function(status, price)
+        Enterprises[ent.name].sell_price = price
         if (status == true) then
             Enterprises[ent.name].forSale = true
             SetSaleBlip(ent.name)
@@ -59,7 +60,7 @@ function CreateSaleThread(ent_name)
 		    distance = #(playerCoords - Enterprises[ent_name].config.sale.pos)
             if (distance <= 50) then
                 if (distance < 5) then
-				    ARP.ShowHelpNotification("Appuyez sur ~INPUT_CONTEXT~ pour acheter cette entreprise.")
+				    ARP.ShowHelpNotification(string.format("Appuyez sur ~INPUT_CONTEXT~ pour acheter cette entreprise. (Prix: %s)", Enterprises[ent_name].sell_price))
 				    if (IsControlJustReleased(1, 38)) then
                         TriggerServerEvent('arp_enterprise:BuyEnterprise', ent_name)
                     end
