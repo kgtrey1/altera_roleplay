@@ -19,6 +19,10 @@ Inventory           = {
     Item        = nil
 }
 
+Wallet = {
+    Menu = 'arp_ui:Wallet'
+}
+
 TriggerEvent('arp_framework:FetchObject', function(obj)
     ARP = obj
 end)
@@ -82,16 +86,28 @@ function CreateMenuThread()
     MenuIsOpen = true
     ARP.Menu.Visible(MainMenu, false)
     while (MenuIsOpen) do
+
+        ARP.Menu.IsVisible(Wallet.Menu, function()
+            RenderWallet()
+        end, function() end, true)        
+
         ARP.Menu.IsVisible(Inventory.Selected, function()
             OnItemSelected()
         end, function() end, true)
+
         ARP.Menu.IsVisible(Inventory.Menu, function()
             GenerateInventory()
         end, function() end, true)
+
         ARP.Menu.IsVisible(MainMenu, function()
             ARP.Menu.Item.Button('Inventaire', 'Options concernant l\'inventaire.', {}, true, {}, Inventory.Menu)
+            ARP.Menu.Item.Button('Portefeuille', '', {}, true, {}, Wallet.Menu)
         end, function() end, false)
-        if (not ARP.Menu.GetVisibility(MainMenu, false) and not ARP.Menu.GetVisibility(Inventory.Menu, true) and not ARP.Menu.GetVisibility(Inventory.Selected, true)) then
+
+        if (not ARP.Menu.GetVisibility(MainMenu, false)
+        and not ARP.Menu.GetVisibility(Inventory.Menu, true)
+        and not ARP.Menu.GetVisibility(Inventory.Selected, true)
+        and not ARP.Menu.GetVisibility(Wallet.Menu, true)) then
             MenuIsOpen = false
         end
         Citizen.Wait(0)
@@ -103,6 +119,7 @@ function StartMainThread()
     ARP.Menu.RegisterMenu(MainMenu, 'Menu perso', 'Choisissez une interaction')
     ARP.Menu.RegisterSubmenu(Inventory.Menu, MainMenu, 'Inventaire', 'MENU INVENTAIRE')
     ARP.Menu.RegisterSubmenu(Inventory.Selected, MainMenu, 'Inventaire', 'MENU OBJET')
+    ARP.Menu.RegisterSubmenu(Wallet.Menu, MainMenu, 'Portefeuille', 'PORTEFEUILLE')
     Citizen.CreateThread(function()
         while (true) do
             Citizen.Wait(5)
