@@ -116,13 +116,13 @@ end
 RegisterNetEvent('arp_licenses:SetIdLicense')
 AddEventHandler('arp_licenses:SetIdLicense', SetIdLicense)
 
-function SetDrivingLicense(target, type, value)
+function SetDrivingLicense(target, ptype, value)
 	local _source = source
 	local Altera = ARP.GetPlayerById(target)
 	local Alterb = ARP.GetPlayerById(_source)
 
-	if (type == 'car' or type == 'truck' or type == 'bike' and type(value) == 'boolean' and Altera ~= nil) then
-		Altera.licenses.SetDrivingLicense(type, value)
+	if (ptype == 'car' or ptype == 'truck' or ptype == 'bike' and type(value) == 'boolean' and Altera ~= nil) then
+		Altera.licenses.SetDrivingLicense(ptype, value)
 	else
 		string.format('ARP> Trying to set driving licences for %s with value ' .. value .. ' (Called by SteamID %s on SteamId %s).', type, Alterb.GetSteamid(), Altera.GetSteamid())
 	end
