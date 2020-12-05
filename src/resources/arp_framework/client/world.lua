@@ -98,3 +98,45 @@ ARP.World.DeleteVehicle = function(vehicle)
 	SetEntityAsMissionEntity(vehicle, false, true)
 	DeleteVehicle(vehicle)
 end
+
+ARP.World.GetPlayers = function()
+	local players = {}
+
+	for _,player in ipairs(GetActivePlayers()) do
+		local ped = GetPlayerPed(player)
+
+		if DoesEntityExist(ped) then
+			table.insert(players, player)
+		end
+	end
+	return players
+end
+
+ARP.World.GetClosestPlayer = function(coords)
+	local players         = ESX.Game.GetPlayers()
+	local closestDistance = -1
+	local closestPlayer   = -1
+	local coords          = coords
+	local usePlayerPed    = false
+	local playerPed       = PlayerPedId()
+	local playerId        = PlayerId()
+
+	if coords == nil then
+		usePlayerPed = true
+		coords       = GetEntityCoords(playerPed)
+	end
+	for i=1, #players, 1 do
+		local target = GetPlayerPed(players[i])
+
+		if not usePlayerPed or (usePlayerPed and players[i] ~= playerId) then
+			local targetCoords = GetEntityCoords(target)
+			local distance     = GetDistanceBetweenCoords(targetCoords, coords.x, coords.y, coords.z, true)
+
+			if closestDistance == -1 or closestDistance > distance then
+				closestPlayer   = players[i]
+				closestDistance = distance
+			end
+		end
+	end
+	return closestPlayer, closestDistance
+end
