@@ -4,7 +4,7 @@ $(document).ready(function() {
             let type        = event.data.type;
             let userData    = event.data.array;
 
-            if (type == 'driving' || type == 'id') {
+            if (type == 'driving' || type == 'idcard') {
                 $('img').show();
                 $('#name').css('color', '#282828');
                 if (userData.gender.toLowerCase() == 'm' ) {

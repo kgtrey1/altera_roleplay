@@ -60,12 +60,17 @@ end
 function ShowLicense(target, type)
 	local _source 	= source
 	local Altera	= ARP.GetPlayerById(_source)
-	local Alterb	= ARP.GetPlayerById(target)
 	local show		= false
 	local data		= nil
+	local Alterb	= nil
 
-	if (type == "id" or type == "driving" or type == "firearms") then
-		if (type == 'id') then
+	if (target == 'self') then
+		Alterb	= Altera
+	else
+		Alterb	= ARP.GetPlayerById(target)
+	end
+	if (type == "idcard" or type == "driving" or type == "firearms") then
+		if (type == 'idcard') then
 			data, show = GetIdentityInfos(Altera)
 		elseif (type == 'driving') then
 			data, show = GetDrivingInfos(Altera)

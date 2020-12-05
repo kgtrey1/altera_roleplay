@@ -81,7 +81,7 @@ function HandleNPC()
 		distance = #(playerCoords - Config.CityHallNPC.pos)
 		if (distance <= 10) then
 			if (not NPCMenuIsOpen) then
-				ARP.ShowNotification("Appuyez sur ~INPUT_CONTEXT~ pour faire vos papiers.")
+				ARP.ShowHelpNotification("Appuyez sur ~INPUT_CONTEXT~ pour accéder au menu de la mairie.")
 				if (IsControlJustReleased(1, 38)) then
 					ARP.TriggerServerCallback('arp_licenses:GetLicensesData', function(data)
 						OpenNPCMenu(data)
