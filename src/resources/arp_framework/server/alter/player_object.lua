@@ -568,5 +568,19 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         return (self.licenses.code)
     end
 
+    self.GetLicenses = function()
+        return ({
+            car = self.licenses.car,
+            bike = self.licenses.bike,
+            truck = self.licenses.truck,
+            idcard = self.licenses.idcard,
+            code = self.licenses.code,
+            firearms = self.licenses.firearms,
+            hasidcard = self.licenses.hasidcard,
+            hasdriving = self.licenses.hasdriving,
+            hasfirearms = self.licenses.hasfirearms
+        })
+    end
+
     return (self)
 end
