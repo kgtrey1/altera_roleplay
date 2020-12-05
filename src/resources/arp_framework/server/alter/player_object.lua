@@ -462,10 +462,10 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
         return (self.licenses.idcard)
     end
 
-    self.licenses.SetDrivingLicense = function(type, value)
-        if (type == 'car' or type == 'truck' or type == 'bike' and type(value) == 'boolean') then
-            self.licenses[type] = value
-            MySQL.Sync.execute('UPDATE licenses SET `' .. type .. '` = @value WHERE steamid = @steamid', {
+    self.licenses.SetDrivingLicense = function(ptype, value)
+        if (ptype == 'car' or ptype == 'truck' or ptype == 'bike' and type(value) == 'boolean') then
+            self.licenses[ptype] = value
+            MySQL.Sync.execute('UPDATE licenses SET `' .. ptype .. '` = @value WHERE steamid = @steamid', {
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
