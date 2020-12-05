@@ -267,7 +267,7 @@ function OpenSchoolMenu(licenses)
 	end
 	MenuIsOpen = true
 	if (not licenses.hasidcard) then
-		ARP.ShowNotification("Vous devez avoir votre carte d'identité pour passer le permis.")
+		ARP.ShowNotification("Vous devez avoir votre carte d'identité pour accéder à l'auto école.")
 		Citizen.Wait(10000)
 		MenuIsOpen = false
 		return
