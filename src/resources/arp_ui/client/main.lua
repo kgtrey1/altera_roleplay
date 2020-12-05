@@ -52,6 +52,8 @@ function RenderWallet()
 
                 if (distance < 3) then
                     TriggerServerEvent('arp_licenses:ShowLicense', player, 'idcard')
+                else
+                    ARP.ShowNotification("Aucun joueur à proximité")
                 end
             end
         }, nil)
@@ -71,6 +73,8 @@ function RenderWallet()
 
                 if (distance < 3) then
                     TriggerServerEvent('arp_licenses:ShowLicense', player, 'driving')
+                else
+                    ARP.ShowNotification("Aucun joueur à proximité")
                 end
             end
         }, nil)
@@ -90,6 +94,8 @@ function RenderWallet()
 
                 if (distance < 3) then
                     TriggerServerEvent('arp_licenses:ShowLicense', player, 'driving')
+                else
+                    ARP.ShowNotification("Aucun joueur à proximité")
                 end
             end
         }, nil)
