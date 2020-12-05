@@ -36,6 +36,69 @@ AddEventHandler('arp_framework:CloseAllMenus', function()
     MenuIsOpen = false
 end)
 
+function RenderWallet()
+    local licenses = ARP.Player.licenses.GetLicenses()
+
+    if (licenses.idcard and licenses.hasidcard) then
+        ARP.Menu.Item.Button("Voir ma carte d'identité", '', {}, true, {
+            onSelected = function()
+                local type = 'idcard'
+                TriggerServerEvent('arp_licenses:ShowLicense', 'self', 'idcard')
+            end
+        }, nil)
+        ARP.Menu.Item.Button("Montrer ma carte d'identité", '', {}, true, {
+            onSelected = function()
+                local player, distance = ARP.World.GetClosestPlayer()
+
+                if (distance < 3) then
+                    TriggerServerEvent('arp_licenses:ShowLicense', player, 'idcard')
+                end
+            end
+        }, nil)
+    else
+        ARP.Menu.Item.Button("Voir ma carte d'identité", '', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+        ARP.Menu.Item.Button("Montrer ma carte d'identité", '', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+    end
+    if (licenses.car or licenses.bike or licenses.truck and licenses.hasdriving) then
+        ARP.Menu.Item.Button("Voir mon permis de conduire", '', {}, true, {
+            onSelected = function()
+                TriggerServerEvent('arp_licenses:ShowLicense', nil, 'driving')
+            end
+        }, nil)
+        ARP.Menu.Item.Button("Montrer mon permis de conduire", '', {}, true, {
+            onSelected = function()
+                local player, distance = ARP.World.GetClosestPlayer()
+
+                if (distance < 3) then
+                    TriggerServerEvent('arp_licenses:ShowLicense', player, 'driving')
+                end
+            end
+        }, nil)
+    else
+        ARP.Menu.Item.Button("Voir mon permis de conduire", '', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+        ARP.Menu.Item.Button("Montrer mon permis de conduire", '', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+    end
+    if (licenses.firearms and licenses.hasfirearms) then
+        ARP.Menu.Item.Button("Voir mon permis de port d'arme", '', {}, true, {
+            onSelected = function()
+                TriggerServerEvent('arp_licenses:ShowLicense', nil, 'driving')
+            end
+        }, nil)
+        ARP.Menu.Item.Button("Montrer mon permis de port d'arme", '', {}, true, {
+            onSelected = function()
+                local player, distance = ARP.World.GetClosestPlayer()
+
+                if (distance < 3) then
+                    TriggerServerEvent('arp_licenses:ShowLicense', player, 'driving')
+                end
+            end
+        }, nil)
+    else
+        ARP.Menu.Item.Button("Voir mon permis de port d'arme", '', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+        ARP.Menu.Item.Button("Montrer mon permis de port d'arme", '', {RightBadge = ARP.Menu.BadgeStyle.Lock}, true, {}, nil)
+    end
+end
+
 function GenerateIndexList(size)
     local i    = 1
     local list = {}
