@@ -4,6 +4,18 @@ TriggerEvent('arp_framework:FetchObject', function(obj)
     ARP = obj
 end)
 
+local function CreateJobTable(Alter)
+    MySQL.Sync.execute('INSERT INTO employee (steamid) VALUES(@steamid)', {
+        ['@steamid']    = Alter.GetSteamid()
+    })
+end
+
+local function CreateInventoryTable(Alter)
+    MySQL.Sync.execute('INSERT INTO inventory (steamid) VALUES(@steamid)', {
+        ['@steamid']    = Alter.GetSteamid()
+    })
+end
+
 local function CreateLicensesTable(Alter)
     MySQL.Sync.execute('INSERT INTO licenses (steamid) VALUES(@steamid)', {
         ['@steamid']    = Alter.GetSteamid()
@@ -64,6 +76,8 @@ function RegisterPlayer(playerData)
     AddPlayerToDb(_source, newPlayer)
     AddMoneyAccount(Alter)
     CreateLicensesTable(Alter)
+    CreateInventoryTable(Alter)
+    CreateJobTable(Alter)
 
     -- Updating the player data
     Alter.identity.SetFirstname(newPlayer.firstName)
