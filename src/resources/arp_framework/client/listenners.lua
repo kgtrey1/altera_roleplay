@@ -77,3 +77,8 @@ RegisterNetEvent('arp_framework:SetJob')
 AddEventHandler('arp_framework:SetJob', function(data)
     ARP.Player.job.SetJob(data)
 end)
+
+RegisterNetEvent('arp_framework:OnLicenseChange')
+AddEventHandler('arp_framework:OnLicenseChange', function(license, value)
+    ARP.Player.licenses.SetLicense(license, value)
+end)

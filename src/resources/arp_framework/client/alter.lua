@@ -128,5 +128,36 @@ function CreatePlayerObject(data)
 
     self.stats = data.stats
 
+    -- Licenses client side
+
+    self.licenses = {}
+
+    self.licenses.bike          = data.licenses.bike
+    self.licenses.truck         = data.licenses.truck
+    self.licenses.idcard        = data.licenses.idcard
+    self.licenses.code          = data.licenses.code
+    self.licenses.firearms      = data.licenses.firearms
+    self.licenses.hasidcard     = data.licenses.hasidcard
+    self.licenses.hasdriving    = data.licenses.hasdriving
+    self.licenses.hasfirearms   = data.licenses.hasfirearms
+
+    self.licenses.GetLicenses = function()
+        return ({
+            car = self.licenses.car,
+            bike = self.licenses.bike,
+            truck = self.licenses.truck,
+            idcard = self.licenses.idcard,
+            code = self.licenses.code,
+            firearms = self.licenses.firearms,
+            hasidcard = self.licenses.hasidcard,
+            hasdriving = self.licenses.hasdriving,
+            hasfirearms = self.licenses.hasfirearms
+        })
+    end
+
+    self.licenses.SetLicense = function(license, value)
+        self.licenses[license] = value
+    end
+
     return (self)
 end
