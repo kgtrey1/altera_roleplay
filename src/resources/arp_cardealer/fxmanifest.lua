@@ -12,6 +12,7 @@ description 'Car dealer for Altera Roleplay'
 version '0.50.0'
 
 server_scripts {
+	'@mysql-async/lib/MySQL.lua',
 	'config.lua',
 	'server/main.lua'
 }
@@ -19,6 +20,7 @@ server_scripts {
 client_scripts {
 	'config.lua',
 	'client/enterprise.lua',
+	'client/job.lua',
 	'client/main.lua'
 }
 

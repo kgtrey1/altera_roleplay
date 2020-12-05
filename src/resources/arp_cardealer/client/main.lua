@@ -7,7 +7,8 @@
 
 ARP = nil
 ENT = nil
-Blips = {}
+Menus = {}
+Menus.Main = 'arp_cardealer:MainMenu'
 
 TriggerEvent('arp_framework:FetchObject', function(Obj)
 	ARP = Obj
@@ -19,6 +20,7 @@ AddEventHandler('arp_framework:PlayerReady', function(playerData)
     for _, enterprise in pairs(Config.Enterprises) do -- Register enterprise, either for sale or for blip.
         if (enterprise.name == ARP.Player.job.GetEnterprise()) then
             ENT = enterprise
+            Citizen.CreateThread(Cardealer)
             -- All thread starts here if player connect and has the job
             if (ARP.Player.job.GetGradeName() == 'boss') then
                 Citizen.CreateThread(BossThread)
@@ -26,6 +28,7 @@ AddEventHandler('arp_framework:PlayerReady', function(playerData)
         end
         TriggerEvent('arp_enterprise:RegisterEnterpriseStatus', {name = enterprise.name, config = enterprise.blip})
     end
+    ARP.Menu.RegisterMenu(Menus.Main, 'Concession', 'MENU CONCESSIONNAIRE')
 end)
 
 function OnSetJob()

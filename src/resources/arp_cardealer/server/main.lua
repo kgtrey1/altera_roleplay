@@ -9,6 +9,23 @@ ENT = {}
 Car = {}
 Cat = {}
 
+ARP = nil
+
+TriggerEvent('arp_framework:FetchObject', function(Object)
+	ARP = Object
+end)
+
+ARP.RegisterServerCallback('arp_cardealer:GetJobData', function(source, cb, entName)
+    local Alter = ARP.GetPlayerById(source)
+
+    if (Alter.job.GetEnterprise() ~= entName) then
+        print('message to define')
+        cb(false, nil, nil)
+    else
+        cb(true, Cat, ENT[entName].owned, ENT[entName].not_owned)
+    end
+end)
+
 function AssignCarToEnterprises()
     local list  = nil
     local found = false
