@@ -469,6 +469,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
+            self.TriggerEvent('arp_framework:OnLicenseChange', ptype, value)
         else
             print('ARP> Attempting to set driving licence with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
@@ -482,6 +483,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
+            self.TriggerEvent('arp_framework:OnLicenseChange', 'firearms', value)
         else
             print('ARP> Attempting to set firearms licence with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
@@ -495,6 +497,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
+            self.TriggerEvent('arp_framework:OnLicenseChange', 'idcard', value)
         else
             print('ARP> Attempting to set driving licence with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
@@ -512,6 +515,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
+            self.TriggerEvent('arp_framework:OnLicenseChange', 'hasidcard', value)
         else
             print('ARP> Attempting to set id card ownership with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
@@ -529,6 +533,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
+            self.TriggerEvent('arp_framework:OnLicenseChange', 'hasfirearms', value)
         else
             print('ARP> Attempting to set firearms ownership with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
@@ -546,6 +551,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
+            self.TriggerEvent('arp_framework:OnLicenseChange', 'hasdriving', value)
         else
             print('ARP> Attempting to set driving ownership with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
@@ -559,6 +565,7 @@ function CreateAlter(source, steamid, license, registered, identity, money, inve
                 ['@value']   = value,
                 ['@steamid'] = self.steamid
             })
+            self.TriggerEvent('arp_framework:OnLicenseChange', 'code', value)
         else
             print('ARP> Attempting to set code with a non boolean value (SteamID:' .. self.steamid .. ').')
         end
